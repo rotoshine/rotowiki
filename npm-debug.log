@@ -1,0 +1,149 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'yo@1.4.2' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose cache add [ 'yo@1.4.2', null ]
+6 verbose cache add name=undefined spec="yo@1.4.2" args=["yo@1.4.2",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'yo@1.4.2',
+7 verbose parsed url   path: 'yo@1.4.2',
+7 verbose parsed url   href: 'yo@1.4.2' }
+8 verbose cache add name="yo" spec="1.4.2" args=["yo","1.4.2"]
+9 verbose parsed url { protocol: null,
+9 verbose parsed url   slashes: null,
+9 verbose parsed url   auth: null,
+9 verbose parsed url   host: null,
+9 verbose parsed url   port: null,
+9 verbose parsed url   hostname: null,
+9 verbose parsed url   hash: null,
+9 verbose parsed url   search: null,
+9 verbose parsed url   query: null,
+9 verbose parsed url   pathname: '1.4.2',
+9 verbose parsed url   path: '1.4.2',
+9 verbose parsed url   href: '1.4.2' }
+10 verbose addNamed [ 'yo', '1.4.2' ]
+11 verbose addNamed [ '1.4.2', '1.4.2' ]
+12 silly lockFile 111d2724-yo-1-4-2 yo@1.4.2
+13 verbose lock yo@1.4.2 C:\Users\winterwolf\AppData\Roaming\npm-cache\111d2724-yo-1-4-2.lock
+14 verbose registry.get https://registry.npmjs.org/yo not expired, no request
+15 silly lockFile 5d445b73-gistry-npmjs-org-yo-yo-1-4-2-tgz https://registry.npmjs.org/yo/-/yo-1.4.2.tgz
+16 verbose lock https://registry.npmjs.org/yo/-/yo-1.4.2.tgz C:\Users\winterwolf\AppData\Roaming\npm-cache\5d445b73-gistry-npmjs-org-yo-yo-1-4-2-tgz.lock
+17 verbose addRemoteTarball [ 'https://registry.npmjs.org/yo/-/yo-1.4.2.tgz',
+17 verbose addRemoteTarball   '8162f7b0513a0094de38f05b71ad2cef0d68b5c2' ]
+18 info retry fetch attempt 1 at 18:58:00
+19 verbose fetch to= C:\Users\WINTER~1\AppData\Local\Temp\npm-6064-unIvMBRy\registry.npmjs.org\yo\-\yo-1.4.2.tgz
+20 http GET https://registry.npmjs.org/yo/-/yo-1.4.2.tgz
+21 http 200 https://registry.npmjs.org/yo/-/yo-1.4.2.tgz
+22 silly lockFile 5d445b73-gistry-npmjs-org-yo-yo-1-4-2-tgz https://registry.npmjs.org/yo/-/yo-1.4.2.tgz
+23 silly lockFile 5d445b73-gistry-npmjs-org-yo-yo-1-4-2-tgz https://registry.npmjs.org/yo/-/yo-1.4.2.tgz
+24 silly lockFile 111d2724-yo-1-4-2 yo@1.4.2
+25 silly lockFile 111d2724-yo-1-4-2 yo@1.4.2
+26 silly resolved [ { name: 'yo',
+26 silly resolved     version: '1.4.2',
+26 silly resolved     description: 'CLI tool for running Yeoman generators',
+26 silly resolved     license: 'BSD',
+26 silly resolved     bin: { yo: 'lib/cli.js' },
+26 silly resolved     author: { name: 'Yeoman team' },
+26 silly resolved     repository: { type: 'git', url: 'https://github.com/yeoman/yo' },
+26 silly resolved     engines: { node: '>=0.10.0', npm: '>=2.1.0' },
+26 silly resolved     scripts:
+26 silly resolved      { test: 'jshint . && mocha test/**/*.js',
+26 silly resolved        postinstall: 'yodoctor',
+26 silly resolved        postupdate: 'yodoctor',
+26 silly resolved        prepublish: 'nsp audit-package' },
+26 silly resolved     files: [ 'lib' ],
+26 silly resolved     keywords:
+26 silly resolved      [ 'cli-app',
+26 silly resolved        'cli',
+26 silly resolved        'bin',
+26 silly resolved        'front-end',
+26 silly resolved        'development',
+26 silly resolved        'dev',
+26 silly resolved        'build',
+26 silly resolved        'web',
+26 silly resolved        'tool',
+26 silly resolved        'scaffold',
+26 silly resolved        'stack',
+26 silly resolved        'yeoman',
+26 silly resolved        'generator',
+26 silly resolved        'generate',
+26 silly resolved        'app',
+26 silly resolved        'boilerplate' ],
+26 silly resolved     dependencies:
+26 silly resolved      { 'array-uniq': '^1.0.2',
+26 silly resolved        async: '^0.9.0',
+26 silly resolved        chalk: '^0.5.1',
+26 silly resolved        configstore: '^0.3.1',
+26 silly resolved        'cross-spawn': '^0.2.3',
+26 silly resolved        'custom-error': '^0.2.0',
+26 silly resolved        figures: '^1.3.5',
+26 silly resolved        findup: '^0.1.5',
+26 silly resolved        fullname: '^1.0.0',
+26 silly resolved        inquirer: '^0.8.0',
+26 silly resolved        insight: '^0.4.3',
+26 silly resolved        lodash: '^2.4.1',
+26 silly resolved        meow: '^2.0.0',
+26 silly resolved        opn: '^1.0.0',
+26 silly resolved        request: '^2.48.0',
+26 silly resolved        'root-check': '^1.0.0',
+26 silly resolved        shelljs: '^0.3.0',
+26 silly resolved        'sort-on': '^1.0.0',
+26 silly resolved        'string-length': '^1.0.0',
+26 silly resolved        'underscore.string': '^2.3.3',
+26 silly resolved        'update-notifier': '^0.2.2',
+26 silly resolved        'user-home': '^1.1.0',
+26 silly resolved        'yeoman-character': '^1.0.0',
+26 silly resolved        'yeoman-doctor': '^1.0.0',
+26 silly resolved        'yeoman-environment': '^1.0.1',
+26 silly resolved        yosay: '^1.0.0' },
+26 silly resolved     devDependencies:
+26 silly resolved      { jshint: '^2.5.11',
+26 silly resolved        mocha: '^2.1.0',
+26 silly resolved        mockery: '^1.4.0',
+26 silly resolved        nock: '^0.55.0',
+26 silly resolved        nsp: '*',
+26 silly resolved        proxyquire: '^1.0.1',
+26 silly resolved        sinon: '^1.12.1' },
+26 silly resolved     engineStrict: true,
+26 silly resolved     preferGlobal: true,
+26 silly resolved     gitHead: '9a3b9570ef8f028626038483a6717e3ad22f1d3f',
+26 silly resolved     bugs: { url: 'https://github.com/yeoman/yo/issues' },
+26 silly resolved     homepage: 'https://github.com/yeoman/yo',
+26 silly resolved     _id: 'yo@1.4.2',
+26 silly resolved     _shasum: '8162f7b0513a0094de38f05b71ad2cef0d68b5c2',
+26 silly resolved     _from: 'yo@1.4.2',
+26 silly resolved     _npmVersion: '2.1.16',
+26 silly resolved     _nodeVersion: '0.10.32',
+26 silly resolved     _npmUser: { name: 'sindresorhus', email: 'sindresorhus@gmail.com' },
+26 silly resolved     maintainers: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+26 silly resolved     dist:
+26 silly resolved      { shasum: '8162f7b0513a0094de38f05b71ad2cef0d68b5c2',
+26 silly resolved        tarball: 'http://registry.npmjs.org/yo/-/yo-1.4.2.tgz' },
+26 silly resolved     directories: {},
+26 silly resolved     _resolved: 'https://registry.npmjs.org/yo/-/yo-1.4.2.tgz' } ]
+27 info install yo@1.4.2 into C:\Users\winterwolf\AppData\Roaming\npm
+28 info installOne yo@1.4.2
+29 error notsup Unsupported
+29 error notsup Not compatible with your version of node/npm: yo@1.4.2
+29 error notsup Required: {"node":">=0.10.0","npm":">=2.1.0"}
+29 error notsup Actual:   {"npm":"1.4.28","node":"0.10.33"}
+30 error System Windows_NT 6.1.7601
+31 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "-g" "yo@1.4.2"
+32 error cwd c:\workspace\yo\rotowiki
+33 error node -v v0.10.33
+34 error npm -v 1.4.28
+35 error code ENOTSUP
+36 verbose exit [ 1, true ]
