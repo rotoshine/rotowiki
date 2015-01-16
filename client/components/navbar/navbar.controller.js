@@ -2,11 +2,6 @@
 
 angular.module('rotowikiApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-    $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
-    }];
-
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
@@ -14,7 +9,11 @@ angular.module('rotowikiApp')
 
     $scope.logout = function() {
       Auth.logout();
-      $location.path('/login');
+      $location.path('/');
+    };
+
+    $scope.goLogin = function(){
+      location.href = '/auth/twitter';
     };
 
     $scope.isActive = function(route) {
