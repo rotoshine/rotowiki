@@ -1,1 +1,10 @@
-<div class="container"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <form class="form" action="/api/documents" method="POST">
+        <input type="text" class="col-xs-12" ng-model="document.title" placeholder="문서의 제목을 입력하세요."/>
+        <textarea class="" name="content" id="content" cols="30" rows="10" ng-model="document.content"></textarea>
+      </form>
+    </div>
+  </div>
+</div>

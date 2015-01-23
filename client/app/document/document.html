@@ -1,6 +1,15 @@
-<div class="container" ng-init="init()">
-  <div ng-show="isNotExistDocument">
-    {{title}}는 없는 문서입니다. <button>작성하기</button>
+<div class="container" ng-init="init()" ng-clock>
+  <div ng-show="!isNotExistDocument">
+    <div class="row">
+      <div class="col-xs-12 text-right">
+        <div class="well">
+          알고 계신 내용과 다르신가요?
+          <button ng-show="isLogin" class="btn btn-info">편집</button>
+        </div>
+      </div>
+    </div>
   </div>
-
+  <div ng-show="isNotExistDocument">
+    {{title}}는 없는 문서입니다. <button type="button" class="btn btn-info" ng-click="createDocument()">이 문서 작성하기</button>
+  </div>
 </div>
