@@ -46,3 +46,10 @@
   width:100%;
   text-align: center;
 }
+
+.document-edit-wrapper{
+  padding-left:0;
+}
+.nav-create-document-button{
+  margin-top:10px;
+}

@@ -1,7 +1,7 @@
 <header class="hero-unit" id="banner">
   <div class="container">
     <h1>위키를 만들고 있습니다.</h1>
-    <p class="lead">무슨 사건이 있었나 기록해봅시다.</p>
+    <p class="lead">여러분의 잉여력을 기다립니다.</p>
   </div>
 </header>
 
@@ -9,9 +9,18 @@
   <div class="row">
     <div class="col-lg-6 col-sm-12">
       <h1 class="page-header">오늘의 새로운 문서</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-        <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="deleteThing(thing)">&times;</button></a></li>
+      <ul class="list-unstyled">
+        <li ng-repeat="recentDocument in recentDocuments">
+          <a href="/document/{{recentDocument.title}}">{{recentDocument.title}}</a>
+        </li>
       </ul>
+      <div class="well" ng-hide="recentDocuments.length > 0">새로운 문서가 없습니다.</div>
+
     </div>
+    <!--<div class="col-lg-6 col-sm-12">
+      <h1 class="page-header">최근 수정된 문서</h1>
+      <ul class="list-unstyled">
+      </ul>
+    </div>-->
   </div>
 </div>

@@ -1,15 +1,26 @@
-<div class="container" ng-init="init()" ng-clock>
+<div class="container" ng-init="init()" ng-clock ng-init="init()">
   <div ng-show="!isNotExistDocument">
     <div class="row">
-      <div class="col-xs-12 text-right">
-        <div class="well">
-          알고 계신 내용과 다르신가요?
-          <button ng-show="isLogin" class="btn btn-info">편집</button>
-        </div>
+      <div class="col-xs-12">
+        <h3>{{document.title}}</h3>
+      </div>
+      <div class="col-xs-12" ng-bind-html="markDownContent"></div>
+      <div ng-show="document.subDocuments.length > 0">
+        <ul class="list-unstyled">
+          <li ng-repeat="subDocument in document.subDocuments">
+            <a href="/documents/{{subDocument.title}}">{{subDocuments.title}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-xs-12 well text-right" ng-show="isLoggedIn()">
+        <a href="/document-edit/{{document.title}}" class="btn btn-default"><i class="fa fa-pencil"></i>수정하기</a>
+        <button class="btn btn-info" ng-click="createSubDocument()"><i class="fa fa-file"></i>하위 페이지 만들기</button>
       </div>
     </div>
   </div>
   <div ng-show="isNotExistDocument">
-    {{title}}는 없는 문서입니다. <button type="button" class="btn btn-info" ng-click="createDocument()">이 문서 작성하기</button>
+    {{title}}는 없는 문서입니다.
+    <div class="well" ng-show="!isLoggedIn()">로그인 후 이 문서를 작성해보세요!</div>
+    <a ng-show="isLoggedIn()" type="button" class="btn btn-info" href="/document-edit/{{title}}?isNew=true">이 문서 작성하기</a>
   </div>
 </div>

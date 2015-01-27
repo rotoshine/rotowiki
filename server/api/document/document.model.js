@@ -13,6 +13,18 @@ var DocumentSchema = new Schema({
   createdUser: {
     ref: 'User',
     type: Schema.Types.ObjectId
+  },
+  parent: {
+    ref: 'Document',
+    type: Schema.Types.ObjectId
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 });
 

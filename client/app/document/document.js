@@ -9,7 +9,7 @@ angular.module('rotowikiApp')
         controller: 'DocumentCtrl'
       })
       .state('document edit', {
-        url: '/document-write/:title',
+        url: '/document-edit/:title',
         templateUrl: 'app/document/document-edit.html',
         controller: 'DocumentEditCtrl'
       });
