@@ -16,6 +16,7 @@ angular.module('rotowikiApp')
           $scope.document = document;
           window.document.title = 'rotowiki - ' + document.title;
           $scope.markDownContent = markdown.toHTML(document.content);
+          $scope.document.moment = moment(document.updatedAt).from();
         }, function(err){
           if(err.status === 404){
             $scope.isNotExistDocument = true;
@@ -37,7 +38,7 @@ angular.module('rotowikiApp')
             });
         }
       });
-    }
+    };
   })
   .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location){
     $scope.document = {
@@ -47,12 +48,12 @@ angular.module('rotowikiApp')
 
     var parentDocumentId = $location.search().parent;
     if(parentDocumentId !== undefined){
-      $scope.document.parent = parentDocumentId
+      $scope.document.parent = parentDocumentId;
     }
 
     $scope.markDownContent = '';
 
-    $scope.$watch('document.content', function(newVal){
+    $scope.$watch('document.content', function(){
       $scope.markDownToHTML = markdown.toHTML($scope.document.content);
     });
 
@@ -74,7 +75,7 @@ angular.module('rotowikiApp')
           content: $scope.document.content,
           parent: $scope.document.parent
         }, function(){
-          location.href = '/document/' + $scope.document.title
+          location.href = '/document/' + $scope.document.title;
         });
       }else{
         Document.update({
@@ -82,7 +83,7 @@ angular.module('rotowikiApp')
           content: $scope.document.content,
           parent: $scope.document.parent
         }, function(){
-          location.href = '/document/' + $scope.document.title
+          location.href = '/document/' + $scope.document.title;
         });
       }
 

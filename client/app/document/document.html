@@ -1,17 +1,38 @@
 <div class="container" ng-init="init()" ng-clock ng-init="init()">
   <div ng-show="!isNotExistDocument">
+    <div class="row" ng-show="document.parent !== undefined">
+      <div class="col-xs-12">
+        <div class="well">
+          이 문서는 <a href="/document/{{document.parent.title}}">{{document.parent.title}}</a> 문서의 하위문서 입니다.
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-xs-12">
-        <h3>{{document.title}}</h3>
+        <h3 class="pull-left">{{document.title}}</h3>
+        <div class="pull-right">{{document.moment}} 수정됨</div>
       </div>
+    </div>
+    <div class="row">
       <div class="col-xs-12" ng-bind-html="markDownContent"></div>
-      <div ng-show="document.subDocuments.length > 0">
-        <ul class="list-unstyled">
-          <li ng-repeat="subDocument in document.subDocuments">
-            <a href="/documents/{{subDocument.title}}">{{subDocuments.title}}</a>
-          </li>
-        </ul>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div ng-show="document.subDocuments.length > 0">
+          <section class="panel panel-info">
+            <div class="panel-heading">하위문서</div>
+            <section class="panel-body">
+              <ul class="list-unstyled">
+                <li ng-repeat="subDocument in document.subDocuments">
+                  <a href="/document/{{subDocument.title}}">{{subDocument.title}}</a>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </div>
       </div>
+    </div>
+    <div class="row">
       <div class="col-xs-12 well text-right" ng-show="isLoggedIn()">
         <a href="/document-edit/{{document.title}}" class="btn btn-default"><i class="fa fa-pencil"></i>수정하기</a>
         <button class="btn btn-info" ng-click="createSubDocument()"><i class="fa fa-file"></i>하위 페이지 만들기</button>

@@ -1,10 +1,17 @@
 'use strict';
 
 var _ = require('lodash');
+
 var Document = require('./document.model');
+var DocumentHistory = require('../documentHistory/documentHistory.model');
 
 exports.find = function(req, res) {
   var query = {};
+
+
+  if(req.query.hasOwnProperty('title')){
+    query.title = new RegExp(req.query.title, 'i');
+  }
 
   var queryRunner = Document
     .find(query);
@@ -14,8 +21,8 @@ exports.find = function(req, res) {
     queryRunner
       .sort({ createdAt: -1 })
       .limit(10);
-
   }
+
 
   queryRunner.exec(function (err, documents) {
     if(err) { return handleError(res, err); }
@@ -40,18 +47,32 @@ exports.findByParent = function(req, res){
 
 // Get a single document
 exports.show = function(req, res) {
-  Document.findOne({ title: req.params.title }, function (err, document) {
-    if(err) { return handleError(res, err); }
-    if(!document) { return res.send(404); }
-
-    Document.find({parent: document._id}, function(err, subDocuments){
+  Document
+    .findOne({ title: req.params.title })
+    .populate('parent')
+    .exec(function (err, document) {
       if(err) { return handleError(res, err); }
-      document.subDocuments = subDocuments;
-      return res.json(document);
-    });
+      if(!document) { return res.send(404); }
+
+      Document.find({parent: document._id}, function(err, subDocuments){
+        if(err) { return handleError(res, err); }
+        document.set('subDocuments', subDocuments);
+        console.log(document);
+        return res.json(document);
+      });
   });
 };
 
+function historyLoggingAndHandleDocument(document, statusCode, res){
+  DocumentHistory.create({
+    title: document.title,
+    content: document.content,
+    workingUserTwitterId: document.createdUserTwitterId,
+    workingUser: document.createdUser
+  }, function(){
+    return res.json(statusCode, document);
+  });
+}
 
 exports.create = function(req, res) {
   var document = req.body;
@@ -59,16 +80,19 @@ exports.create = function(req, res) {
     if(!existDocument){
       document.createdAt = new Date();
       document.createdUser = req.user._id;
+      if(req.user.twitter !== undefined){
+        document.createdUserTwitterId = req.user.twitter.screen_name;
+      }
       Document.create(document, function(err) {
         if(err) { return handleError(res, err); }
-        return res.json(201, document);
+        historyLoggingAndHandleDocument(document, 201, res);
       });
     }else{
       document.updatedAt = new Date();
       existDocument = _.merge(existDocument, document);
-      Document.update(req.body, function(err, document) {
+      existDocument.save(existDocument, function(err) {
         if(err) { return handleError(res, err); }
-        return res.json(201, document);
+        historyLoggingAndHandleDocument(existDocument, 200, res);
       });
     }
   });
@@ -84,7 +108,7 @@ exports.update = function(req, res) {
     var updated = _.merge(document, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, document);
+      historyLoggingAndHandleDocument(updated, 200, res);
     });
   });
 };

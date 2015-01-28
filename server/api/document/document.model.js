@@ -10,6 +10,7 @@ var DocumentSchema = new Schema({
     unique: true
   },
   content: String,
+  createdUserTwitterId: String,
   createdUser: {
     ref: 'User',
     type: Schema.Types.ObjectId
@@ -26,6 +27,22 @@ var DocumentSchema = new Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
 });
+
+DocumentSchema
+  .virtual('subDocuments')
+  .get(function(){
+    return this._subDocuments;
+  })
+  .set(function(subDocuments){
+    this._subDocuments = subDocuments
+  });
 
 module.exports = mongoose.model('Document', DocumentSchema);

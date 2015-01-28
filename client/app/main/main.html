@@ -8,13 +8,13 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-6 col-sm-12">
-      <h1 class="page-header">오늘의 새로운 문서</h1>
+      <h1 class="page-header">최근 등록된 문서</h1>
       <ul class="list-unstyled">
         <li ng-repeat="recentDocument in recentDocuments">
           <a href="/document/{{recentDocument.title}}">{{recentDocument.title}}</a>
         </li>
       </ul>
-      <div class="well" ng-hide="recentDocuments.length > 0">새로운 문서가 없습니다.</div>
+      <div class="well" ng-hide="recentDocuments.length > 0">문서가 없습니다.</div>
 
     </div>
     <!--<div class="col-lg-6 col-sm-12">

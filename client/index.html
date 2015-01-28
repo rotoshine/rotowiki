@@ -15,10 +15,10 @@
       <!-- bower:css -->
       <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
       <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
-      <link rel="stylesheet" href="bower_components/alertify.js/themes/alertify.core.css"/>
-      <link rel="stylesheet" href="bower_components/alertify.js/themes/alertify.bootstrap.css"/>
       <!-- endbower -->
     <!-- endbuild -->
+    <link rel="stylesheet" href="bower_components/alertify.js/themes/alertify.core.css" />
+    <link rel="stylesheet" href="bower_components/alertify.js/themes/alertify.bootstrap.css" />
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel="stylesheet" href="app/app.css">
       <!-- injector:css -->
@@ -70,12 +70,14 @@
       <script src="bower_components/lodash/dist/lodash.compat.js"></script>
       <script src="bower_components/angular-socket-io/socket.js"></script>
       <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-      <script src="bower_components/markdown-js/dist/markdown.js"></script>
-      <script src="bower_components/alertify.js/lib/alertify.js"></script>
+      <script src="bower_components/markdown-js/src/**/*.js"></script>
+      <script src="bower_components/moment/moment.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
+      <script src="bower_components/moment/locale/ko.js"></script>
+      <script src="bower_components/markdown-js/dist/markdown.js"></script>
+      <script src="bower_components/alertify.js/lib/alertify.js"></script>
     <!-- endbuild -->
-
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
