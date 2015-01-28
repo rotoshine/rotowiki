@@ -11,6 +11,7 @@ var DocumentSchema = new Schema({
   },
   content: String,
   createdUserTwitterId: String,
+  lastUpdatedUserTwitterId: String,
   createdUser: {
     ref: 'User',
     type: Schema.Types.ObjectId

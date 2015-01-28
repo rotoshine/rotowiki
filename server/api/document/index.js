@@ -10,8 +10,8 @@ router.get('/', controller.find);
 router.get('/:title', controller.show);
 router.get('/:title/sub', controller.findByParent);
 router.post('/', auth.isAuthenticated(), controller.create);
-router.put('/:title', controller.update);
+router.put('/:title', auth.isAuthenticated(), controller.update);
 router.patch('/:title', controller.update);
-router.delete('/:title', controller.destroy);
+router.delete('/:title', auth.isAuthenticated(), controller.destroy);
 
 module.exports = router;

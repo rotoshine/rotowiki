@@ -90,6 +90,7 @@ exports.create = function(req, res) {
     }else{
       document.updatedAt = new Date();
       existDocument = _.merge(existDocument, document);
+      existDocument.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
       existDocument.save(existDocument, function(err) {
         if(err) { return handleError(res, err); }
         historyLoggingAndHandleDocument(existDocument, 200, res);
@@ -101,11 +102,11 @@ exports.create = function(req, res) {
 
 // Updates an existing document in the DB.
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Document.findById(req.params.id, function (err, document) {
+  Document.findOne({title: req.params.title}, function (err, document) {
     if (err) { return handleError(res, err); }
     if(!document) { return res.send(404); }
     var updated = _.merge(document, req.body);
+    updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       historyLoggingAndHandleDocument(updated, 200, res);
