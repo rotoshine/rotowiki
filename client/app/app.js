@@ -14,8 +14,6 @@ angular.module('rotowikiApp', [
 
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
-
-
   })
   .config(function(){
     moment.locale('ko');

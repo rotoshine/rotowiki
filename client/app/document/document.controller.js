@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, Auth, Document, $stateParams) {
+  .controller('DocumentCtrl', function ($scope, Auth, Document, $stateParams, $sce, markdownService) {
     $scope.title = $stateParams.title;
     $scope.isNotExistDocument = false;
     $scope.isLoggedIn = Auth.isLoggedIn;
@@ -15,7 +15,9 @@ angular.module('rotowikiApp')
         .$promise.then(function(document){
           $scope.document = document;
           window.document.title = 'rotowiki - ' + document.title;
-          $scope.markDownContent = markdown.toHTML(document.content);
+          $scope.markDownContent = markdownService.toHTML(document.content);
+          $scope.markDownContent = $sce.getTrustedHtml($scope.markDownContent);
+          console.log($scope.markDownContent);
           $scope.document.moment = moment(document.updatedAt).from();
         }, function(err){
           if(err.status === 404){
@@ -40,7 +42,7 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location, $modal){
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location, $modal, markdownService){
     $scope.document = {
       title: $stateParams.title,
       content: ''
@@ -54,7 +56,8 @@ angular.module('rotowikiApp')
     $scope.markDownContent = '';
 
     $scope.$watch('document.content', function(){
-      $scope.markDownToHTML = markdown.toHTML($scope.document.content);
+      $scope.markDownToHTML = markdownService.toHTML($scope.document.content);
+      console.log($scope.markDownToHTML);
     });
 
     $scope.init = function(){
