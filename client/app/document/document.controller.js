@@ -40,7 +40,7 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location){
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location, $modal){
     $scope.document = {
       title: $stateParams.title,
       content: ''
@@ -81,11 +81,98 @@ angular.module('rotowikiApp')
         Document.update({
           title: $scope.document.title,
           content: $scope.document.content,
-          parent: $scope.document.parent
+          parent: $scope.document.parent._id
         }, function(){
           location.href = '/document/' + $scope.document.title;
         });
       }
-
     };
+
+    $scope.hasChangeParentDocument = false;
+    $scope.parentChangeModal = {
+      show: function(){
+        var modalInstance = $modal.open({
+          templateUrl: 'parentChangeModal.html',
+          controller: 'DocumentParentChangeController',
+          resolve: {
+            currentDocument: function(){
+              return $scope.document;
+            }
+          }
+        });
+
+        modalInstance.result.then(function(parentDocument){
+          $scope.document.parent = parentDocument;
+          $scope.hasChangeParentDocument = true;
+        });
+      }
+    };
+  })
+  .controller('DocumentParentChangeController', function($scope, $modalInstance, Document, currentDocument){
+    $scope.currentDocument = currentDocument;
+    if($scope.currentDocument.parent === undefined){
+      $scope.currentDocument.parent = {
+        title: ''
+      };
+    }
+    $scope.isNowSearching = false;
+    $scope.searchParentDocumentTitle = '';
+    $scope.searchResults = null;
+    $scope.selectedParentDocument = null;
+    $scope.parentAndSubSameError = false;
+
+    $scope.select = function(parentDocument){
+      if(parentDocument.title === $scope.currentDocument.title){
+        $scope.parentAndSubSameError = true;
+      }else{
+        for(var i = 0; i < $scope.searchResults.length; i++){
+          $scope.searchResults[i].selected = false;
+        }
+        parentDocument.selected = true;
+        $scope.selectedParentDocument = parentDocument;
+        $scope.parentAndSubSameError = false;
+      }
+    };
+
+    $scope.change = function(){
+      if($scope.selectedParentDocument !== null){
+        $modalInstance.close($scope.selectedParentDocument);
+      }else{
+        alertify.alert('상위문서를 선택해주세요.');
+      }
+    };
+
+    $scope.hide = function(){
+      $modalInstance.dismiss('cancel');
+    };
+
+
+    $scope.searchParentDocument = function(){
+      if($scope.searchParentDocumentTitle.length > 1){
+        if($scope.searchParentDocumentTitle === $scope.currentDocument.title){
+          $scope.parentAndSubSameError = true;
+        }else {
+          $scope.parentAndSubSameError = false;
+          $scope.isNowSearching = true;
+          Document
+            .query({
+              title: $scope.searchParentDocumentTitle
+            })
+            .$promise.then(function (documents) {
+              $scope.isNowSearching = false;
+              $scope.searchResults = documents;
+            }, function () {
+              $scope.isNowSearching = false;
+              $scope.searchResults = [];
+            });
+        }
+      }
+
+    }
+  })
+  .controller('DocumentRandomCtrl', function($state, Document){
+    Document
+      .random(function(document){
+        $state.go('document', { title: document.title });
+      })
   });

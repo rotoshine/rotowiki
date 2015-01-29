@@ -15,11 +15,13 @@
         </li>
       </ul>
       <div class="well" ng-hide="recentDocuments.length > 0">문서가 없습니다.</div>
-
     </div>
     <!--<div class="col-lg-6 col-sm-12">
-      <h1 class="page-header">최근 수정된 문서</h1>
+      <h1 class="page-header">사람들이 많이 읽은 문서</h1>
       <ul class="list-unstyled">
+        <li ng-repeat="hotIssueDocument in hotIssueDocuments">
+          <a href="/document/{{hotIssueDocument.title}}">{{hotIssueDocument.title}}</a>
+        </li>
       </ul>
     </div>-->
   </div>

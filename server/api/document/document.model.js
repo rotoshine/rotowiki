@@ -16,6 +16,10 @@ var DocumentSchema = new Schema({
     ref: 'User',
     type: Schema.Types.ObjectId
   },
+  readCount: {
+    type: Number,
+    default: 0
+  },
   parent: {
     ref: 'Document',
     type: Schema.Types.ObjectId
@@ -36,6 +40,18 @@ var DocumentSchema = new Schema({
     virtuals: true
   }
 });
+
+DocumentSchema.statics.random = function(callback){
+  var that = this;
+  this.count(function(err, count){
+    if(err){
+      return callback(err);
+    }else{
+      var rand = Math.floor(Math.random() * count);
+      that.findOne().skip(rand).exec(callback);
+    }
+  });
+};
 
 DocumentSchema
   .virtual('subDocuments')

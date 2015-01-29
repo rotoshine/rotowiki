@@ -1,12 +1,16 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('MainCtrl', function ($scope, socket, $http) {
+  .controller('MainCtrl', function ($scope, socket, Document) {
     $scope.recentDocuments = null;
 
-    $http
-      .get('/api/documents?recent')
-      .success(function(recentDocuments){
+    Document
+      .query({
+        recent: true,
+        page: 1,
+        sort: 'createdAt',
+        asc: -1
+      }, function(recentDocuments){
         $scope.recentDocuments = recentDocuments;
       });
 

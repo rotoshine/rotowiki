@@ -14,6 +14,10 @@ angular.module('rotowikiApp')
         url: '/api/documents',
         method: 'POST'
       },
+      random: {
+        url: '/api/documents/random',
+        method: 'GET'
+      },
       recent: {
         url: '/api/documents?recent',
         method: 'GET',

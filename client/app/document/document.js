@@ -12,5 +12,9 @@ angular.module('rotowikiApp')
         url: '/document-edit/:title',
         templateUrl: 'app/document/document-edit.html',
         controller: 'DocumentEditCtrl'
+      })
+      .state('random document', {
+        url: '/document-random',
+        controller: 'DocumentRandomCtrl'
       });
   });
