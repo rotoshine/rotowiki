@@ -131,7 +131,7 @@ exports.update = function(req, res) {
     var updated = _.merge(document, req.body);
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
 
-    if(updated.parent._id !== undefined){
+    if(updated.parent && updated.parent._id !== undefined){
       updated.parent = update.parent._id;
     }
     updated.save(function (err) {
