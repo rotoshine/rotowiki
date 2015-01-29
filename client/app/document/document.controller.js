@@ -74,7 +74,7 @@ angular.module('rotowikiApp')
         content: $scope.document.content
       };
 
-      if($scope.document.parent._id){
+      if($scope.document.parent && $scope.document.parent._id){
         saveDocument.parent = $scope.document.parent._id
       }else{
         saveDocument.parent = $scope.document.parent;
