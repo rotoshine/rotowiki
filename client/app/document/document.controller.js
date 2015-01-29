@@ -69,20 +69,22 @@ angular.module('rotowikiApp')
     };
 
     $scope.save = function(){
+      var saveDocument = {
+        title: $scope.document.title,
+        content: $scope.document.content
+      };
+
+      if($scope.document.parent._id){
+        saveDocument.parent = $scope.document.parent._id
+      }else{
+        saveDocument.parent = $scope.document.parent;
+      }
       if($scope.document._id === undefined){
-        Document.save({
-          title: $scope.document.title,
-          content: $scope.document.content,
-          parent: $scope.document.parent
-        }, function(){
+        Document.save(saveDocument, function(){
           location.href = '/document/' + $scope.document.title;
         });
       }else{
-        Document.update({
-          title: $scope.document.title,
-          content: $scope.document.content,
-          parent: $scope.document.parent._id
-        }, function(){
+        Document.update(saveDocument, function(){
           location.href = '/document/' + $scope.document.title;
         });
       }
