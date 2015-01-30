@@ -212,8 +212,8 @@ angular.module('rotowikiApp')
             $scope.isNowLoading = false;
 
             $scope.currentPage = $scope.currentPage + 1;
-            
-            if(documents.length <= $scope.pageCount){
+
+            if(documents.length < $scope.pageCount){
               $scope.hasArriveLastPage = true;
             }
 
