@@ -42,6 +42,22 @@ angular.module('rotowikiApp', [
         }
       }
     };
+  })
+  .filter('markdownToHTML', function(markdownService){
+    return function(text){      
+      return markdownService.toHTML(text);
+    }
+
+  })
+  .filter('toTrusted', function($sce){
+    return function(text){
+      text = text
+        .replace(/<script/, '')
+        .replace(/<\/script>/, '');
+
+      console.log(text);  
+      return $sce.trustAsHtml(text);
+    }
   });
 /*
   .run(function ($rootScope, $location, Auth) {

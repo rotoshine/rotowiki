@@ -118,3 +118,46 @@ body{
   background-color: #0091ea;
   color:white;
 }
+
+/* document all */
+.item{
+  width: 100%;
+}
+@media screen and (min-width: 768px){
+  .item{
+    width: 50%;
+  }
+}
+@media screen and (min-width: 992px){
+  .item{
+    width: 33%;
+  }
+}
+@media screen and (min-width:993px){
+  .item{
+    width:25%;
+  }
+}
+
+.item .panel-body{
+  overflow-x: auto;
+}
+
+.document-all-load-button{
+  width: 100%;
+}
+@media screen and (min-width: 768px){
+  .document-all-load-button{
+    width: 100%;
+  }
+}
+@media screen and (min-width: 992px){
+  .document-all-load-button{
+    width: 50%;
+  }
+}
+@media screen and (min-width:993px){
+  .document-all-load-button{
+    width: 30%;
+  }
+}

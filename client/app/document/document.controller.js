@@ -1,12 +1,10 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, Auth, Document, $stateParams, $sce, markdownService) {
+  .controller('DocumentCtrl', function ($scope, Auth, Document, $stateParams, markdownService) {
     $scope.title = $stateParams.title;
     $scope.isNotExistDocument = false;
-    $scope.isLoggedIn = Auth.isLoggedIn;
-
-    $scope.markDownContent = '';
+    $scope.isLoggedIn = Auth.isLoggedIn;   
     $scope.document = null;
 
     $scope.init = function(){
@@ -14,10 +12,10 @@ angular.module('rotowikiApp')
         .get({title: $scope.title})
         .$promise.then(function(document){
           $scope.document = document;
-          window.document.title = 'rotowiki - ' + document.title;
-          $scope.markDownContent = markdownService.toHTML(document.content);
-          $scope.markDownContent = $sce.getTrustedHtml($scope.markDownContent);
-          console.log($scope.markDownContent);
+
+          window.document.title = 'rotowiki - ' + document.title;          
+          $scope.document.content = markdownService.toHTML($scope.document.content);
+          console.log($scope.document.content);
           $scope.document.moment = moment(document.updatedAt).from();
         }, function(err){
           if(err.status === 404){
@@ -53,11 +51,11 @@ angular.module('rotowikiApp')
       $scope.document.parent = parentDocumentId;
     }
 
-    $scope.markDownContent = '';
+    $scope.markdownToHTML = '';
 
     $scope.$watch('document.content', function(){
-      $scope.markDownToHTML = markdownService.toHTML($scope.document.content);
-      console.log($scope.markDownToHTML);
+      $scope.markdownToHTML = markdownService.toHTML($scope.document.content);
+
     });
 
     $scope.init = function(){
@@ -72,6 +70,9 @@ angular.module('rotowikiApp')
     };
 
     $scope.save = function(){
+      // 임시처리. 원래는 markdown service에서 제거 되서 날라오는 게 맞음..
+      // 조치하고 나중에 이 코드 없애자.
+      $scope.document.content = $scope.document.content.replace(/<script/gi, '').replace(/<\/script>/, '');
       var saveDocument = {
         title: $scope.document.title,
         content: $scope.document.content
@@ -180,4 +181,58 @@ angular.module('rotowikiApp')
       .random(function(document){
         $state.go('document', { title: document.title });
       })
+  })
+  .controller('DocumentAllCtrl', function($scope, Document, $timeout){
+    $scope.isNowLoading = false;
+    $scope.currentPage = 1;
+    $scope.pageCount = 20;
+    $scope.loadedDocuments = null;
+    $scope.currentSortOption = 'updatedAt';
+    $scope.hasArriveLastPage = false;
+
+    $scope.loadMoreDocuments = function(){
+      if(!$scope.hasArriveLastPage){
+        $scope.isNowLoading = true;
+        Document
+          .query({
+            sort: $scope.currentSortOption,
+            page: $scope.currentPage,
+            pageCount: $scope.pageCount
+          })
+          .$promise
+          .then(function(documents){
+            for(var i = 0; i < documents.length; i++){
+              var document = documents[i];
+              document.moment = moment(document.updatedAt).from();
+              if(document.content.length > 50){
+                document.content = document.content.substring(0, 48) + '..';
+              }
+            }
+
+            $scope.isNowLoading = false;
+
+            $scope.currentPage = $scope.currentPage + 1;
+            
+            if(documents.length <= $scope.pageCount){
+              $scope.hasArriveLastPage = true;
+            }
+
+            if($scope.loadedDocuments === null){
+              $scope.loadedDocuments = documents;
+            }else{
+              $scope.loadedDocuments.push(documents);
+            }
+
+            $timeout(function(){              
+              $('#document-container').masonry({                
+                itemSelector: '.item'
+              });
+            });
+          });
+      }
+    };
+
+    $scope.init = function(){
+      $scope.loadMoreDocuments();
+    };
   });

@@ -22,7 +22,7 @@ exports.find = function(req, res) {
     sortQuery[req.query.sort] = req.query.asc || 1;
     sortQuery[req.query.sort] = sortQuery[req.query.sort];
     queryRunner
-      .sort(sortQuery)
+      .sort(sortQuery);
     console.log('sort query', sortQuery);
   }
   if(req.query.hasOwnProperty('recent')) {

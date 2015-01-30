@@ -16,5 +16,10 @@ angular.module('rotowikiApp')
       .state('random document', {
         url: '/document-random',
         controller: 'DocumentRandomCtrl'
+      })
+      .state('document all', {
+        url: '/document-all',
+        templateUrl: 'app/document/document-all.html',
+        controller: 'DocumentAllCtrl'
       });
   });

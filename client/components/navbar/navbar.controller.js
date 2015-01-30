@@ -6,7 +6,12 @@ angular.module('rotowikiApp')
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
-
+    $scope.menu = [
+      {
+        title: '전체보기',
+        link: '/document-all'
+      }
+    ];
     $scope.logout = function() {
       Auth.logout();
       $location.path('/');

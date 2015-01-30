@@ -13,7 +13,7 @@
               <textarea class="col-xs-12 col-md-6 form-control" name="content" id="content" cols="30" rows="15" ng-model="document.content"
                         placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."></textarea>
             </div>
-            <div class="col-xs-12 col-md-6" id="markdown-view" ng-bind-html="markDownToHTML"></div>
+            <div class="col-xs-12 col-md-6" id="markdown-view" ng-bind-html="markdownToHTML | toTrusted"></div>
           </form>
         </div>
         <div class="panel-footer">

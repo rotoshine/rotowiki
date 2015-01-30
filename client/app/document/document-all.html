@@ -1,0 +1,30 @@
+<div class="container" ng-init="init()">
+  <div class="row">
+    <ul class="list-inline" id="document-container">
+      <li class="item" ng-repeat="document in loadedDocuments">
+        <a href="/document/{{document.title}}">
+          <div class="panel panel-info">
+            <div class="panel-heading">{{document.title}}</div>
+            <div class="panel-body" ng-bind-html="document.content | markdownToHTML | toTrusted">
+            </div>
+            <div class="panel-footer text-right">
+              {{document.moment}}
+            </div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="row" ng-show="!hasArriveLastPage && !isNowLoading">
+    <div class="text-center">
+      <button class="btn btn-info document-all-load-button" ng-click="loadMoreDocuments()"><i class="fa fa-refresh"></i> 더 불러오기</button>
+    </div>
+  </div>
+  <div class="row" ng-show="isNowLoading">
+    <div class="col-xs-12">
+      <p class="lead">
+        <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
+      </p>
+    </div>
+  </div>
+</div>

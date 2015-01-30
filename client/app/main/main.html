@@ -5,10 +5,13 @@
   </div>
 </header>
 
-<div class="container">
+<div class="container" ng-init="init()">
   <div class="row">
     <div class="col-lg-6 col-sm-12">
-      <h1 class="page-header">최근 등록된 문서</h1>
+      <h1 class="page-header">최근 수정된 문서</h1>
+      <div ng-show="isNowRecentDocumentsLoading">
+        <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
+      </div>
       <ul class="list-unstyled">
         <li ng-repeat="recentDocument in recentDocuments">
           <a href="/document/{{recentDocument.title}}">{{recentDocument.title}}</a>
@@ -16,13 +19,25 @@
       </ul>
       <div class="well" ng-hide="recentDocuments.length > 0">문서가 없습니다.</div>
     </div>
-    <!--<div class="col-lg-6 col-sm-12">
+    <div class="col-lg-6 col-sm-12">
       <h1 class="page-header">사람들이 많이 읽은 문서</h1>
+      <div ng-show="isNowHotIssueDocumentsLoading">
+        <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
+      </div>
       <ul class="list-unstyled">
         <li ng-repeat="hotIssueDocument in hotIssueDocuments">
-          <a href="/document/{{hotIssueDocument.title}}">{{hotIssueDocument.title}}</a>
+          <div class="row">
+            <a href="/document/{{hotIssueDocument.title}}">
+              <div class="col-xs-6">
+                {{hotIssueDocument.title}}
+              </div>
+              <div class="col-xs-6">
+                <span class="label label-info">{{hotIssueDocument.readCount}}</span>
+              </div>  
+            </a>  
+          </div>
         </li>
       </ul>
-    </div>-->
+    </div>
   </div>
 </div>
