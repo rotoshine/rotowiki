@@ -14,7 +14,14 @@
       </div>
       <ul class="list-unstyled">
         <li ng-repeat="recentDocument in recentDocuments">
-          <a href="/document/{{recentDocument.title}}">{{recentDocument.title}}</a>
+          <a href="/document/{{recentDocument.title}}">
+            <div class="col-md-6 col-xs-10">
+              {{recentDocument.title}}
+            </div>
+            <div class="col-md-6 col-xs-2">
+              {{recentDocument.updatedAt | from}}
+            </div>
+          </a>
         </li>
       </ul>
       <div class="well" ng-hide="recentDocuments.length > 0">문서가 없습니다.</div>
@@ -28,10 +35,10 @@
         <li ng-repeat="hotIssueDocument in hotIssueDocuments">
           <div class="row">
             <a href="/document/{{hotIssueDocument.title}}">
-              <div class="col-xs-6">
+              <div class="col-md-6 col-xs-10">
                 {{hotIssueDocument.title}}
               </div>
-              <div class="col-xs-6">
+              <div class="col-md-6 col-xs-2">
                 <span class="label label-info">{{hotIssueDocument.readCount}}</span>
               </div>  
             </a>  

@@ -8,7 +8,7 @@
             <div class="panel-body" ng-bind-html="document.content | markdownToHTML | toTrusted">
             </div>
             <div class="panel-footer text-right">
-              {{document.moment}}
+              {{document.updatedAt | from}} 수정됨
             </div>
           </div>
         </a>

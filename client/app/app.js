@@ -58,6 +58,11 @@ angular.module('rotowikiApp', [
       console.log(text);  
       return $sce.trustAsHtml(text);
     }
+  })
+  .filter('from', function(){
+    return function(date){
+      return moment(date).from();
+    }
   });
 /*
   .run(function ($rootScope, $location, Auth) {
