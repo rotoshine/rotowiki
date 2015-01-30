@@ -15,10 +15,10 @@
       <ul class="list-unstyled">
         <li ng-repeat="recentDocument in recentDocuments">
           <a href="/document/{{recentDocument.title}}">
-            <div class="col-md-6 col-xs-10">
+            <div class="col-md-6 col-xs-8">
               {{recentDocument.title}}
             </div>
-            <div class="col-md-6 col-xs-2">
+            <div class="col-md-6 col-xs-4">
               {{recentDocument.updatedAt | from}}
             </div>
           </a>

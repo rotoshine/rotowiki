@@ -13,10 +13,8 @@ angular.module('rotowikiApp')
         .$promise.then(function(document){
           $scope.document = document;
 
-          window.document.title = 'rotowiki - ' + document.title;          
-          $scope.document.content = markdownService.toHTML($scope.document.content);
-          console.log($scope.document.content);
-          $scope.document.moment = moment(document.updatedAt).from();
+          window.document.title = 'rotowiki - ' + document.title;                    
+          
         }, function(err){
           if(err.status === 404){
             $scope.isNotExistDocument = true;
@@ -202,8 +200,7 @@ angular.module('rotowikiApp')
           .$promise
           .then(function(documents){
             for(var i = 0; i < documents.length; i++){
-              var document = documents[i];
-              document.moment = moment(document.updatedAt).from();
+              var document = documents[i];              
               if(document.content.length > 50){
                 document.content = document.content.substring(0, 48) + '..';
               }
@@ -220,7 +217,7 @@ angular.module('rotowikiApp')
             if($scope.loadedDocuments === null){
               $scope.loadedDocuments = documents;
             }else{
-              $scope.loadedDocuments.push(documents);
+              $scope.loadedDocuments = $scope.loadedDocuments.concat(documents);
             }
 
             $timeout(function(){              
