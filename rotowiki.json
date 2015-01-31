@@ -1,0 +1,13 @@
+[{
+  "name": "rotowiki",
+  "script": "/usr/bin/grunt",
+  "args": "serve:dist",
+  "watch"            : false,
+  "ignore_watch"      : ["[\\/\\\\]\\./", "node_modules"],
+  "merge_logs"       : true,
+  "exec_interpreter" : "node",
+  "exec_mode"        : "fork",
+  "env": {
+    "NODE_ENV": "production",
+  }
+}]
