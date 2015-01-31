@@ -48,6 +48,19 @@ grunt serve
 grunt serve:dist
 ```
 
+# pm2로 실행하기
+```
+npm install -g pm2
+
+// 프로젝트 폴더로 이동 후
+pm2 start rotowiki.json
+
+// 이후 재시작이나 정지 등
+pm2 restart rotowiki
+pm2 stop rotowiki
+```
+
 # TODO
 * 검색엔진 최적화
+* 이미지 업로드
 * e2e 테스트 코드 작성
