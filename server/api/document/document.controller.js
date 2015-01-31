@@ -102,6 +102,7 @@ exports.create = function(req, res) {
   Document.findOne({title: document.title}, function(err, existDocument){
     if(!existDocument){
       document.createdAt = new Date();
+      document.updatedAt = new Date();
       document.createdUser = req.user._id;
       if(req.user.twitter !== undefined){
         document.createdUserTwitterId = req.user.twitter.screen_name;
@@ -130,7 +131,7 @@ exports.update = function(req, res) {
     if(!document) { return res.send(404); }
     var updated = _.merge(document, req.body);
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
-
+    updated.updatedAt = new Date();
     if(updated.parent && updated.parent._id !== undefined){
       updated.parent = update.parent._id;
     }

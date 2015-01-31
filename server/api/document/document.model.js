@@ -21,6 +21,7 @@ var DocumentSchema = new Schema({
     default: 0
   },
   parent: {
+    required: false,
     ref: 'Document',
     type: Schema.Types.ObjectId
   },
