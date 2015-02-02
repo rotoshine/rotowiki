@@ -47,7 +47,8 @@ var all = {
     callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
   },
 
-  uploadPath: process.env.UPLOAD_PATH || './uploads'
+  uploadPath: process.env.UPLOAD_PATH || './uploads',
+  maxUploadFileSize: process.env.MAX_UPLOAD_FILE_SIZE || 2000000
 
 };
 

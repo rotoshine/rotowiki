@@ -25,7 +25,6 @@ exports.find = function(req, res) {
     sortQuery[req.query.sort] = sortQuery[req.query.sort];
     queryRunner
       .sort(sortQuery);
-    console.log('sort query', sortQuery);
   }
   if(req.query.hasOwnProperty('recent')) {
     queryRunner
@@ -81,7 +80,6 @@ exports.show = function(req, res) {
         Document.find({parent: document._id}, function(err, subDocuments){
           if(err) { return handleError(res, err); }
           document.set('subDocuments', subDocuments);
-          console.log(document);
           return res.json(document);
         });
       });
@@ -193,33 +191,50 @@ exports.uploadFile = function(req, res){
   var title = req.params.title;
   var uploadedFile = req.files.file;
 
-  var file = new File({
-    name: uploadedFile.name,
-    originalName: uploadedFile.originalname,
-    mimeType: uploadedFile.mimetype,
-    path: uploadedFile.path,
-    size: uploadedFile.size
-  });
+  fs.exists(uploadedFile.path, function(exists){
+    if(exists){
+      var file = new File({
+        name: uploadedFile.name,
+        originalName: uploadedFile.originalname,
+        mimeType: uploadedFile.mimetype,
+        path: uploadedFile.path,
+        size: uploadedFile.size
+      });
 
-  file.save(function(err){
-    if(err){ return handleError(res, err); }
-    else{
-      Document.findOne({title: title}, function(err, document){
-        if(err){ return handleError(res, err); }
-        else{
-          if(!document){
-            return handleError(res, new Error('존재하지 않는 문서에 파일을 추가하려하다니...!'));
-          }else{
-            document.files.push(file._id);
-            document.save(function(err){
-              if(err){ return handleError(res, err); }
-              else{
-                return res.json(200, file);
-              }
-            })
-          }
+      // 업로드가 제대로 됐는지 확인.
+      // 업로드된 파일이 없으면 용량 초과해서 지운 것.
+
+      file.save(function(err) {
+        if (err) {
+          return handleError(res, err);
         }
-      })
+        else {
+          Document.findOne({title: title}, function (err, document) {
+            if (err) {
+              return handleError(res, err);
+            }
+            else {
+              if (!document) {
+                return handleError(res, new Error('존재하지 않는 문서에 파일을 추가하려하다니...!'));
+              } else {
+                document.files.push(file._id);
+                document.save(function (err) {
+                  if (err) {
+                    return handleError(res, err);
+                  }
+                  else {
+                    console.log(title + ' 문서에 파일 추가됨.' + file.name);
+                    return res.json(200, file);
+                  }
+                })
+              }
+            }
+          })
+        }
+      });
+    }else{
+      res.json(500, {message: '업로드 에러 발생'});
     }
   });
+
 };

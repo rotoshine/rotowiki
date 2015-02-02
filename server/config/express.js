@@ -19,6 +19,7 @@ var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 var multer = require('multer');
+var fs = require('fs');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -33,11 +34,29 @@ module.exports = function(app) {
   app.use(cookieParser());
   app.use(passport.initialize());
 
-  console.log(config.uploadPath);
+  console.log('업로드 파일 크기:' + config.maxUploadFileSize);
   app.use(multer({
     dest: config.uploadPath,
+    limits: {
+      fileSize: config.maxUploadFileSize
+    },
     rename: function(fieldName, fileName){
       return fileName.replace(/\W+/g, '-').toLowerCase() + Date.now();
+    },
+    onError: function(err, next){
+      console.log(err);
+      next(err);
+    },
+    onFileSizeLimit: function(file){
+      // TODO 왜 작동을 안 하지????
+      cosole.log(file);
+    },
+    onFileUploadComplete: function(file){
+      // onFileSizeLimit이 제대로 작동하지 않아 이런 식으로 처리함.
+      if(file.size > config.maxUploadFileSize){
+        console.log('용량초과 파일!' + file.originalname + ' 삭제 개시');
+        return fs.unlink(file.path);
+      }
     }
   }));
   // Persist sessions with mongoStore

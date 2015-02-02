@@ -52,7 +52,7 @@ angular.module('rotowikiApp')
           file: $files[0],
           url: '/api/documents/' + $stateParams.title + '/files'
         }).success(function(data){
-          var imgTag = '<img src="/api/documents/' + $stateParams.title + '/files/' + data._id + '">';
+          var imgTag = '\r\n<img src="/api/documents/' + $stateParams.title + '/files/' + data._id + '">';
 
           if(blurRange > -1){
             $scope.document.content = $scope.document.content.substring(0, blurRange) +
@@ -61,6 +61,8 @@ angular.module('rotowikiApp')
           }else{
             $scope.document.content = $scope.document.content + imgTag;
           }
+        }).error(function(){
+          alertify.alert('파일 업로드 중 에러가 발생했습니다.');
         });
       }
     };

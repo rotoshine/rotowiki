@@ -12,6 +12,7 @@ var FileSchema = new Schema({
     type: String,
     required: true
   },
+  size: Number,
   path: {
     type: String,
     required: true
