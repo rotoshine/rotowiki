@@ -12,7 +12,8 @@ module.exports = function(app) {
   // seo 처리
   app.get('/*', function(req, res, next){
     if(req.query._escaped_fragment_ !== undefined){
-      var fullURL = req.protocol + '://' + req.get('host') + '/#' + req.query._escaped_fragment;
+      var fullURL = req.protocol + '://' + req.get('host') + '/#!' + req.query._escaped_fragment;
+      console.log('크롤러 요청.' + fullURL);
       Browser.visit(fullURL, {
         debug: true,
         waitFor: 2000,

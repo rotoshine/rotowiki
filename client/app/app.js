@@ -57,8 +57,6 @@ angular.module('rotowikiApp', [
       text = text
         .replace(/<script/, '')
         .replace(/<\/script>/, '');
-
-      console.log(text);
       return $sce.trustAsHtml(text);
     }
   })
