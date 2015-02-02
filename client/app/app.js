@@ -6,7 +6,8 @@ angular.module('rotowikiApp', [
   'ngSanitize',
   'btford.socket-io',
   'ui.router',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'angularFileUpload'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
@@ -44,7 +45,7 @@ angular.module('rotowikiApp', [
     };
   })
   .filter('markdownToHTML', function(markdownService){
-    return function(text){      
+    return function(text){
       return markdownService.toHTML(text);
     }
 
@@ -55,7 +56,7 @@ angular.module('rotowikiApp', [
         .replace(/<script/, '')
         .replace(/<\/script>/, '');
 
-      console.log(text);  
+      console.log(text);
       return $sce.trustAsHtml(text);
     }
   })
@@ -75,3 +76,22 @@ angular.module('rotowikiApp', [
       });
     });
   });*/
+
+// jquery plugin
+$.fn.selectRange = function(start, end) {
+  if(!end){
+    end = start;
+  }
+  return this.each(function() {
+    if(this.setSelectionRange) {
+      this.focus();
+      this.setSelectionRange(start, end);
+    } else if(this.createTextRange) {
+      var range = this.createTextRange();
+      range.collapse(true);
+      range.moveEnd('character', end);
+      range.moveStart('character', start);
+      range.select();
+    }
+  });
+};

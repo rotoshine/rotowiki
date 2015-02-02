@@ -4,6 +4,8 @@ var _ = require('lodash');
 
 var Document = require('./document.model');
 var DocumentHistory = require('../documentHistory/documentHistory.model');
+var File = require('../file/file.model');
+var fs = require('fs');
 
 exports.find = function(req, res) {
   var query = {};
@@ -62,7 +64,7 @@ exports.findByParent = function(req, res){
       });
     }
   })
-}
+};
 
 // Get a single document
 exports.show = function(req, res) {
@@ -133,7 +135,7 @@ exports.update = function(req, res) {
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
     updated.updatedAt = new Date();
     if(updated.parent && updated.parent._id !== undefined){
-      updated.parent = update.parent._id;
+      updated.parent = updated.parent._id;
     }
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
@@ -164,3 +166,60 @@ exports.random = function(req, res){
 function handleError(res, err) {
   return res.send(500, err);
 }
+
+
+exports.findFileByDocumentId = function(req ,res){
+  var fileId = req.params.fileId;
+
+  File.findOne({_id: fileId}, function(err, file){
+    if(err){ return handleError(res, err); }
+    else{
+      if(!file){
+        return res.json(404, { message: '올바르지 않은 파일입니다.' });
+      }else{
+        fs.exists(file.path, function(exists){
+          if(exists){
+            fs.createReadStream(file.path).pipe(res);
+          }else{
+            return res.json(404, { message: '파일이 서버에 존재하지 않습니다.' });
+          }
+        });
+      }
+    }
+  })
+};
+
+exports.uploadFile = function(req, res){
+  var title = req.params.title;
+  var uploadedFile = req.files.file;
+
+  var file = new File({
+    name: uploadedFile.name,
+    originalName: uploadedFile.originalname,
+    mimeType: uploadedFile.mimetype,
+    path: uploadedFile.path,
+    size: uploadedFile.size
+  });
+
+  file.save(function(err){
+    if(err){ return handleError(res, err); }
+    else{
+      Document.findOne({title: title}, function(err, document){
+        if(err){ return handleError(res, err); }
+        else{
+          if(!document){
+            return handleError(res, new Error('존재하지 않는 문서에 파일을 추가하려하다니...!'));
+          }else{
+            document.files.push(file._id);
+            document.save(function(err){
+              if(err){ return handleError(res, err); }
+              else{
+                return res.json(200, file);
+              }
+            })
+          }
+        }
+      })
+    }
+  });
+};

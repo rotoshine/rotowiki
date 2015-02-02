@@ -35,7 +35,11 @@ angular.module('rotowikiApp')
                 alertify.alert('해당 제목의 문서가 이미 존재합니다.');
               }
             }, function(){
-              location.href = '/document-edit/' + title;
+              Document.save({
+                title: title
+              }, function(){
+                location.href = '/document-edit/' + title;
+              });
             });
         }
       });

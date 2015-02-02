@@ -47,6 +47,8 @@ var all = {
     callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
   },
 
+  uploadPath: process.env.UPLOAD_PATH || './uploads'
+
 };
 
 // Export the config object based on the NODE_ENV

@@ -18,7 +18,6 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
-  require('../api/documentHistory/documentHistory.socket').register(socket);
   require('../api/document/document.socket').register(socket);
 }
 

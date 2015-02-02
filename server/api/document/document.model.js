@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-
 var DocumentSchema = new Schema({
   title: {
     type: String,
@@ -32,7 +31,11 @@ var DocumentSchema = new Schema({
   updatedAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  files: [{
+    ref: 'File',
+    type: Schema.Types.ObjectId
+  }]
 }, {
   toObject: {
     virtuals: true

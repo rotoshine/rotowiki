@@ -118,6 +118,11 @@ body{
   background-color: #0091ea;
   color:white;
 }
+/* document edit */
+.markdown-view img {
+  max-width:100%;
+  height:auto;
+}
 
 /* document all */
 .item{

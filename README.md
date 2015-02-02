@@ -16,24 +16,24 @@ cd rotowiki
 npm install && bower install
 ```
 
-# twitter login 설정
+# twitter login 설정 및 파일 업로드 경로 설정
 rotowiki에서는 사용자 인증 시스템으로 twitter를 사용하고 있다.
 
 *server/config/* 폴더 아래에 *local.env.js* 를 생성한다.
 
-파일의 양식은 local.env.sample.js를 참고한다.
-
 ```javascript
 'use strict';
 module.exports = {
-  DOMAIN:           'http://localhost:9000',
+  DOMAIN:           'http://localhost:9000', // 이 url 기준으로 oauth callback url이 생성됨.
   SESSION_SECRET:   'rotowiki-secret',
 
   TWITTER_ID:       'app-id',
   TWITTER_SECRET:   'secret',
 
   // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+  DEBUG: '',
+  
+  UPLOAD_PATH: './uploads/' // 파일 업로드 경로를 설정한다. 기본은 ./uploads/
 };
 
 ```
@@ -47,6 +47,7 @@ grunt serve
 // 운영환경인 경우
 grunt serve:dist
 ```
+
 
 # pm2로 실행하기
 ```

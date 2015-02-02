@@ -4,7 +4,7 @@ angular.module('rotowikiApp')
   .controller('DocumentCtrl', function ($scope, Auth, Document, $stateParams, markdownService) {
     $scope.title = $stateParams.title;
     $scope.isNotExistDocument = false;
-    $scope.isLoggedIn = Auth.isLoggedIn;   
+    $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.document = null;
 
     $scope.init = function(){
@@ -13,8 +13,8 @@ angular.module('rotowikiApp')
         .$promise.then(function(document){
           $scope.document = document;
 
-          window.document.title = 'rotowiki - ' + document.title;                    
-          
+          window.document.title = 'rotowiki - ' + document.title;
+
         }, function(err){
           if(err.status === 404){
             $scope.isNotExistDocument = true;
@@ -38,7 +38,33 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location, $modal, markdownService){
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location, $modal, markdownService, $upload){
+    $scope.uploadImage = null;
+
+    var blurRange = -1;
+    $scope.setSelectionRange = function($event){
+      blurRange = $event.target.selectionStart;
+    };
+
+    $scope.imageUpload = function($files){
+      if($files.length === 1){
+        $upload.upload({
+          file: $files[0],
+          url: '/api/documents/' + $stateParams.title + '/files'
+        }).success(function(data){
+          var imgTag = '<img src="/api/documents/' + $stateParams.title + '/files/' + data._id + '">';
+
+          if(blurRange > -1){
+            $scope.document.content = $scope.document.content.substring(0, blurRange) +
+              imgTag +
+              $scope.document.content.substring(blurRange, $scope.document.content.length);
+          }else{
+            $scope.document.content = $scope.document.content + imgTag;
+          }
+        });
+      }
+    };
+
     $scope.document = {
       title: $stateParams.title,
       content: ''
@@ -53,8 +79,8 @@ angular.module('rotowikiApp')
 
     $scope.$watch('document.content', function(){
       $scope.markdownToHTML = markdownService.toHTML($scope.document.content);
-
     });
+
 
     $scope.init = function(){
       window.document.title = 'rotowiki - ' + $scope.document.title + ' edit';
@@ -63,6 +89,9 @@ angular.module('rotowikiApp')
           .get({title: $scope.document.title})
           .$promise.then(function(document){
             $scope.document = document;
+            if($scope.document.content === undefined){
+              $scope.document.content = '';
+            }
           });
       }
     };
@@ -200,7 +229,7 @@ angular.module('rotowikiApp')
           .$promise
           .then(function(documents){
             for(var i = 0; i < documents.length; i++){
-              var document = documents[i];              
+              var document = documents[i];
               if(document.content.length > 50){
                 document.content = document.content.substring(0, 48) + '..';
               }
@@ -220,8 +249,8 @@ angular.module('rotowikiApp')
               $scope.loadedDocuments = $scope.loadedDocuments.concat(documents);
             }
 
-            $timeout(function(){              
-              $('#document-container').masonry({                
+            $timeout(function(){
+              $('#document-container').masonry({
                 itemSelector: '.item'
               });
             });
