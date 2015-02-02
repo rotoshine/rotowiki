@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/rotowiki-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };
