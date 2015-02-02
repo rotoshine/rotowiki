@@ -52,7 +52,7 @@ angular.module('rotowikiApp')
           file: $files[0],
           url: '/api/documents/' + $stateParams.title + '/files'
         }).success(function(data){
-          var imgTag = '\r\n<img src="/api/documents/' + $stateParams.title + '/files/' + data._id + '">';
+          var imgTag = '\r\n<img src="/api/documents/' + $stateParams.title + '/files/' + data._id + '">\r\n';
 
           if(blurRange > -1){
             $scope.document.content = $scope.document.content.substring(0, blurRange) +
