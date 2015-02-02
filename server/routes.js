@@ -5,8 +5,28 @@
 'use strict';
 
 var errors = require('./components/errors');
+var Browser = require('zombie');
 
 module.exports = function(app) {
+
+  // seo 처리
+  app.get('/*', function(req, res, next){
+    if(req.query._escaped_fragment_ !== undefined){
+      var fullURL = req.protocol + '://' + req.get('host') + '/#' + req.query._escaped_fragment;
+      Browser.visit(fullURL, {
+        debug: true,
+        waitFor: 2000,
+        loadCSS: true,
+        runScripts: true
+      }, function(e, browser, status){
+        var html = browser.html();
+        return res.send(html);
+      })
+
+    }else{
+      return next();
+    }
+  });
 
   // Insert routes below
   app.use('/api/documentHistorys', require('./api/documentHistory'));

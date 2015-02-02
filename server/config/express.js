@@ -34,7 +34,6 @@ module.exports = function(app) {
   app.use(cookieParser());
   app.use(passport.initialize());
 
-  console.log('업로드 파일 크기:' + config.maxUploadFileSize);
   app.use(multer({
     dest: config.uploadPath,
     limits: {
@@ -49,7 +48,7 @@ module.exports = function(app) {
     },
     onFileSizeLimit: function(file){
       // TODO 왜 작동을 안 하지????
-      cosole.log(file);
+      console.log(file);
     },
     onFileUploadComplete: function(file){
       // onFileSizeLimit이 제대로 작동하지 않아 이런 식으로 처리함.
@@ -83,4 +82,6 @@ module.exports = function(app) {
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
   }
+
+
 };

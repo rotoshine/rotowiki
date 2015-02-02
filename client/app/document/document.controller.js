@@ -46,13 +46,14 @@ angular.module('rotowikiApp')
       blurRange = $event.target.selectionStart;
     };
 
+    var fileUrl = '/api/documents/' + $stateParams.title + '/files';
     $scope.imageUpload = function($files){
       if($files.length === 1){
         $upload.upload({
           file: $files[0],
-          url: '/api/documents/' + $stateParams.title + '/files'
-        }).success(function(data){
-          var imgTag = '\r\n<img src="/api/documents/' + $stateParams.title + '/files/' + data._id + '">\r\n';
+          url: fileUrl
+        }).success(function(imageFile){
+          var imgTag = '\r\n![' + $stateParams.title + '의 이미지](' + fileUrl + '/' + imageFile._id + ')\r\n';
 
           if(blurRange > -1){
             $scope.document.content = $scope.document.content.substring(0, blurRange) +
