@@ -12,7 +12,7 @@ module.exports = function(app) {
   // seo 처리
   app.get('*', function(req, res, next){
     if(req.query.hasOwnProperty('_escaped_fragment_')){
-      var fullURL = config.domain + + req.url.split('?')[0];
+      var fullURL = config.domain + req.url.split('?')[0];
       console.log('크롤러 요청.' + fullURL);
       Browser.visit(fullURL, {
         debug: true,
