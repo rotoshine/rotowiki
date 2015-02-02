@@ -10,9 +10,9 @@ var Browser = require('zombie');
 module.exports = function(app) {
 
   // seo 처리
-  app.get('/*', function(req, res, next){
-    if(req.query._escaped_fragment_ !== undefined){
-      var fullURL = req.protocol + '://' + req.get('host') + '/#!' + req.query._escaped_fragment;
+  app.get('*', function(req, res, next){
+    if(req.query.hasOwnProperty('_escaped_fragment_')){
+      var fullURL = req.protocol + '://' + req.get('host') + req.url.split('?')[0];
       console.log('크롤러 요청.' + fullURL);
       Browser.visit(fullURL, {
         debug: true,

@@ -215,11 +215,12 @@ angular.module('rotowikiApp')
   .controller('DocumentAllCtrl', function($scope, Document, $timeout){
     $scope.isNowLoading = false;
     $scope.currentPage = 1;
-    $scope.pageCount = 5;
+    $scope.pageCount = 20;
     $scope.loadedDocuments = null;
     $scope.currentSortOption = 'updatedAt';
     $scope.hasArriveLastPage = false;
 
+    var masonry = null;
     $scope.loadMoreDocuments = function(){
       if(!$scope.hasArriveLastPage){
         $scope.isNowLoading = true;
@@ -252,18 +253,15 @@ angular.module('rotowikiApp')
               $scope.loadedDocuments = $scope.loadedDocuments.concat(documents);
             }
 
-            var $container = $('document-container');
-            if($container.data('masonry') !== undefined){
-              $container.data('masonry').destroy();
-            }
 
             $timeout(function(){
-              $container.masonry({
+              if(masonry !== null){
+                masonry.destroy();
+              }
+              masonry = new window.Masonry($('#document-container').get(0), {
                 itemSelector: '.item'
               });
-
-              console.log($container.data('masonry'));
-            }, 500);
+            });
           });
       }
     };
