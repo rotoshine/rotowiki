@@ -1,3 +1,8 @@
+<div class="backdrop" ng-show="isNowSaving">
+  <div class="backdrop-message">
+    <i class="fa fa-spin fa-spinner fa-4x"></i>
+  </div>
+</div>
 <div class="container" ng-init="init()">
   <div class="row">
     <div class="col-xs-12">
@@ -11,6 +16,7 @@
             <button class="btn btn-sm" ng-model="uploadImage" ng-file-select
                     ng-file-change="imageUpload($files, $event)" ng-multiple="false"
                     accept="image/*"><i class="fa fa-image"></i></button>
+            <button class="btn btn-sm"><i class="fa fa-anchor"></i></button>
           </div>
           <form class="form col-xs-12" action="/api/documents" method="POST">
             <input type="text" class="col-xs-12 form-control" ng-model="document.title" placeholder="문서의 제목을 입력하세요."/>
@@ -28,7 +34,7 @@
           </div>
           <div class="pull-right">
             <button class="btn btn-info" ng-click="parentChangeModal.show()"><i class="fa fa-arrow-circle-up"></i>상위 문서 변경하기</button>
-            <button class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> 저장</button>
+            <button class="btn btn-primary" id="document-save-button" ng-click="save()"><i class="fa fa-save"></i> 저장</button>
           </div>
           <div class="clearfix"></div>
         </div>

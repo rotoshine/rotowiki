@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth, Document) {
+  .controller('NavbarCtrl', function ($scope, $location, Auth, Document, $timeout, $rootScope, $modal) {
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
@@ -25,24 +25,35 @@ angular.module('rotowikiApp')
       return route === $location.path();
     };
 
+    $scope.keydownListeners = $rootScope.keydownListeners;
+
+    $scope.nowShowCreateDocumentPrompt = false;
     $scope.createDocument = function(){
-      alertify.prompt('새로 만들 문서 제목을 입력해주세요.', function(answer, title){
-        if(answer){
-          Document
-            .get({title: title})
-            .$promise.then(function(document){
-              if(document){
-                alertify.alert('해당 제목의 문서가 이미 존재합니다.');
-              }
-            }, function(){
-              Document.save({
-                title: title
+      if(!$scope.nowShowCreateDocumentPrompt){
+        $scope.keydownListeners.stop('navbar');
+        $scope.nowShowCreateDocumentPrompt = true;
+
+        alertify.prompt('새로 만들 문서 제목을 입력해주세요.', function(answer, title){
+          $scope.nowShowCreateDocumentPrompt = false;
+          $scope.keydownListeners.listen('navbar');
+          if(answer){
+            Document
+              .get({title: title})
+              .$promise.then(function(document){
+                if(document){
+                  alertify.alert('해당 제목의 문서가 이미 존재합니다.');
+                }
               }, function(){
-                location.href = '/document-edit/' + title;
+                // 문서를 생성한 후 문서 편집으로 이동.
+                Document.save({
+                  title: title
+                }, function(){
+                  location.href = '/document-edit/' + title;
+                });
               });
-            });
-        }
-      });
+          }
+        });
+      }
     };
 
     $scope.searchService = {
@@ -79,5 +90,17 @@ angular.module('rotowikiApp')
         $event.preventDefault();
         $event.stopPropagation();
       }
+    };
+
+    $scope.showShortcut = function(){
+      $modal.open({
+        templateUrl: 'shortcut-modal.html',
+        controller: 'ShortcutModalCtrl'
+      });
+    };
+  })
+  .controller('ShortcutModalCtrl', function($scope, $modalInstance){
+    $scope.close = function(){
+      $modalInstance.close();
     };
   });

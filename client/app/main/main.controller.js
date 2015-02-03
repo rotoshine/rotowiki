@@ -5,7 +5,7 @@ angular.module('rotowikiApp')
     $scope.recentDocuments = null;
     $scope.hotIssueDocuments = null;
 
-    $scope.isNowRecentDocumentsLoading = false;
+    $scope.isNowRecentDocumenntsLoading = false;
     $scope.isNowHotIssueDocumentsLoading = false;
 
 
@@ -14,7 +14,7 @@ angular.module('rotowikiApp')
       $scope.isNowHotIssueDocumentsLoading = true;
 
       Document
-        .query({          
+        .query({
           page: 1,
           sort: 'updatedAt',
           pageCount: 20,
@@ -35,7 +35,7 @@ angular.module('rotowikiApp')
           $scope.hotIssueDocuments = hotIssueDocuments;
         });
     };
-    
+
     /*socket.on('createDocument', function(document){
       alertify.success('새 문서가 생성되었습니다. ' + document.title);
     });*/

@@ -6,12 +6,14 @@ angular.module('rotowikiApp')
       .state('document', {
         url: '/document/:title',
         templateUrl: 'app/document/document.html',
-        controller: 'DocumentCtrl'
+        controller: 'DocumentCtrl',
+        allowKeydownListeners: ['navbar', 'documentView']
       })
       .state('document edit', {
         url: '/document-edit/:title',
         templateUrl: 'app/document/document-edit.html',
-        controller: 'DocumentEditCtrl'
+        controller: 'DocumentEditCtrl',
+        allowKeydownListeners: ['documentEdit']
       })
       .state('random document', {
         url: '/document-random',
@@ -20,6 +22,7 @@ angular.module('rotowikiApp')
       .state('document all', {
         url: '/document-all',
         templateUrl: 'app/document/document-all.html',
-        controller: 'DocumentAllCtrl'
+        controller: 'DocumentAllCtrl',
+        allowKeydownListeners: ['navbar']
       });
   });

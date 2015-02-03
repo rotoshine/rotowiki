@@ -38,7 +38,7 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $stateParams, $location, $modal, markdownService, $upload){
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload){
     $scope.uploadImage = null;
 
     var blurRange = -1;
@@ -99,9 +99,11 @@ angular.module('rotowikiApp')
       }
     };
 
+    $scope.isNowSaving = false;
     $scope.save = function(){
-      // 임시처리. 원래는 markdown service에서 제거 되서 날라오는 게 맞음..
-      // 조치하고 나중에 이 코드 없애자.
+      $scope.isNowSaving = true;
+
+      // TODO 임시처리. 원래는 markdown service에서 제거 되서 날라오는 게 맞음..조치하고 나중에 이 코드 없애자.
       $scope.document.content = $scope.document.content.replace(/<script/gi, '').replace(/<\/script>/, '');
       var saveDocument = {
         title: $scope.document.title,
@@ -113,15 +115,16 @@ angular.module('rotowikiApp')
       }else{
         saveDocument.parent = $scope.document.parent;
       }
-      if($scope.document._id === undefined){
-        Document.save(saveDocument, function(){
-          location.href = '/document/' + $scope.document.title;
+      Document
+        .update(saveDocument)
+        .$promise
+        .then(function(){
+          $scope.isNowSaving = false;
+          $state.go('document', {title: $scope.document.title});
+        }, function(err){
+          $scope.isNowSaving = false;
+          alertify.alert(err.message);
         });
-      }else{
-        Document.update(saveDocument, function(){
-          location.href = '/document/' + $scope.document.title;
-        });
-      }
     };
 
     $scope.hasChangeParentDocument = false;
@@ -203,8 +206,10 @@ angular.module('rotowikiApp')
             });
         }
       }
+    };
 
-    }
+    // keydown mappding
+
   })
   .controller('DocumentRandomCtrl', function($state, Document){
     Document

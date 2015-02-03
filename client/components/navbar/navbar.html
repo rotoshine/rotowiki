@@ -8,7 +8,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a href="/" class="navbar-brand">rotowiki</a>
+        <a href="/" class="navbar-brand">로토위키</a>
       </div>
       <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
         <ul class="nav navbar-nav">
@@ -20,29 +20,27 @@
 
         <form class="navbar-form navbar-left" role="search" ng-submit="searchService.search($event)">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search" id="search-text" ng-model="searchService.searchKeyword">
+            <input type="text" class="form-control" placeholder="Search" id="search-text"
+                   ng-model="searchService.searchKeyword"
+                   ng-focus="keydownListeners.stopAll()"
+                   ng-blur="keydownListeners.listen('navbar')">
           </div>
           <button type="submit" class="btn btn-default">Search</button>
         </form>
 
         <ul class="nav navbar-nav navbar-right">
-          <li ng-hide="isLoggedIn()" ng-class="{active: isActive('/login')}">
-            <div class="nav-right-button-wrapper">
-              <button class="btn btn-primary" ng-click="goLogin()"><i class="fa fa-twitter"></i> Twitter 로그인</button>
-            </div>
-          </li>
           <li ng-show="isLoggedIn()"><p class="navbar-text">{{ getCurrentUser().name }}님 안녕하세요!</p> </li>
-          <li ng-show="isLoggedIn()">
-            <button class="btn btn-info btn-sm nav-create-document-button" ng-click="createDocument()"><i class="fa fa-file"></i> 새 문서 만들기</button>
-          </li>
           <li>
             <div class="nav-right-button-wrapper">
-              <a href="/document-random" class="btn btn-success btn-sm random-document-button"><i class="fa fa-anchor"></i> 랜덤 문서</a>
+              <button ng-hide="isLoggedIn()" class="btn btn-primary btn-sm" ng-click="goLogin()"><i class="fa fa-twitter"></i> Twitter 로그인</button>
+              <button ng-show="isLoggedIn()" class="btn btn-info btn-sm nav-create-document-button" ng-click="createDocument()"><i class="fa fa-file"></i> 새 문서 만들기</button>
+              <a href="/document-random" class="btn btn-success btn-sm random-document-button"><i class="fa fa-random"></i> 랜덤 문서</a>
+              <button class="btn btn-default btn-sm" ng-click="showShortcut()"><i class="fa fa-bolt"></i>단축기</button>
             </div>
           </li>
           <li ng-show="isLoggedIn()" ng-class="{active: isActive('/logout')}">
             <div class="nav-right-button-wrapper">
-              <button ng-click="logout()" class="btn btn-default btn-sm"><i class="fa fa-sign-out"></i> Logout</button>
+              <button ng-click="logout()" class="btn btn-default btn-sm logout-button"><i class="fa fa-sign-out"></i> Logout</button>
             </div>
           </li>
         </ul>
@@ -73,4 +71,42 @@
       </footer>
     </div>
   </div>
+
+  <script id="shortcut-modal.html" type="text/ng-template">
+    <div class="modal-body">
+      <h3>어디서든지</h3>
+      <ul class="list-unstyled">
+        <li>
+          <kbd>m</kbd> 메인으로 가기
+        </li>
+        <li>
+          <kbd>n</kbd> 새 문서 생성하기
+        </li>
+        <li>
+          <kbd>a</kbd> 전체 문서 보기
+        </li>
+        <li>
+          <kbd>r</kbd> 랜덤 문서
+        </li>
+      </ul>
+      <h3>문서 보기 중일 때</h3>
+      <ul class="list-unstyled">
+        <li>
+          <kbd>e</kbd> 현재 보고 있는 문서 수정하기
+        </li>
+      </ul>
+      <h3>문서 편집 중일 때</h3>
+      <ul class="list-unstyled">
+        <li>
+          <kbd>ctrl + s</kbd> 문서 저장
+        </li>
+        <li>
+          <kbd>esc</kbd> 문서 편집 취소
+        </li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" ng-click="close()">닫기</button>
+    </div>
+  </script>
 </div>

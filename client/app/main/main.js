@@ -6,6 +6,7 @@ angular.module('rotowikiApp')
       .state('main', {
         url: '/',
         templateUrl: 'app/main/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        allowKeydownListeners: ['navbar']
       });
   });

@@ -52,15 +52,13 @@ body{
 .document-edit-wrapper{
   padding-left:0;
 }
-.nav-create-document-button{
-  margin-top:10px;
+/* navbar */
+.logout-button{
+  margin-left:15px;
 }
 .nav-right-button-wrapper{
   padding-top:10px;
   padding-left:5px;
-}
-.random-document-button{
-  margin-right:15px;
 }
 
 .search-result-footer{
@@ -165,4 +163,23 @@ body{
   .document-all-load-button{
     width: 30%;
   }
+}
+
+
+.backdrop{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.backdrop .backdrop-message{
+  position:fixed;
+  left:50%;
+  top:50%;
+  margin-left:-24.5px;
+  margin-top:-23px;
 }

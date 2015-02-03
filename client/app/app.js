@@ -21,6 +21,71 @@ angular.module('rotowikiApp', [
   .config(function(){
     moment.locale('ko');
   })
+  .run(function($rootScope, $state){
+    var keydownListeners = {
+      mapper: {
+        'navbar': new window.keypress.Listener(),
+        'documentView': new window.keypress.Listener(),
+        'documentEdit': new window.keypress.Listener()
+      },
+      stopAll: function(){
+        for(var key in this.mapper){
+          this.mapper[key].stop_listening();
+        }
+      },
+      stop: function(mapperKey){
+        if(this.mapper.hasOwnProperty(mapperKey)){
+          this.mapper[mapperKey].stop_listening();
+        }
+      },
+      listen: function(mapperKey){
+        if(this.mapper.hasOwnProperty(mapperKey)){
+          this.mapper[mapperKey].listen();
+        }
+      },
+      addCombo: function(mapperKey, combo, callback){
+        if(this.mapper.hasOwnProperty(mapperKey)){
+          this.mapper[mapperKey].simple_combo(combo, callback);
+        }
+        return this;
+      }
+    };
+    // keydown event
+    keydownListeners
+      .addCombo('navbar', 'm', function(){
+        $state.go('main');
+      })
+      .addCombo('navbar', 'a', function(){
+        $state.go('document all');
+      })
+      .addCombo('navbar', 'r', function(){
+        $state.go('random document');
+      })
+      .addCombo('navbar', 'n', function(){
+        $('.nav-create-document-button').click();
+      })
+      .addCombo('documentView', 'e', function(){
+        $('#document-edit-button').click();
+      })
+      .addCombo('documentEdit', 'ctrl s', function(){
+        $('#document-save-button').click();
+      })
+      .addCombo('documentEdit', 'esc', function(){
+        history.back();
+      });
+
+
+    $rootScope.keydownListeners = keydownListeners;
+
+    $rootScope.$on('$stateChangeStart', function (event, state) {
+      keydownListeners.stopAll();
+      if(state.allowKeydownListeners){
+        for(var i = 0; i < state.allowKeydownListeners.length; i++){
+          keydownListeners.listen(state.allowKeydownListeners[i]);
+        }
+      }
+    });
+  })
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
     return {
       // Add authorization token to headers
@@ -48,21 +113,33 @@ angular.module('rotowikiApp', [
   })
   .filter('markdownToHTML', function(markdownService){
     return function(text){
-      return markdownService.toHTML(text);
+      if(text !== undefined && text !== ''){
+        return markdownService.toHTML(text);
+      }else{
+        return '';
+      }
     }
 
   })
   .filter('toTrusted', function($sce){
     return function(text){
-      text = text
-        .replace(/<script/, '')
-        .replace(/<\/script>/, '');
-      return $sce.trustAsHtml(text);
+      if(text !== undefined && text !== ''){
+        text = text
+          .replace(/<script/, '')
+          .replace(/<\/script>/, '');
+        return $sce.trustAsHtml(text);
+      }else{
+        return '';
+      }
     }
   })
   .filter('from', function(){
     return function(date){
-      return moment(date).from();
+      if(date !== undefined){
+        return moment(date).from();
+      }else{
+        return '';
+      }
     }
   });
 /*
