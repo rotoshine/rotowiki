@@ -342,15 +342,18 @@ angular.module('rotowikiApp')
       }
     };
   })
-  .controller('LinkInsertModalCtrl', function($scope, selectedTab, linkTypes, $modalInstance, Document){
+  .controller('LinkInsertModalCtrl', function($scope, selectedTab, linkTypes, $modalInstance, Document, $timeout){
     $scope.selectedTab = selectedTab;
 
     $scope.selectTab = function(tabName){
       $scope.selectedTab = tabName;
+      //$('#link-tabs .tab-' + $scope.selectedTab + ' a').click();
     };
 
     // tab directive의 active에서 오류나서 이렇게 임시처리 함
-    $scope.selectTab(selectedTab);
+    $timeout(function(){
+      $scope.selectTab(selectedTab);
+    });
 
     $scope.linkTypes = linkTypes;
 

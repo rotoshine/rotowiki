@@ -21,7 +21,7 @@ angular.module('rotowikiApp', [
   .config(function(){
     moment.locale('ko');
   })
-  .run(function($rootScope, $state){
+  .run(function($rootScope, $state, Auth){
     var keydownListeners = {
       mapper: {
         'navbar': new window.keypress.Listener(),
@@ -65,7 +65,9 @@ angular.module('rotowikiApp', [
         $('.nav-create-document-button').click();
       })
       .addCombo('documentView', 'e', function(){
-        $('#document-edit-button').click();
+        if(Auth.isLoggedIn()){
+          $('#document-edit-button').click();
+        }
       })
       .addCombo('documentEdit', 'ctrl s', function(){
         $('#document-save-button').click();
