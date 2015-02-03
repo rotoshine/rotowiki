@@ -183,3 +183,10 @@ body{
   margin-left:-24.5px;
   margin-top:-23px;
 }
+
+.tab-pane{
+  padding:10px;
+}
+.nav-tabs li{
+  cursor: pointer;
+}

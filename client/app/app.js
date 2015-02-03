@@ -72,6 +72,13 @@ angular.module('rotowikiApp', [
       })
       .addCombo('documentEdit', 'esc', function(){
         history.back();
+      })
+      .addCombo('documentEdit', 'ctrl e', function(){
+        $('#document-edit-tab a').click();
+        $('#content').focus();
+      })
+      .addCombo('documentEdit', 'ctrl b', function(){
+        $('#document-preview-tab a').click();
       });
 
 

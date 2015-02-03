@@ -132,9 +132,14 @@ exports.update = function(req, res) {
     var updated = _.merge(document, req.body);
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
     updated.updatedAt = new Date();
+
+    if(req.body.changedDocumentTitle){
+      updated.title = req.body.changedDocumentTitle;
+    }
     if(updated.parent && updated.parent._id !== undefined){
       updated.parent = updated.parent._id;
     }
+
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       historyLoggingAndHandleDocument(updated, 200, res);

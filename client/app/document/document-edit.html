@@ -12,20 +12,41 @@
           <div class="alert alert-info" role="alert" ng-show="hasChangeParentDocument">
             <strong>알림</strong> 상위문서가 변경되었습니다. <span>{{document.parent.title}}</span> (으)로 변경되었습니다.
           </div>
-          <div class="document-edit-utils col-xs-12">
-            <button class="btn btn-sm" ng-model="uploadImage" ng-file-select
+          <div class="document-edit-utils">
+            <button class="btn btn-default btn-sm" ng-model="uploadImage" ng-file-select
                     ng-file-change="imageUpload($files, $event)" ng-multiple="false"
                     accept="image/*"><i class="fa fa-image"></i></button>
-            <button class="btn btn-sm"><i class="fa fa-anchor"></i></button>
-          </div>
-          <form class="form col-xs-12" action="/api/documents" method="POST">
-            <input type="text" class="col-xs-12 form-control" ng-model="document.title" placeholder="문서의 제목을 입력하세요."/>
-            <div class="col-xs-12 col-md-6 document-edit-wrapper">
-              <textarea class="col-xs-12 col-md-6 form-control" name="content" id="content" cols="30" rows="15" ng-model="document.content"
-                        placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."
-                        ng-blur="setSelectionRange($event)"></textarea>
+            <div class="btn-group" dropdown is-open="status.linkButtonsOpen">
+              <button class="btn btn-default btn-sm dropdown-toggle">
+                <i class="fa fa-anchor fa-fw"></i><span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li ng-repeat="(key, linkType) in linkTypes">
+                  <a href="#" ng-click="linkInsertModal.show(linkType.name)"><i class="fa fa-fw {{linkType.iconClass}}"></i> {{linkType.text}}</a>
+                </li>
+              </ul>
             </div>
-            <div class="col-xs-12 col-md-6 markdown-view" id="markdown-view" ng-bind-html="markdownToHTML | toTrusted"></div>
+          </div>
+          <hr/>
+          <form class="form col-xs-12" action="/api/documents" method="POST">
+            <div class="row">
+              <input type="text" class="col-xs-11 form-control" ng-model="changedDocumentTitle" placeholder="문서의 제목을 입력하세요."/>
+              <div class="col-xs-12"></div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 document-edit-wrapper">
+                <tabset>
+                  <tab heading="편집" id="document-edit-tab">
+                    <textarea class="form-control" name="content" id="content" cols="30" rows="15" ng-model="document.content"
+                              placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."
+                              ng-blur="setSelectionRange($event)"></textarea>
+                  </tab>
+                  <tab heading="미리보기" ng-click="markdownRender()" id="document-preview-tab">
+                    <div class="col-xs-12 markdown-view" id="markdown-view" ng-bind-html="markdownToHTML | toTrusted"></div>
+                  </tab>
+                </tabset>
+              </div>
+            </div>
           </form>
         </div>
         <div class="panel-footer">
@@ -92,50 +113,90 @@
       </div>
     </form>
   </script>
-  <script type="text/ng-template" id="insertDocumentLinkModal.html">
+  <script type="text/ng-template" id="linkInsertModal.html">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <h4 class="modal-title">링크 삽입하기</h4>
     </div>
     <form class="form form-horizontal">
       <div class="modal-body">
-        <div class="form-group">
-          <label class="col-xs-4">링크명</label>
-          <div class="col-xs-8">
-            <input type="text" class="form-control" placeholder="" required="true"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-4">링크할 문서</label>
-          <div class="col-xs-8">
-            <input type="text" class="form-control" placeholder="문서명을 2글자 이상 입력하세요." ng-model="searchDocumentTitle" ng-keyup="searchDocument()"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-xs-8 col-xs-offset-4">
-            <div class="parent-search-result">
-              <div ng-show="isNowSearching">
-                <i class="fa fa-spin fa-spinner"></i> 검색 중입니다...
-              </div>
-              <div ng-show="!isNowSearching && searchResults.length === 0">
-                검색 결과가 없습니다.
-              </div>
-              <div ng-show="!isNowSearching && searchResults.length > 0">
-                <div>아래 문서 중 하나를 선택하세요.</div>
-                <ul class="list-unstyled">
-                  <li class="selectable" ng-repeat="parentDocument in searchResults" ng-class="{'selected': parentDocument.selected}"
-                      ng-click="select(parentDocument)">
-                    {{parentDocument.title}}
-                  </li>
-                </ul>
+        <tabset>
+          <tab select="selectTab(linkTypes.DOCUMENT.name)">
+            <tab-heading>
+              <i class="fa fa-fw fa-file"></i>문서
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">링크할 문서</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="문서명을 2글자 이상 입력하세요." ng-model="linkTypes.DOCUMENT.linkObject.searchKeyword" ng-keyup="searchDocument()"/>
               </div>
             </div>
-          </div>
-        </div>
+            <div class="form-group">
+              <div class="col-xs-8 col-xs-offset-4">
+                <div class="parent-search-result">
+                  <div ng-show="isNowSearching">
+                    <i class="fa fa-spin fa-spinner"></i> 검색 중입니다...
+                  </div>
+                  <div ng-show="!isNowSearching && searchResults.length === 0">
+                    검색 결과가 없습니다.
+                  </div>
+                  <div ng-show="!isNowSearching && searchResults.length > 0">
+                    <div>아래 문서 중 하나를 선택하세요.</div>
+                    <ul class="list-unstyled">
+                      <li class="selectable" ng-repeat="document in searchResults" ng-class="{'selected': document.selected}"
+                          ng-click="selectDocument(document)">
+                        {{document.title}}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.EXTERNAL_LINK.name)">
+            <tab-heading>
+              <i class="fa fa-fw fa-external-link"></i> 외부링크
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">링크 텍스트</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="링크가 표시될 텍스트를 적어주세요." ng-model="linkTypes.EXTERNAL_LINK.linkObject.linkName"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-4">외부링크 주소</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="링크 주소를 적어주세요." ng-model="linkTypes.EXTERNAL_LINK.linkObject.linkUrl"/>
+              </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.YOUTUBE.name)">
+            <tab-heading>
+              <i class="fa fa-fw fa-youtube"></i> youtube
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">youtube url</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="youtube url을 적어주세요." ng-model="linkTypes.YOUTUBE.linkObject"/>
+              </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.SOUNDCLOUD.name)">
+            <tab-heading>
+              <i class="fa fa-fw fa-soundcloud"></i> soundcloud
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">soundcloud url</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="soundcloud url을 적어주세요." ng-model="linkTypes.SOUNDCLOUD.linkObject"/>
+              </div>
+            </div>
+          </tab>
+        </tabset>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="hide()">닫기</button>
-        <button type="button" class="btn btn-primary" ng-click="change()" ng-disabled="selectedDocument === null">넣기</button>
+        <button type="button" class="btn btn-primary" ng-click="applyLink()" ng-disabled="selectedDocument === null">넣기</button>
       </div>
     </form>
   </script>
