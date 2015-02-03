@@ -121,8 +121,8 @@
     <form class="form form-horizontal">
       <div class="modal-body">
         <tabset id="link-tabs">
-          <tab active="(linkTypes.DOCUMENT.name === selectedTab)" select="selectTab(linkTypes.DOCUMENT.name)" class="tab-{{linkTypes.DOCUMENT.name}}">
-            <tab-heading>
+          <tab select="selectTab(linkTypes.DOCUMENT.name)">
+            <tab-heading class="tab-{{linkTypes.DOCUMENT.name}}">
               <i class="fa fa-fw fa-file"></i>문서
             </tab-heading>
             <div class="form-group">
@@ -153,8 +153,8 @@
               </div>
             </div>
           </tab>
-          <tab select="selectTab(linkTypes.EXTERNAL_LINK.name)" class="tab-{{linkTypes.EXTERNAL_LINK.name}}">
-            <tab-heading active="selectedTab === linkTypes.EXTERNAL_LINK.name">
+          <tab select="selectTab(linkTypes.EXTERNAL_LINK.name)">
+            <tab-heading class="tab-{{linkTypes.EXTERNAL_LINK.name}}">
               <i class="fa fa-fw fa-external-link"></i> 외부링크
             </tab-heading>
             <div class="form-group">
@@ -170,8 +170,8 @@
               </div>
             </div>
           </tab>
-          <tab select="selectTab(linkTypes.YOUTUBE.name)" class="tab-{{linkTypes.YOUTUBE.name}}">
-            <tab-heading>
+          <tab select="selectTab(linkTypes.YOUTUBE.name)">
+            <tab-heading class="tab-{{linkTypes.YOUTUBE.name}}">
               <i class="fa fa-fw fa-youtube"></i> youtube
             </tab-heading>
             <div class="form-group">
@@ -181,8 +181,8 @@
               </div>
             </div>
           </tab>
-          <tab select="selectTab(linkTypes.SOUNDCLOUD.name)" class="tab-{{linkTypes.SOUNDCLOUD.name}}">
-            <tab-heading>
+          <tab select="selectTab(linkTypes.SOUNDCLOUD.name)">
+            <tab-heading class="tab-{{linkTypes.SOUNDCLOUD.name}}">
               <i class="fa fa-fw fa-soundcloud"></i> soundcloud
             </tab-heading>
             <div class="form-group">

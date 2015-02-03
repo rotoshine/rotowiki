@@ -248,8 +248,6 @@ angular.module('rotowikiApp')
 
     $scope.linkInsertModal = {
       show: function(selectedTab){
-        var that = this;
-
         $scope.keydownListeners.stopAll();
 
         var modalInstance = $modal.open({
@@ -347,12 +345,13 @@ angular.module('rotowikiApp')
 
     $scope.selectTab = function(tabName){
       $scope.selectedTab = tabName;
-      //$('#link-tabs .tab-' + $scope.selectedTab + ' a').click();
     };
 
     // tab directive의 active에서 오류나서 이렇게 임시처리 함
     $timeout(function(){
-      $scope.selectTab(selectedTab);
+      $('#link-tabs .tab-' + $scope.selectedTab + ' a').click();
+      console.log('#link-tabs .tab-' + $scope.selectedTab + ' a');
+      console.log($('#link-tabs .tab-' + $scope.selectedTab + ' a'));
     });
 
     $scope.linkTypes = linkTypes;
