@@ -9,6 +9,15 @@ angular.module('rotowikiApp')
         url: '/api/documents/by-id/:documentId',
         method: 'GET'
       },
+      query: {
+        url: '/api/documents',
+        method: 'GET',
+        isArray: true
+      },
+      save: {
+        url: '/api/documents',
+        method: 'POST'
+      },
       random: {
         url: '/api/documents/random',
         method: 'GET'
