@@ -446,6 +446,8 @@ angular.module('rotowikiApp')
       })
   })
   .controller('DocumentAllCtrl', function($scope, Document, $timeout){
+    window.document.title = 'rotowiki - 전체보기';
+
     $scope.isNowLoading = false;
     $scope.currentPage = 1;
     $scope.pageCount = 20;
@@ -467,7 +469,7 @@ angular.module('rotowikiApp')
           .then(function(documents){
             for(var i = 0; i < documents.length; i++){
               var document = documents[i];
-              if(document.content.length > 50){
+              if(document.content && document.content.length > 50){
                 document.content = document.content.substring(0, 48) + '..';
               }
             }

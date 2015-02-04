@@ -2,6 +2,8 @@
 
 angular.module('rotowikiApp')
   .controller('MainCtrl', function ($scope, socket, Document) {
+    window.document.title = 'rotowiki';
+
     $scope.recentDocuments = null;
     $scope.hotIssueDocuments = null;
 
