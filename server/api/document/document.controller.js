@@ -67,8 +67,20 @@ exports.findByParent = function(req, res){
 
 // Get a single document
 exports.show = function(req, res) {
+  var query = {};
+  if(req.url.indexOf('by-id') > -1 && req.params.hasOwnProperty('documentId')){
+    query = {
+      _id: req.params.documentId
+    }
+  }else if(req.params.hasOwnProperty('title')){
+    query = {
+      title: req.params.title
+    };
+  }
+
+  console.log(query);
   Document
-    .findOne({ title: req.params.title })
+    .findOne(query)
     .populate('parent')
     .exec(function (err, document) {
       if(err) { return handleError(res, err); }

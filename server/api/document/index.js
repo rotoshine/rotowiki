@@ -6,6 +6,7 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/random', controller.random);
+router.get('/by-id/:documentId', controller.show);
 router.get('/', controller.find);
 router.get('/:title', controller.show);
 router.get('/:title/sub', controller.findByParent);
@@ -15,5 +16,6 @@ router.post('/:title/files', auth.isAuthenticated(), controller.uploadFile);
 router.put('/:title', auth.isAuthenticated(), controller.update);
 router.patch('/:title', controller.update);
 router.delete('/:title', auth.isAuthenticated(), controller.destroy);
+
 
 module.exports = router;

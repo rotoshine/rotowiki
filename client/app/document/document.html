@@ -10,7 +10,11 @@
     <div class="row">
       <div class="col-xs-12">
         <h3 class="pull-left">{{document.title}}</h3>
-        <div class="pull-right">{{document.updatedAt | from}} 수정됨</div>
+        <div class="pull-right">
+          <span>{{document.updatedAt | from}} 수정됨</span>
+          <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()"><i class="fa fa-twitter"></i> 트위터에 공유하기</button>
+        </div>
+
       </div>
     </div>
     <div class="row">
@@ -30,6 +34,11 @@
             </section>
           </section>
         </div>
+      </div>
+    </div>
+    <div class="row document-bottom-buttons">
+      <div class="col-xs-12 text-right">
+        <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()"><i class="fa fa-twitter"></i> 트위터에 공유하기</button>
       </div>
     </div>
     <div class="row">

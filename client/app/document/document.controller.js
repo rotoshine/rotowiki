@@ -22,6 +22,25 @@ angular.module('rotowikiApp')
         });
     };
 
+    $scope.shareTwitter = function(){
+      var INTENT_URL = 'https://twitter.com/intent/tweet';
+      var currentUser = Auth.getCurrentUser();
+      var documentURL = encodeURIComponent(window.location.protocol + '//' + window.location.host + '/document/by-id/' + $scope.document._id);
+      var intentMessage = $scope.document.title + ' 문서를 공유합니다. ';
+
+      console.log(currentUser);
+      if(currentUser && currentUser.name){
+        intentMessage = currentUser.name + ' 님이 ' + intentMessage;
+      }
+
+      var querystring = 'text=' + intentMessage +
+        '&url=' + documentURL +
+        '&hashtags=rotowiki';
+
+      console.log(INTENT_URL + '?' + querystring);
+      window.open(INTENT_URL + '?' + querystring);
+    };
+
     $scope.createSubDocument = function(){
       $rootScope.keydownListeners.stopAll();
       alertify.prompt($scope.document.title + '의 하위 문서를 만듭니다. 하위 문서 제목을 입력해주세요.', function(answer, title){
@@ -483,4 +502,15 @@ angular.module('rotowikiApp')
     $scope.init = function(){
       $scope.loadMoreDocuments();
     };
+  })
+  .controller('DocumentRedirectionCtrl', function($scope, Document, $state, $stateParams){
+    Document
+      .byId({ documentId: $stateParams.documentId })
+      .$promise
+      .then(function(document){
+        $state.go('document', { title: document.title });
+      }, function(){
+        alertify.alert('올바르지 않은 문서 주소입니다.');
+        $state.go('main');
+      })
   });

@@ -5,14 +5,9 @@ angular.module('rotowikiApp')
     return $resource('/api/documents/:title', {
       title: '@title'
     }, {
-      query: {
-        url: '/api/documents',
-        method: 'GET',
-        isArray: true
-      },
-      save: {
-        url: '/api/documents',
-        method: 'POST'
+      byId: {
+        url: '/api/documents/by-id/:documentId',
+        method: 'GET'
       },
       random: {
         url: '/api/documents/random',

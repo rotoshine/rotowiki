@@ -145,7 +145,11 @@ angular.module('rotowikiApp', [
   .filter('from', function(){
     return function(date){
       if(date !== undefined){
-        return moment(date).from();
+        var momentText = moment(date).from();
+        if(momentText === '몇초 후'){
+          momentText = '몇초 전';
+        }
+        return momentText;
       }else{
         return '';
       }

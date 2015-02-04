@@ -10,7 +10,7 @@ var config = require('./config/environment');
 
 module.exports = function(app) {
   // seo 처리
-  app.get('*', function(req, res, next){
+  /*app.get('*', function(req, res, next){
     if(req.query.hasOwnProperty('_escaped_fragment_')){
       var fullURL = config.domain + req.url.split('?')[0];
       console.log('크롤러 요청.' + fullURL);
@@ -27,7 +27,7 @@ module.exports = function(app) {
     }else{
       return next();
     }
-  });
+  });*/
 
   // Insert routes below
   app.use('/api/documentHistorys', require('./api/documentHistory'));
