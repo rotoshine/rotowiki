@@ -14,7 +14,9 @@ angular.module('rotowikiApp')
           $scope.document = document;
 
           window.document.title = 'rotowiki - ' + document.title;
-
+          setTimeout(function(){
+            window.Prism.highlightAll();
+          });
         }, function(err){
           if(err.status === 404){
             $scope.isNotExistDocument = true;
@@ -124,6 +126,9 @@ angular.module('rotowikiApp')
 
     $scope.markdownRender = function(){
       $scope.markdownToHTML = markdownService.toHTML($scope.document.content);
+      setTimeout(function(){
+        window.Prism.highlightAll();
+      });
     };
 
 
