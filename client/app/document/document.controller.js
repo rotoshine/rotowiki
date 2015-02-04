@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, Auth, Document, $stateParams) {
+  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams) {
     $scope.title = $stateParams.title;
     $scope.isNotExistDocument = false;
     $scope.isLoggedIn = Auth.isLoggedIn;
@@ -23,6 +23,7 @@ angular.module('rotowikiApp')
     };
 
     $scope.createSubDocument = function(){
+      $rootScope.keydownListeners.stopAll();
       alertify.prompt($scope.document.title + '의 하위 문서를 만듭니다. 하위 문서 제목을 입력해주세요.', function(answer, title){
         if(answer){
           Document
@@ -32,7 +33,13 @@ angular.module('rotowikiApp')
                 alertify.alert('해당 제목의 문서가 이미 존재합니다.');
               }
             }, function(){
-              location.href = '/document-edit/' + title + '?isNew=true&parent=' + $scope.document._id;
+              Document
+                .save({
+                  title: title,
+                  parent: $scope.document._id
+                }, function(){
+                  $state.go('document edit', {title: title});
+                });
             });
         }
       });
