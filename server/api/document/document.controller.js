@@ -98,12 +98,12 @@ exports.show = function(req, res) {
   });
 };
 
-function historyLoggingAndHandleDocument(document, statusCode, res){
+function historyLoggingAndHandleDocument(document, currentUser, statusCode, res){
   DocumentHistory.create({
     title: document.title,
     content: document.content,
-    workingUserTwitterId: document.createdUserTwitterId,
-    workingUser: document.createdUser
+    workingUserTwitterId: currentUser.twitter.screen_name,
+    workingUser: currentUser._id
   }, function(){
     return res.json(statusCode, document);
   });
@@ -121,7 +121,7 @@ exports.create = function(req, res) {
       }
       Document.create(document, function(err) {
         if(err) { return handleError(res, err); }
-        historyLoggingAndHandleDocument(document, 201, res);
+        historyLoggingAndHandleDocument(document, req.user, 201, res);
       });
     }else{
       document.updatedAt = new Date();
@@ -129,7 +129,7 @@ exports.create = function(req, res) {
       existDocument.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
       existDocument.save(existDocument, function(err) {
         if(err) { return handleError(res, err); }
-        historyLoggingAndHandleDocument(existDocument, 200, res);
+        historyLoggingAndHandleDocument(existDocument, req.user, 200, res);
       });
     }
   });
@@ -154,7 +154,7 @@ exports.update = function(req, res) {
 
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      historyLoggingAndHandleDocument(updated, 200, res);
+      historyLoggingAndHandleDocument(updated, req.user, 200, res);
     });
   });
 };
