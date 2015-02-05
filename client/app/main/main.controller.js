@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('MainCtrl', function ($scope, socket, Document) {
-    window.document.title = 'rotowiki';
+  .controller('MainCtrl', function ($scope, socket, Document, WIKI_NAME) {
+    window.document.title = WIKI_NAME;
 
     $scope.recentDocuments = null;
     $scope.hotIssueDocuments = null;

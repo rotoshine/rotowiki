@@ -9,6 +9,7 @@ angular.module('rotowikiApp', [
   'ui.bootstrap',
   'angularFileUpload'
 ])
+  .constant('WIKI_NAME', '로토위키')
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
       .otherwise('/');

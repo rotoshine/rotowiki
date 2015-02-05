@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams) {
+  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME) {
     $scope.title = $stateParams.title;
     $scope.isNotExistDocument = false;
     $scope.isLoggedIn = Auth.isLoggedIn;
@@ -13,7 +13,7 @@ angular.module('rotowikiApp')
         .$promise.then(function(document){
           $scope.document = document;
 
-          window.document.title = 'rotowiki - ' + document.title;
+          window.document.title = WIKI_NAME + ' - ' + document.title;
           setTimeout(function(){
             window.Prism.highlightAll();
           });
@@ -30,16 +30,14 @@ angular.module('rotowikiApp')
       var documentURL = encodeURIComponent(window.location.protocol + '//' + window.location.host + '/document/by-id/' + $scope.document._id);
       var intentMessage = $scope.document.title + ' 문서를 공유합니다. ';
 
-      console.log(currentUser);
       if(currentUser && currentUser.name){
         intentMessage = currentUser.name + ' 님이 ' + intentMessage;
       }
 
       var querystring = 'text=' + intentMessage +
         '&url=' + documentURL +
-        '&hashtags=rotowiki';
+        '&hashtags=rotowiki,로토위키';
 
-      console.log(INTENT_URL + '?' + querystring);
       window.open(INTENT_URL + '?' + querystring);
     };
 
@@ -66,7 +64,7 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope) {
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME) {
     function simpleTemplate(text, data){
       for(var key in data){
         var regExp = new RegExp('{' + key + '}', 'g');
@@ -133,7 +131,7 @@ angular.module('rotowikiApp')
 
 
     $scope.init = function () {
-      window.document.title = 'rotowiki - ' + $scope.document.title + ' edit';
+      window.document.title = WIKI_NAME + ' - ' + $scope.document.title + ' 편집';
       Document
         .get({title: $scope.document.title})
         .$promise.then(function (document) {
@@ -381,8 +379,6 @@ angular.module('rotowikiApp')
     // tab directive의 active에서 오류나서 이렇게 임시처리 함
     $timeout(function(){
       $('#link-tabs .tab-' + $scope.selectedTab + ' a').click();
-      console.log('#link-tabs .tab-' + $scope.selectedTab + ' a');
-      console.log($('#link-tabs .tab-' + $scope.selectedTab + ' a'));
     });
 
     $scope.linkTypes = linkTypes;
@@ -450,8 +446,8 @@ angular.module('rotowikiApp')
         $state.go('document', { title: document.title });
       })
   })
-  .controller('DocumentAllCtrl', function($scope, Document, $timeout){
-    window.document.title = 'rotowiki - 전체보기';
+  .controller('DocumentAllCtrl', function($scope, Document, $timeout, WIKI_NAME){
+    window.document.title = WIKI_NAME + ' - 전체보기';
 
     $scope.isNowLoading = false;
     $scope.currentPage = 1;
