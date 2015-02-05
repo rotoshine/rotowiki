@@ -1,8 +1,12 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('AdminCtrl', function ($scope, $http, Auth, User) {
+  .controller('AdminCtrl', function ($scope, $state, Auth, User) {
 
+    if(!Auth.isAdmin()){
+      alertify.alert('권한이 없습니다.');
+      $state.go('main');
+    }
     // Use the User $resource to fetch all users
     $scope.users = User.query();
 
