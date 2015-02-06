@@ -52,7 +52,12 @@ body{
 .document-edit-wrapper{
   padding-left:0;
 }
+
 /* navbar */
+.random-document-button-xs{
+  margin-top:8px;
+  margin-right:5px;
+}
 .logout-button{
   margin-left:15px;
 }

@@ -19,6 +19,17 @@ exports.find = function(req, res) {
     query.hashtag = new RegExp(req.query.title, 'i');
   }
 
+  if(req.query.hasOwnProperty('isToday') && !!req.query.isToday){
+    var currentDate = new Date();
+    currentDate.setHours(0);
+    currentDate.setMinutes(0);
+    currentDate.setSeconds(0);
+
+    query.createdAt = {
+      '$gte': currentDate
+    };
+  }
+
   var queryRunner = Document
     .find(query);
 
@@ -95,7 +106,9 @@ exports.show = function(req, res) {
       document.save(function(){
         Document.find({parent: document._id}, function(err, subDocuments){
           if(err) { return handleError(res, err); }
+
           document.set('subDocuments', subDocuments);
+
           return res.json(document);
         });
       });

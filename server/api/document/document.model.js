@@ -15,6 +15,10 @@ var DocumentSchema = new Schema({
     ref: 'User',
     type: Schema.Types.ObjectId
   },
+  updateCount: {
+    type: Number,
+    default: 0
+  },
   readCount: {
     type: Number,
     default: 0

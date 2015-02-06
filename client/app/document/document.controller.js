@@ -7,7 +7,9 @@ angular.module('rotowikiApp')
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.document = null;
 
+    $scope.isNowLoading = false;
     $scope.init = function(){
+      $scope.isNowLoading = true;
       Document
         .get({title: $scope.title})
         .$promise.then(function(document){
@@ -17,10 +19,12 @@ angular.module('rotowikiApp')
           setTimeout(function(){
             window.Prism.highlightAll();
           });
+          $scope.isNowLoading = false;
         }, function(err){
           if(err.status === 404){
             $scope.isNotExistDocument = true;
           }
+          $scope.isNowLoading = false;
         });
     };
 
@@ -146,9 +150,6 @@ angular.module('rotowikiApp')
     $scope.isNowSaving = false;
     $scope.save = function () {
       $scope.isNowSaving = true;
-
-      // TODO 임시처리. 원래는 markdown service에서 제거 되서 날라오는 게 맞음..조치하고 나중에 이 코드 없애자.
-      $scope.document.content = $scope.document.content.replace(/<script/gi, '').replace(/<\/script>/, '');
 
       var saveDocument = {
         title: $scope.document.title,

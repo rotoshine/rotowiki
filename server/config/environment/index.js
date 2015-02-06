@@ -48,7 +48,8 @@ var all = {
   },
 
   uploadPath: process.env.UPLOAD_PATH || './uploads',
-  maxUploadFileSize: process.env.MAX_UPLOAD_FILE_SIZE || 2000000
+  maxUploadFileSize: process.env.MAX_UPLOAD_FILE_SIZE || 4000000,
+  wikiName: process.env.WIKI_NAME || '로토위키'
 
 };
 

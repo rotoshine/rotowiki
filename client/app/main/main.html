@@ -7,45 +7,39 @@
 
 <div class="container" ng-init="init()">
   <div class="row">
+    <documents-widget heading="최근 수정된 문서" querystring="page=1&sort=updatedAt&pageCount=h1.page20&asc=-1" display-field="from"></documents-widget>
+    <documents-widget heading="사람들이 많이 읽은 문서" querystring="sort=readCount&asc=-1&page=1&pageCount=20" display-field="readCount"></documents-widget>
+    <documents-widget heading="오늘 만들어진 문서" querystring="sort=createdAt&asc=-1&pageCount=20&isToday=true" display-field="readCount"></documents-widget>
     <div class="col-md-6 col-xs-12">
-      <h1 class="page-header">최근 수정된 문서</h1>
-      <div ng-show="isNowRecentDocumentsLoading">
-        <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
+      <h1 class="page-header">여기에 뭐 뿌릴까요?</h1>
+      <div class="well">
+        의견주세요!
       </div>
-      <ul class="list-unstyled">
-        <li ng-repeat="recentDocument in recentDocuments">
-          <a href="/document/{{recentDocument.title}}">
-            <div class="col-md-6 col-xs-8">
-              {{recentDocument.title}}
-            </div>
-            <div class="col-md-6 col-xs-4">
-              {{recentDocument.updatedAt | from}}
-            </div>
-          </a>
-        </li>
-      </ul>
-      <div class="well" ng-hide="recentDocuments.length > 0">문서가 없습니다.</div>
-    </div>
-    <div class="col-md-6 col-xs-12">
-      <h1 class="page-header">사람들이 많이 읽은 문서</h1>
-      <div ng-show="isNowHotIssueDocumentsLoading">
-        <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
-      </div>
-      <ul class="list-unstyled">
-        <li ng-repeat="hotIssueDocument in hotIssueDocuments">
-          <div class="row">
-            <a href="/document/{{hotIssueDocument.title}}">
-              <div class="col-md-6 col-xs-10">
-                {{hotIssueDocument.title}}
-              </div>
-              <div class="col-md-6 col-xs-2">
-                <span class="label label-info">{{hotIssueDocument.readCount}}</span>
-              </div>  
-            </a>  
-          </div>
-        </li>
-      </ul>  
-      <div class="well" ng-hide="hotIssueDocuments.length > 0">문서가 없습니다.</div>    
     </div>
   </div>
 </div>
+
+<script id="documentsWidget.html" type="text/ng-template">
+  <div class="col-md-6 col-xs-12" ng-init="init()">
+    <h1 class="page-header">{{heading}}</h1>
+    <div ng-show="isNowLoading">
+      <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
+    </div>
+    <ul class="list-unstyled">
+      <li ng-repeat="document in documents">
+        <div class="row">
+          <a href="/document/{{document.title}}">
+            <div class="col-md-6 col-xs-10">
+              {{document.title}}
+            </div>
+            <div class="col-md-6 col-xs-2">
+              <span ng-if="displayField === 'from'">{{document.updatedAt | from}}</span>
+              <span ng-if="displayField === 'readCount'" class="badge">{{document.readCount}}</span>
+            </div>
+          </a>
+        </div>
+      </li>
+    </ul>
+    <div class="well" ng-show="!isNowLoading && documents.length === 0">문서가 없습니다.</div>
+  </div>
+</script>

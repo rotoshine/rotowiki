@@ -2,14 +2,14 @@
   <div ng-show="!isNotExistDocument">
     <div class="row" ng-show="document.parent !== undefined">
       <div class="col-xs-12">
-        <div class="well">
+        <div class="alert alert-info" role="alert">
           이 문서는 <a href="/document/{{document.parent.title}}">{{document.parent.title}}</a> 문서의 하위문서 입니다.
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-12">
-        <h3 class="pull-left">{{document.title}}</h3>
+        <h1 class="page-header pull-left">{{title}}</h1>
         <div class="pull-right">
           <span>{{document.updatedAt | from}} 수정됨</span>
           <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()"><i class="fa fa-twitter"></i> 트위터에 공유하기</button>
@@ -17,8 +17,18 @@
 
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-12 markdown-view" ng-bind-html="document.content | markdownToHTML | toTrusted"></div>
+    <div class="row" ng-show="isNowLoading">
+      <div class="col-xs-12">
+        <p class="lead">
+          <i class="fa fa-spin fa-spinner"></i> 문서를 읽어오고 있습니다.
+        </p>
+      </div>
+    </div>
+    <div class="row" ng-show="!isNowLoading">
+      <div class="col-xs-12 markdown-view" ng-show="document.content !== ''" ng-bind-html="document.content | markdownToHTML | toTrusted"></div>
+      <div class="col-xs-12" ng-show="document.content === '' || document.content === undefined || document.content === null">
+        <div class="alert alert-warning"><strong>알림</strong> 내용이 없는 문서입니다.</div>
+      </div>
     </div>
     <div class="row">
       <div class="col-xs-12">
@@ -38,6 +48,7 @@
     </div>
     <div class="row document-bottom-buttons">
       <div class="col-xs-12 text-right">
+        이 문서는 <span class="badge badge">{{document.readCount}}</span> 번 읽혔습니다.</span>
         <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()"><i class="fa fa-twitter"></i> 트위터에 공유하기</button>
       </div>
     </div>

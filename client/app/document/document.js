@@ -9,8 +9,12 @@ angular.module('rotowikiApp')
         controller: 'DocumentCtrl',
         allowKeydownListeners: ['navbar', 'documentView']
       })
-      .state('document by id', {
+      .state('document by id-old', {
         url: '/document/by-id/:documentId',
+        controller: 'DocumentRedirectionCtrl'
+      })
+      .state('document by id', {
+        url: '/document-by-id/:documentId',
         controller: 'DocumentRedirectionCtrl'
       })
       .state('document edit', {
