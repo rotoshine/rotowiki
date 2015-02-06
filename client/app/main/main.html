@@ -29,10 +29,10 @@
       <li ng-repeat="document in documents">
         <div class="row">
           <a href="/document/{{document.title}}">
-            <div class="col-md-6 col-xs-10">
+            <div class="col-md-6 col-xs-9">
               {{document.title}}
             </div>
-            <div class="col-md-6 col-xs-2">
+            <div class="col-md-6 col-xs-3">
               <span ng-if="displayField === 'from'">{{document.updatedAt | from}}</span>
               <span ng-if="displayField === 'readCount'" class="badge">{{document.readCount}}</span>
             </div>
