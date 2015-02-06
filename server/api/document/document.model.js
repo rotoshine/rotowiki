@@ -32,6 +32,7 @@ var DocumentSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  hashTag: String,
   files: [{
     ref: 'File',
     type: Schema.Types.ObjectId

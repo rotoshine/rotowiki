@@ -15,6 +15,10 @@ exports.find = function(req, res) {
     query.title = new RegExp(req.query.title, 'i');
   }
 
+  if(req.query.hasOwnProperty('hashtag')){
+    query.hashtag = new RegExp(req.query.title, 'i');
+  }
+
   var queryRunner = Document
     .find(query);
 

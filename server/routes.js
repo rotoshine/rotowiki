@@ -5,7 +5,7 @@
 'use strict';
 
 var errors = require('./components/errors');
-var Browser = require('zombie');
+//var Browser = require('zombie');
 var config = require('./config/environment');
 
 module.exports = function(app) {
