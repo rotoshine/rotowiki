@@ -7,7 +7,7 @@
 
 <div class="container" ng-init="init()">
   <div class="row">
-    <documents-widget heading="최근 수정된 문서" querystring="page=1&sort=updatedAt&pageCount=h1.page20&asc=-1" display-field="from"></documents-widget>
+    <documents-widget heading="최근 수정된 문서" querystring="page=1&sort=updatedAt&pageCount=20&asc=-1" display-field="from"></documents-widget>
     <documents-widget heading="사람들이 많이 읽은 문서" querystring="sort=readCount&asc=-1&page=1&pageCount=20" display-field="readCount"></documents-widget>
     <documents-widget heading="오늘 만들어진 문서" querystring="sort=createdAt&asc=-1&pageCount=20&isToday=true" display-field="readCount"></documents-widget>
     <div class="col-md-6 col-xs-12">
