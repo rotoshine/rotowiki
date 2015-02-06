@@ -17,7 +17,7 @@ angular.module('rotowikiApp')
       },
       applyCustomHTMLSyntax: function(markdownText){
         var regExpMapping = {
-          '(```)([\\w]*)\\n([\\d\\D]*){1,}(```)': '<pre><code class="language-$2">$3</code></pre>',
+          //'(```)([\\w]*)\\n([\\d\\D]*){1,}(```)': '<pre><code class="language-$2">$3</code></pre>',
           '(&amp;|&)\\[(.*?)\\]': '[$2](/document/$2)',
           '-\\[(.*?)\\]': '<strike>$1</strike>',
           '\\*\\[(.*?)\\|(.*?)\\]': '<a href="$2" target="_blank">$1<i class="fa fa-external-link"></i></a>'
