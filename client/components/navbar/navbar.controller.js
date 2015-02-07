@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth, Document, $timeout, $rootScope, $modal) {
+  .controller('NavbarCtrl', function ($scope, $location, Auth, Document, $timeout, $rootScope, $modal, LAST_VISIT_URL_KEY) {
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
@@ -13,11 +13,17 @@ angular.module('rotowikiApp')
       }
     ];
     $scope.logout = function() {
+      if(window.localStorage && window.localStorage[LAST_VISIT_URL_KEY]){
+        window.localStorage.removeItem(LAST_VISIT_URL_KEY);
+      }
       Auth.logout();
       $location.path('/');
     };
 
     $scope.goLogin = function(){
+      if(window.localStorage){
+        window.localStorage.setItem(LAST_VISIT_URL_KEY, location.href);
+      }
       location.href = '/auth/twitter';
     };
 

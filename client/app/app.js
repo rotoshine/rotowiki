@@ -10,6 +10,7 @@ angular.module('rotowikiApp', [
   'angularFileUpload'
 ])
   .constant('WIKI_NAME', '로토위키')
+  .constant('LAST_VISIT_URL_KEY', 'lastVisitUrl')
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
       .otherwise('/');
