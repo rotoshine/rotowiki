@@ -12,9 +12,12 @@
         <h1 class="page-header pull-left">{{title}}</h1>
         <div class="pull-right">
           <span>{{document.updatedAt | from}} 수정됨</span>
-          <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()"><i class="fa fa-twitter"></i> 트위터에 공유하기</button>
+          <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()">
+            <i class="fa fa-share-alt visible-xs"></i>
+            <i class="fa fa-twitter"></i>
+            <span class="hidden-xs"> 트위터에 공유하기</span>
+          </button>
         </div>
-
       </div>
     </div>
     <div class="row" ng-show="isNowLoading">
@@ -49,7 +52,11 @@
     <div class="row document-bottom-buttons">
       <div class="col-xs-12 text-right">
         이 문서는 <span class="badge badge">{{document.readCount}}</span> 번 읽혔습니다.</span>
-        <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()"><i class="fa fa-twitter"></i> 트위터에 공유하기</button>
+        <button class="btn btn-info share-twitter-button" ng-click="shareTwitter()">
+          <i class="fa fa-share-alt visible-xs"></i>
+          <i class="fa fa-twitter"></i>
+          <span class="hidden-xs"> 트위터에 공유하기</span>
+        </button>
       </div>
     </div>
     <div class="row">
