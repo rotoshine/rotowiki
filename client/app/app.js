@@ -53,6 +53,9 @@ angular.module('rotowikiApp', [
     };
     // keydown event
     keydownListeners
+      .addCombo('navbar', 'ctrl r', function(){
+        location.reload();
+      })
       .addCombo('navbar', 'm', function(){
         $state.go('main');
       })
