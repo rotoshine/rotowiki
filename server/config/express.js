@@ -20,6 +20,7 @@ var mongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 var multer = require('multer');
 var fs = require('fs');
+var favion = require('serve-favicon');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -33,6 +34,7 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
   app.use(passport.initialize());
+  app.use(favicon(__dirname + '../../../client/favicon.ico'));
 
   app.use(multer({
     dest: config.uploadPath,
