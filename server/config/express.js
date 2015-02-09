@@ -34,7 +34,7 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
   app.use(passport.initialize());
-  app.use(favicon(__dirname + '../../../client/favicon.ico'));
+  app.use(favicon(__dirname + '/favicon.ico'));
 
   app.use(multer({
     dest: config.uploadPath,
