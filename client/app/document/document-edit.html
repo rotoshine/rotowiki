@@ -37,9 +37,11 @@
               <div class="col-xs-12 document-edit-wrapper">
                 <tabset>
                   <tab heading="편집" id="document-edit-tab">
+                    <div id="ace-editor" class="ace-editor">{{document.content}}</div>
+                    <!--
                     <textarea class="form-control" name="content" id="content" cols="30" rows="15" ng-model="document.content"
                               placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."
-                              ng-blur="setSelectionRange($event)"></textarea>
+                              ng-blur="setSelectionRange($event)"></textarea>-->
                   </tab>
                   <tab heading="미리보기" ng-click="markdownRender()" id="document-preview-tab">
                     <document class="col-xs-12 markdown-view" id="markdown-view" content="markdownToHTML"></document>
@@ -170,17 +172,6 @@
               </div>
             </div>
           </tab>
-          <tab select="selectTab(linkTypes.YOUTUBE.name)">
-            <tab-heading class="tab-{{linkTypes.YOUTUBE.name}}">
-              <i class="fa fa-fw fa-youtube"></i> youtube
-            </tab-heading>
-            <div class="form-group">
-              <label class="col-xs-4">youtube url</label>
-              <div class="col-xs-8">
-                <input type="text" class="form-control" placeholder="youtube url을 적어주세요." ng-model="linkTypes.YOUTUBE.linkObject"/>
-              </div>
-            </div>
-          </tab>
           <tab select="selectTab(linkTypes.SOUNDCLOUD.name)">
             <tab-heading class="tab-{{linkTypes.SOUNDCLOUD.name}}">
               <i class="fa fa-fw fa-soundcloud"></i> soundcloud
@@ -189,6 +180,17 @@
               <label class="col-xs-4">soundcloud url</label>
               <div class="col-xs-8">
                 <input type="text" class="form-control" placeholder="soundcloud url을 적어주세요." ng-model="linkTypes.SOUNDCLOUD.linkObject"/>
+              </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.YOUTUBE.name)">
+            <tab-heading class="tab-{{linkTypes.YOUTUBE.name}}">
+              <i class="fa fa-fw fa-youtube"></i> youtube
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">youtube url</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="youtube url을 적어주세요." ng-model="linkTypes.YOUTUBE.linkObject"/>
               </div>
             </div>
           </tab>

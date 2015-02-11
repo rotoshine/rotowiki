@@ -68,7 +68,7 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $compile) {
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $timeout) {
     function simpleTemplate(text, data){
       for(var key in data){
         var regExp = new RegExp('{' + key + '}', 'g');
@@ -84,11 +84,6 @@ angular.module('rotowikiApp')
 
     $scope.uploadImage = null;
 
-    var blurRange = -1;
-    $scope.setSelectionRange = function ($event) {
-      blurRange = $event.target.selectionStart;
-    };
-
     var fileUrl = '/api/documents/' + $stateParams.title + '/files';
     $scope.imageUpload = function ($files) {
       if ($files.length === 1) {
@@ -96,18 +91,18 @@ angular.module('rotowikiApp')
           file: $files[0],
           url: fileUrl
         }).success(function (imageFile) {
-          var imgTag = CARRIAGE_RETURN_CHAR + simpleTemplate('![{title}의 이미지]({imageUrl})', {
+          var imgTag = simpleTemplate('![{title}의 이미지]({imageUrl})', {
               title: $stateParams.title,
               imageUrl: fileUrl + '/' + imageFile._id
             }) + CARRIAGE_RETURN_CHAR;
+          var editor = $scope.editor;
 
-          if (blurRange > -1) {
-            $scope.document.content = $scope.document.content.substring(0, blurRange) +
-            imgTag +
-            $scope.document.content.substring(blurRange, $scope.document.content.length);
-          } else {
-            $scope.document.content = $scope.document.content + imgTag;
+
+          if ($scope.currentCursor !== null) {
+            imgTag = CARRIAGE_RETURN_CHAR + imgTag;
           }
+
+          $scope.appendHTML(imgTag);
         }).error(function () {
           alertify.alert('파일 업로드 중 에러가 발생했습니다.');
         });
@@ -124,16 +119,18 @@ angular.module('rotowikiApp')
       $scope.document.parent = parentDocumentId;
     }
 
+    $scope.editor = null;
     $scope.markdownToHTML = '';
 
     $scope.markdownRender = function(){
-      $scope.markdownToHTML = markdownService.toHTML($scope.document.content);
+      $scope.markdownToHTML = markdownService.toHTML($scope.editor.getValue());
       setTimeout(function(){
         window.Prism.highlightAll();
       });
     };
 
 
+    $scope.currentCursor = null;
     $scope.init = function () {
       window.document.title = WIKI_NAME + ' - ' + $scope.document.title + ' 편집';
       Document
@@ -144,6 +141,17 @@ angular.module('rotowikiApp')
           if ($scope.document.content === undefined) {
             $scope.document.content = '';
           }
+
+          $timeout(function(){
+            var editor = editor = window.ace.edit('ace-editor');
+            editor.on('blur', function (event, editor) {
+              $scope.currentCursor = editor.selection.getCursor();
+            });
+            var MarkdownMode = ace.require('ace/mode/markdown').Mode;
+            editor.getSession().setMode(new MarkdownMode());
+            editor.focus();
+            $scope.editor = editor;
+          });
         });
     };
 
@@ -153,7 +161,7 @@ angular.module('rotowikiApp')
 
       var saveDocument = {
         title: $scope.document.title,
-        content: $scope.document.content
+        content: $scope.editor.getSession().getValue()
       };
 
       if ($scope.changedDocumentTitle !== $scope.document.title){
@@ -243,9 +251,15 @@ angular.module('rotowikiApp')
             }else if(youtubeUrl.indexOf('youtu.be') > -1){
               youtubeUrl = youtubeUrl.replace('youtu.be', 'youtube.com/embed')
             }
-            return simpleTemplate(CARRIAGE_RETURN_CHAR + '<iframe src="{youtubeUrl}" allowfullscreen></iframe>' + CARRIAGE_RETURN_CHAR, {
-              youtubeUrl: youtubeUrl
-            });
+            return simpleTemplate(
+              CARRIAGE_RETURN_CHAR +
+              '<div class="embed-responsive embed-responsive-16by9">' +
+                '<iframe class="embed-responsive-item" src="{youtubeUrl}" allowfullscreen></iframe>' +
+              '</div>' +
+              CARRIAGE_RETURN_CHAR, {
+                youtubeUrl: youtubeUrl
+              }
+            );
           }
         }
       },
@@ -276,6 +290,18 @@ angular.module('rotowikiApp')
       }
     };
 
+    $scope.appendHTML = function(html){
+      var editor = $scope.editor;
+
+      if ($scope.currentCursor !== null) {
+        editor.selection.moveCursorBy($scope.currentCursor.row, $scope.currentCursor.column);
+      } else {
+        editor.selection.moveCursorLineEnd();
+      }
+
+      editor.insert(html);
+    };
+
     $scope.linkInsertModal = {
       show: function(selectedTab){
         $scope.keydownListeners.stopAll();
@@ -295,16 +321,10 @@ angular.module('rotowikiApp')
 
         modalInstance.result.then(function(linkHTML){
           $scope.keydownListeners.listen('documentEdit');
-          var content = $scope.document.content;
-          if(blurRange > -1){
-            content = content.substring(0, blurRange)
-              + linkHTML
-              + content.substring(blurRange, content.length);
-            $scope.document.content = content;
-          }else{
-            $scope.document.content = content + linkHTML;
-          }
-          $('#content').focus();
+
+          $scope.appendHTML(linkHTML);
+
+          $scope.editor.focus();
         });
       }
     };
@@ -377,9 +397,9 @@ angular.module('rotowikiApp')
       $scope.selectedTab = tabName;
     };
 
-    // tab directive의 active에서 오류나서 이렇게 임시처리 함
+    // FIXME tab directive의 active에서 오류나서 이렇게 임시처리 함
     $timeout(function(){
-      $('#link-tabs .tab-' + $scope.selectedTab + ' a').click();
+      $('#link-tabs .tab-' + selectedTab).parents('a').click();
     });
 
     $scope.linkTypes = linkTypes;
@@ -431,6 +451,9 @@ angular.module('rotowikiApp')
       var currentTab = getCurrentTab();
       if(currentTab !== null && currentTab.linkObject !== null){
         $modalInstance.close(currentTab.linkGenerator());
+        for(var key in $scope.linkTypes){
+          $scope.linkTypes[key].linkObject = null;
+        }
       }
     };
 

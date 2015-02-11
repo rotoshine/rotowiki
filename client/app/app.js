@@ -69,6 +69,12 @@ angular.module('rotowikiApp', [
       .addCombo('navbar', 'n', function(){
         $('.nav-create-document-button').click();
       })
+      .addCombo('navbar', 's', function(){
+        $('#search-text').focus();
+      })
+      .addCombo('navbar', 'esc', function(){
+        $('#search-result-close-button').click();
+      })
       .addCombo('documentView', 'e', function(){
         if(Auth.isLoggedIn()){
           $('#document-edit-button').click();
