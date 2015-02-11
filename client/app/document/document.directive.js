@@ -32,4 +32,34 @@ angular.module('rotowikiApp')
         };
       }
     }
+  })
+  .directive('info', function(){
+    return {
+      restrict: 'E',
+      replace: true,
+      transclude: true,
+      scope: {
+        type: '@'
+      },
+      templateUrl: 'info.html',
+      controller: function($scope){
+        $scope.alertTypeClass = 'alert-info';
+
+        if($scope.type){
+          $scope.alertTypeClass = 'alert-' + $scope.type;
+        }
+      }
+    }
+  })
+  .directive('document', function($compile){
+    return function(scope, element, attrs){
+      scope.$watch(function(scope){
+        return scope.$eval(attrs.content);
+      },
+      function(value){
+        element.html(value);
+
+        $compile(element.contents())(scope);
+      })
+    }
   });

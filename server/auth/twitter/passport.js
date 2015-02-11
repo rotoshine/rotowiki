@@ -27,7 +27,11 @@ exports.setup = function (User, config) {
           return done(err, user);
         });
       } else {
-        return done(err, user);
+        // 사용자 이름 update하기
+        user.name = profile.displayName;
+        user.save(function(err){
+          return done(err, user);
+        });
       }
     });
     }

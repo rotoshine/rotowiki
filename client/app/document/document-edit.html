@@ -42,7 +42,7 @@
                               ng-blur="setSelectionRange($event)"></textarea>
                   </tab>
                   <tab heading="미리보기" ng-click="markdownRender()" id="document-preview-tab">
-                    <div class="col-xs-12 markdown-view" id="markdown-view" ng-bind-html="markdownToHTML | toTrusted"></div>
+                    <document class="col-xs-12 markdown-view" id="markdown-view" content="markdownToHTML"></document>
                   </tab>
                 </tabset>
               </div>

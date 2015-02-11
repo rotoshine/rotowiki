@@ -40,6 +40,9 @@
       <p>이 사이트는 IE9 이상만 지원합니다. IE 9 이상이나 Chrome, Safari, Firefox, Opera 등 최신 브라우저를 통해 즐겨주세요.</p>
     <![endif]-->
 
+    <script id="info.html" type="text/ng-template">
+      <div class="alert" ng-class="alertTypeClass" role="alert" ng-transclude></div>
+    </script>
     <div ng-include="'components/navbar/navbar.html'"></div>
     <!-- Add your site or application content here -->
     <div ui-view=""></div>
