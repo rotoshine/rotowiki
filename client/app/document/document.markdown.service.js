@@ -16,15 +16,29 @@ angular.module('rotowikiApp')
         return markdownText;
       },
       applyCustomHTMLSyntax: function(markdownText){
-        var regExpMapping = {
+        var regExps = [
+          {
+            regExp: '(&amp;|&)\\[(.*?)\\|(.*?)\\]',
+            replace: '[$2](/document/$3)'
+          },
+          {
+            regExp: '(&amp;|&)\\[(.*?)\\]',
+            replace: '[$2](/document/$2)'
+          },
+          {
+            regExp: '-\\[(.*?)\\]',
+            replace: '<strike>$1</strike>'
+          },
+          {
+            regExp: '\\*\\[(.*?)\\|(.*?)\\]',
+            replace:'<a href="$2" target="_blank">$1<i class="fa fa-external-link"></i></a>'
+          }
           //'(```)([\\w]*)\\n([\\d\\D]*){1,}(```)': '<pre><code class="language-$2">$3</code></pre>',
-          '(&amp;|&)\\[(.*?)\\]': '[$2](/document/$2)',
-          '-\\[(.*?)\\]': '<strike>$1</strike>',
-          '\\*\\[(.*?)\\|(.*?)\\]': '<a href="$2" target="_blank">$1<i class="fa fa-external-link"></i></a>'
-        };
+        ];
 
-        for(var regExpString in regExpMapping){
-          markdownText = markdownText.replace(new RegExp(regExpString, 'gm'), regExpMapping[regExpString]);
+        for(var i = 0; i < regExps.length; i++){
+          console.log(regExps[i]);
+          markdownText = markdownText.replace(new RegExp(regExps[i].regExp, 'gm'), regExps[i].replace);
         }
         return markdownText;
 

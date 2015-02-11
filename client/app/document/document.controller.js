@@ -31,7 +31,7 @@ angular.module('rotowikiApp')
     $scope.shareTwitter = function(){
       var INTENT_URL = 'https://twitter.com/intent/tweet';
       var currentUser = Auth.getCurrentUser();
-      var documentURL = encodeURIComponent(window.location.protocol + '//' + window.location.host + '/document/by-id/' + $scope.document._id);
+      var documentURL = encodeURIComponent(window.location.protocol + '//' + window.location.host + '/document-by-id/' + $scope.document._id);
       var intentMessage = $scope.document.title + ' 문서를 공유합니다. ';
 
       if(currentUser && currentUser.name){
@@ -43,6 +43,15 @@ angular.module('rotowikiApp')
         '&hashtags=rotowiki,로토위키';
 
       window.open(INTENT_URL + '?' + querystring);
+    };
+
+    $scope.createDocument = function(){
+      Document
+        .save({
+          title: $scope.title
+        }, function(savedDocument){
+          location.href = '/document-edit/' + savedDocument.title
+        });
     };
 
     $scope.createSubDocument = function(){
@@ -143,6 +152,7 @@ angular.module('rotowikiApp')
           }
 
           $timeout(function(){
+            $('#ace-editor').width($('.document-edit-wrapper').width());
             var editor = editor = window.ace.edit('ace-editor');
             editor.on('blur', function (event, editor) {
               $scope.currentCursor = editor.selection.getCursor();

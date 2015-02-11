@@ -1,4 +1,4 @@
-<div class="container" ng-init="init()" ng-clock ng-init="init()">
+<div class="container" ng-init="init()" ng-clock">
   <div ng-show="!isNotExistDocument">
     <div class="row" ng-show="document.parent !== undefined">
       <div class="col-xs-12">
@@ -75,6 +75,6 @@
   <div ng-show="isNotExistDocument">
     {{title}}는 없는 문서입니다.
     <div class="well" ng-show="!isLoggedIn()">로그인 후 이 문서를 작성해보세요!</div>
-    <a ng-show="isLoggedIn()" type="button" class="btn btn-info" href="/document-edit/{{title}}?isNew=true">이 문서 작성하기</a>
+    <button ng-show="isLoggedIn()" type="button" class="btn btn-info" ng-click="createDocument()">이 문서 작성하기</button>
   </div>
 </div>
