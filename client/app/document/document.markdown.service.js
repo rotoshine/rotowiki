@@ -37,7 +37,6 @@ angular.module('rotowikiApp')
         ];
 
         for(var i = 0; i < regExps.length; i++){
-          console.log(regExps[i]);
           markdownText = markdownText.replace(new RegExp(regExps[i].regExp, 'gm'), regExps[i].replace);
         }
         return markdownText;

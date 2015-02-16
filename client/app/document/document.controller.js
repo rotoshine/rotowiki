@@ -483,20 +483,52 @@ angular.module('rotowikiApp')
   .controller('DocumentAllCtrl', function($scope, Document, $timeout, WIKI_NAME){
     window.document.title = WIKI_NAME + ' - 전체보기';
 
+    $scope.sortOptions = [
+      {
+        text: '수정된 날짜',
+        value: 'updatedAt'
+      },
+      {
+        text: '제목',
+        value: 'title'
+      }
+    ];
+
+    $scope.orderOptions = [
+      {
+        text: '내림차순',
+        value: '-1'
+      },
+      {
+        text: '오름차순',
+        value: '1'
+      }
+    ];
+
+    $scope.selectedSortOption = $scope.sortOptions[0];
+    $scope.selectedOrderOption = $scope.orderOptions[0];
+
     $scope.isNowLoading = false;
     $scope.currentPage = 1;
     $scope.pageCount = 20;
     $scope.loadedDocuments = null;
-    $scope.currentSortOption = 'updatedAt';
     $scope.hasArriveLastPage = false;
 
     var masonry = null;
+
+    $scope.loadFirstDocuments = function(){
+      $scope.currentPage = 1;
+      $scope.loadedDocuments = null;
+      $scope.loadMoreDocuments();
+    };
+
     $scope.loadMoreDocuments = function(){
       if(!$scope.hasArriveLastPage){
         $scope.isNowLoading = true;
         Document
           .query({
-            sort: $scope.currentSortOption,
+            sort: $scope.selectedSortOption.value,
+            asc: $scope.selectedOrderOption.value,
             page: $scope.currentPage,
             pageCount: $scope.pageCount
           })
@@ -524,13 +556,20 @@ angular.module('rotowikiApp')
             }
 
 
+            // masonry가 다시 생성되면서 스크롤이 초기화 되기 떄문에, 이전의 스크롤 값을 가지고 있다가
+            // 스크롤을 조정해주는 부분이 필요함.
+            var NOT_INIT_ITEM_CLASS = 'not-init-item';
             $timeout(function(){
+              var $masonryAddTargetItems = $('.' + NOT_INIT_ITEM_CLASS);
               if(masonry !== null){
-                masonry.destroy();
+                masonry.addItems($masonryAddTargetItems);
+                masonry.layout();
+              }else{
+                masonry = new window.Masonry($('#document-container').get(0), {
+                  itemSelector: '.item'
+                });
               }
-              masonry = new window.Masonry($('#document-container').get(0), {
-                itemSelector: '.item'
-              });
+              $masonryAddTargetItems.removeClass(NOT_INIT_ITEM_CLASS);
             });
           });
       }

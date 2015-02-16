@@ -33,7 +33,6 @@ exports.find = function(req, res) {
   var queryRunner = Document
     .find(query);
 
-  // 최근순 문서 요청인 경우
   if(req.query.hasOwnProperty('sort')){
     var sortQuery = {};
     sortQuery[req.query.sort] = req.query.asc || 1;
