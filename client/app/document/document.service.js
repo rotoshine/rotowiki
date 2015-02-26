@@ -14,6 +14,14 @@ angular.module('rotowikiApp')
         method: 'GET',
         isArray: true
       },
+      like: {
+        url: '/api/documents/:title/like',
+        method: 'POST'
+      },
+      unlike: {
+        url: '/api/documents/:title/like',
+        method: 'DELETE'
+      },
       save: {
         url: '/api/documents',
         method: 'POST'

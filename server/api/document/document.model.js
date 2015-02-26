@@ -40,6 +40,13 @@ var DocumentSchema = new Schema({
   files: [{
     ref: 'File',
     type: Schema.Types.ObjectId
+  }],
+  likeCount: {
+    type: Number,
+    default: 0
+  },
+  likeUsers: [{
+    type: Schema.Types.ObjectId
   }]
 }, {
   toObject: {
@@ -49,6 +56,10 @@ var DocumentSchema = new Schema({
     virtuals: true
   }
 });
+
+DocumentSchema.statics.findByTitle = function(title, callback){
+  this.findOne({title: title}, callback);
+};
 
 DocumentSchema.statics.random = function(callback){
   var that = this;

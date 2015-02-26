@@ -68,7 +68,7 @@ exports.find = function(req, res) {
 exports.findByParent = function(req, res){
   var title = req.params.title;
 
-  Document.findOne({title: title}, function(err, document){
+  Document.findByTitle(title, function(err, document){
     if(err){ return handleError(res, err); }
     if(document){
       Document.find({parent: document._id}, function(err, subDocuments){
@@ -92,7 +92,6 @@ exports.show = function(req, res) {
     };
   }
 
-  console.log(query);
   Document
     .findOne(query)
     .populate('parent')
@@ -127,7 +126,7 @@ function historyLoggingAndHandleDocument(document, currentUser, statusCode, res)
 
 exports.create = function(req, res) {
   var document = req.body;
-  Document.findOne({title: document.title}, function(err, existDocument){
+  Document.findByTitle(document.title, function(err, existDocument){
     if(!existDocument){
       document.createdAt = new Date();
       document.updatedAt = new Date();
@@ -154,7 +153,7 @@ exports.create = function(req, res) {
 
 // Updates an existing document in the DB.
 exports.update = function(req, res) {
-  Document.findOne({title: req.params.title}, function (err, document) {
+  Document.findByTitle(req.params.title, function (err, document) {
     if (err) { return handleError(res, err); }
     if(!document) { return res.send(404); }
     var updated = _.merge(document, req.body);
@@ -220,6 +219,66 @@ exports.findFileByDocumentId = function(req ,res){
   })
 };
 
+exports.like = function(req, res){
+  var userId = req.user._id;
+  Document
+    .findOne({
+      title: req.params.title,
+      likeUsers: {
+        $ne: userId
+      }
+    }, function(err, document){
+      if(err) {
+        return handleError(res, err);
+      }else{
+        if(document){
+          document.likeCount = document.likeCount + 1;
+          document.likeUsers.push(userId);
+          document.save(function(err){
+            if(err){
+              return handleError(res, err);
+            }else{
+              return res.json(200, {message: 'like complete.', likeCount: document.likeCount });
+            }
+          });
+        }else{
+          return res.json(500, {message: 'already like document.'});
+        }
+      }
+    });
+};
+
+exports.unlike = function(req, res){
+  var userId = req.user._id;
+
+  var query = {
+    title: req.params.title,
+    likeUsers: userId
+  };
+  Document
+    .findOne(query, function(err, document){
+      if(err) {
+        return handleError(res, err);
+      }else{
+        if(document){
+          document.likeCount = document.likeCount - 1;
+          document.likeUsers = _.reject(req.user._id);
+
+          document.save(function(err){
+            if(err){
+              return handleError(res, err);
+            }else{
+              return res.json(200, {message: 'unlike complete.', likeCount: document.likeCount });
+            }
+          });
+        }else{
+          return res.json(500, {message: 'not like document.'});
+        }
+      }
+    });
+
+};
+
 exports.uploadFile = function(req, res){
   var title = req.params.title;
   var uploadedFile = req.files.file;
@@ -242,7 +301,7 @@ exports.uploadFile = function(req, res){
           return handleError(res, err);
         }
         else {
-          Document.findOne({title: title}, function (err, document) {
+          Document.findByTitle(title, function (err, document) {
             if (err) {
               return handleError(res, err);
             }

@@ -16,6 +16,7 @@ router.post('/:title/files', auth.isAuthenticated(), controller.uploadFile);
 router.put('/:title', auth.isAuthenticated(), controller.update);
 router.patch('/:title', controller.update);
 router.delete('/:title', auth.isAuthenticated(), controller.destroy);
-
+router.post('/:title/like', auth.isAuthenticated(), controller.like);
+router.delete('/:title/like', auth.isAuthenticated(), controller.unlike);
 
 module.exports = router;

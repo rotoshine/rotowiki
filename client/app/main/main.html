@@ -9,13 +9,8 @@
   <div class="row">
     <documents-widget heading="최근 수정된 문서" querystring="page=1&sort=updatedAt&pageCount=20&asc=-1" display-field="from"></documents-widget>
     <documents-widget heading="사람들이 많이 읽은 문서" querystring="sort=readCount&asc=-1&page=1&pageCount=20" display-field="readCount"></documents-widget>
-    <documents-widget heading="오늘 만들어진 문서" querystring="sort=createdAt&asc=-1&pageCount=20&isToday=true" display-field="readCount"></documents-widget>
-    <div class="col-md-6 col-xs-12">
-      <h1 class="page-header">여기에 뭐 뿌릴까요?</h1>
-      <div class="well">
-        의견주세요!
-      </div>
-    </div>
+    <documents-widget heading="오늘 만들어진 문서" querystring="sort=createdAt&asc=-1&page=1&pageCount=20&isToday=true" display-field="readCount"></documents-widget>
+    <documents-widget heading="사람들이 좋아하는 문서" querystring="sort=likeCount&asc=-1&page=1&pageCount=5" display-field="likeCount"></documents-widget>
   </div>
 </div>
 
@@ -34,7 +29,8 @@
             </div>
             <div class="col-md-6 col-xs-4">
               <span ng-if="displayField === 'from'">{{document.updatedAt | from}}</span>
-              <span ng-if="displayField === 'readCount'" class="badge">{{document.readCount}}</span>
+              <span ng-if="displayField === 'readCount'" class="label label-info">{{document.readCount}}</span>
+              <span ng-if="displayField === 'likeCount'" class="label label-primary"><i class="fa fa-heart"></i> {{document.likeCount}}</span>
             </div>
           </a>
         </div>

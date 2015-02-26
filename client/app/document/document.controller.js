@@ -2,6 +2,8 @@
 
 angular.module('rotowikiApp')
   .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME) {
+    var _ = window._;
+
     $scope.title = $stateParams.title;
     $scope.isNotExistDocument = false;
     $scope.isLoggedIn = Auth.isLoggedIn;
@@ -13,6 +15,8 @@ angular.module('rotowikiApp')
       Document
         .get({title: $scope.title})
         .$promise.then(function(document){
+          document.alreadyLike = _.contains(document.likeUsers, Auth.getCurrentUser()._id);
+
           $scope.document = document;
 
           window.document.title = WIKI_NAME + ' - ' + document.title;
@@ -26,6 +30,40 @@ angular.module('rotowikiApp')
           }
           $scope.isNowLoading = false;
         });
+    };
+
+    $scope.nowProgressLikeAction = false;
+
+    $scope.like = function(){
+      if(!$scope.nowProgressLikeAction){
+        $scope.nowProgressLikeAction = true;
+
+        Document
+          .like({title: $scope.document.title})
+          .$promise.then(function(result){
+            $scope.nowProgressLikeAction = false;
+            $scope.document.alreadyLike = true;
+            $scope.document.likeCount = result.likeCount;
+          }, function(){
+            $scope.nowProgressLikeAction = false;
+          });
+      }
+    };
+
+    $scope.unlike = function(){
+      if(!$scope.nowProgressLikeAction){
+        $scope.nowProgressLikeAction = true;
+
+        Document
+          .unlike({title: $scope.document.title})
+          .$promise.then(function(result){
+            $scope.nowProgressLikeAction = false;
+            $scope.document.alreadyLike = false;
+            $scope.document.likeCount = result.likeCount;
+          }, function(){
+            $scope.nowProgressLikeAction = false;
+          });
+      }
     };
 
     $scope.shareTwitter = function(){
@@ -78,6 +116,7 @@ angular.module('rotowikiApp')
     };
   })
   .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $timeout) {
+
     function simpleTemplate(text, data){
       for(var key in data){
         var regExp = new RegExp('{' + key + '}', 'g');
@@ -139,7 +178,10 @@ angular.module('rotowikiApp')
     };
 
 
+    $scope.isChanged = false;
+
     $scope.currentCursor = null;
+
     $scope.init = function () {
       window.document.title = WIKI_NAME + ' - ' + $scope.document.title + ' 편집';
       Document
@@ -156,6 +198,9 @@ angular.module('rotowikiApp')
             var editor = editor = window.ace.edit('ace-editor');
             editor.on('blur', function (event, editor) {
               $scope.currentCursor = editor.selection.getCursor();
+            });
+            editor.on('change', function(){
+              $scope.isChanged = true;
             });
             var MarkdownMode = ace.require('ace/mode/markdown').Mode;
             editor.getSession().setMode(new MarkdownMode());

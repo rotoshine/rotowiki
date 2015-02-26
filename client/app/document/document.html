@@ -52,7 +52,15 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-12 document-bottom-buttons text-right no-right-padding">
+      <div class="col-xs-6 text-left">
+        <div ng-if="document.alreadyLike">
+          <button class="btn btn-primary btn-lg" ng-click="unlike()" ng-disabled="!isLoggedIn()"><i class="fa fa-heart"></i> {{document.likeCount}}</button>
+        </div>
+        <div ng-if="!document.alreadyLike">
+          <button class="btn btn-primary btn-lg" ng-click="like()" ng-disabled="!isLoggedIn()"><i class="fa fa-heart-o"></i> {{document.likeCount}}</button>
+        </div>
+      </div>
+      <div class="col-xs-6 document-bottom-buttons text-right no-right-padding">
         <span>이 문서는 <span class="badge badge">{{document.readCount}}</span> 번 읽혔습니다.</span>
         <button class="btn btn-info share-twitter-button visible-xs pull-right" ng-click="shareTwitter()">
           <i class="fa fa-share-alt pull-left"></i>
