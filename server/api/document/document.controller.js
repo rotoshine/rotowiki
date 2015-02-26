@@ -30,6 +30,13 @@ exports.find = function(req, res) {
     };
   }
 
+  if(req.query.sort === 'likeCount'){
+    query.likeCount = {
+      '$gt': 0
+    };
+  }
+
+  console.log(JSON.stringify(req.query) + ' ==> running query:', query);
   var queryRunner = Document
     .find(query);
 
