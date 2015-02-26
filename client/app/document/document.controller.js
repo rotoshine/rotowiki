@@ -562,6 +562,7 @@ angular.module('rotowikiApp')
     var masonry = null;
 
     $scope.loadFirstDocuments = function(){
+      masonry = null;
       $scope.currentPage = 1;
       $scope.loadedDocuments = null;
       $scope.loadMoreDocuments();
@@ -609,6 +610,7 @@ angular.module('rotowikiApp')
               if(masonry !== null){
                 masonry.addItems($masonryAddTargetItems);
                 masonry.layout();
+                console.log('layout gogo');
               }else{
                 masonry = new window.Masonry($('#document-container').get(0), {
                   itemSelector: '.item'
