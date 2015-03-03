@@ -28,10 +28,10 @@ angular.module('rotowikiApp')
             .then(function(documents){
               $scope.documents = documents;
               $scope.isNowLoading = false;
-            })
+            });
         };
       }
-    }
+    };
   })
   .directive('info', function(){
     return {
@@ -49,7 +49,7 @@ angular.module('rotowikiApp')
           $scope.alertTypeClass = 'alert-' + $scope.type;
         }
       }
-    }
+    };
   })
   .directive('document', function($compile){
     return function(scope, element, attrs){
@@ -60,6 +60,6 @@ angular.module('rotowikiApp')
         element.html(value);
 
         $compile(element.contents())(scope);
-      })
-    }
+      });
+    };
   });

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('MainCtrl', function ($scope, socket, Document, WIKI_NAME, LAST_VISIT_URL_KEY) {
+  .controller('MainCtrl', function ($scope, Document, WIKI_NAME, LAST_VISIT_URL_KEY, socket) {
     window.document.title = WIKI_NAME;
 
     // 마지막으로 방문한 페이지가 있을 경우 거기로 리다이렉트.
@@ -14,7 +14,13 @@ angular.module('rotowikiApp')
       }
     }
 
+    socket.socket.on('document:create', function(document){
+      alertify.log(document.title + ' 문서가 생성되었습니다.', 'success', 5000);
+    });
     /*socket.on('createDocument', function(document){
       alertify.success('새 문서가 생성되었습니다. ' + document.title);
     });*/
+  })
+  .controller('FooterCtrl', function($scope){
+    $scope.hello = 'world';
   });

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth, Document, $timeout, $rootScope, $modal, LAST_VISIT_URL_KEY) {
+  .controller('NavbarCtrl', function ($scope, $state, $location, Auth, Document, $timeout, $rootScope, $modal, LAST_VISIT_URL_KEY) {
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
@@ -43,20 +43,24 @@ angular.module('rotowikiApp')
           $scope.nowShowCreateDocumentPrompt = false;
           $scope.keydownListeners.listen('navbar');
           if(answer){
-            Document
-              .get({title: title})
-              .$promise.then(function(document){
-                if(document){
-                  alertify.alert('해당 제목의 문서가 이미 존재합니다.');
-                }
-              }, function(){
-                // 문서를 생성한 후 문서 편집으로 이동.
-                Document.save({
-                  title: title
+            if(title.length > 0){
+              Document
+                .get({title: title})
+                .$promise.then(function(document){
+                  if(document){
+                    alertify.alert('해당 제목의 문서가 이미 존재합니다.');
+                  }
                 }, function(){
-                  location.href = '/document-edit/' + title;
+                  // 문서를 생성한 후 문서 편집으로 이동.
+                  Document.save({
+                    title: title
+                  }, function(){
+                    $state.go('document edit', {title: title});
+                  });
                 });
-              });
+            }else{
+              alertify.alert('문서 제목은 1글자 이상 입력해주세요.');
+            }
           }
         });
       }

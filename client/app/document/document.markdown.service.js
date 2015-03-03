@@ -42,5 +42,5 @@ angular.module('rotowikiApp')
         return markdownText;
 
       }
-    }
+    };
   });

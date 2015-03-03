@@ -7,6 +7,9 @@ var DocumentHistory = require('../documentHistory/documentHistory.model');
 var File = require('../file/file.model');
 var fs = require('fs');
 
+var express = require('express');
+
+
 exports.find = function(req, res) {
   var query = {};
 
@@ -143,6 +146,8 @@ exports.create = function(req, res) {
       }
       Document.create(document, function(err) {
         if(err) { return handleError(res, err); }
+        //socket.emit('document:create', {document: document});
+
         historyLoggingAndHandleDocument(document, req.user, 201, res);
       });
     }else{
@@ -335,5 +340,4 @@ exports.uploadFile = function(req, res){
       res.json(500, {message: '업로드 에러 발생'});
     }
   });
-
 };

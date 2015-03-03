@@ -88,7 +88,7 @@ angular.module('rotowikiApp')
         .save({
           title: $scope.title
         }, function(savedDocument){
-          location.href = '/document-edit/' + savedDocument.title
+          $state.go('document edit', {title: savedDocument.title});
         });
     };
 
@@ -143,8 +143,6 @@ angular.module('rotowikiApp')
               title: $stateParams.title,
               imageUrl: fileUrl + '/' + imageFile._id
             }) + CARRIAGE_RETURN_CHAR;
-          var editor = $scope.editor;
-
 
           if ($scope.currentCursor !== null) {
             imgTag = CARRIAGE_RETURN_CHAR + imgTag;
@@ -178,8 +176,8 @@ angular.module('rotowikiApp')
     };
 
 
-    $scope.isChanged = false;
 
+    $scope.editingBeforeContent = null;
     $scope.currentCursor = null;
 
     $scope.init = function () {
@@ -188,14 +186,19 @@ angular.module('rotowikiApp')
         .get({title: $scope.document.title})
         .$promise.then(function (document) {
           $scope.document = document;
+
           $scope.changedDocumentTitle = document.title;
           if ($scope.document.content === undefined) {
             $scope.document.content = '';
           }
 
+          $scope.editingBeforeContent = $scope.document.content;
+
           $timeout(function(){
+            var ace = window.ace;
+
             $('#ace-editor').width($('.document-edit-wrapper').width());
-            var editor = editor = window.ace.edit('ace-editor');
+            var editor = ace.edit('ace-editor');
             editor.on('blur', function (event, editor) {
               $scope.currentCursor = editor.selection.getCursor();
             });
@@ -203,6 +206,7 @@ angular.module('rotowikiApp')
               $scope.isChanged = true;
             });
             var MarkdownMode = ace.require('ace/mode/markdown').Mode;
+
             editor.getSession().setMode(new MarkdownMode());
             editor.focus();
             $scope.editor = editor;
@@ -224,7 +228,7 @@ angular.module('rotowikiApp')
       }
 
       if ($scope.document.parent && $scope.document.parent._id) {
-        saveDocument.parent = $scope.document.parent._id
+        saveDocument.parent = $scope.document.parent._id;
       } else {
         saveDocument.parent = $scope.document.parent;
       }
@@ -304,7 +308,7 @@ angular.module('rotowikiApp')
             if(youtubeUrl.indexOf('/watch?v=') > -1){
               youtubeUrl = youtubeUrl.replace('/watch?v=', '/embed/');
             }else if(youtubeUrl.indexOf('youtu.be') > -1){
-              youtubeUrl = youtubeUrl.replace('youtu.be', 'youtube.com/embed')
+              youtubeUrl = youtubeUrl.replace('youtu.be', 'youtube.com/embed');
             }
             return simpleTemplate(
               CARRIAGE_RETURN_CHAR +
@@ -383,6 +387,18 @@ angular.module('rotowikiApp')
         });
       }
     };
+
+    $scope.$on('$locationChangeStart', function(event, newUrl){
+      if($scope.editor !== null && $scope.editor.getSession().getValue() !== $scope.editingBeforeContent){
+        event.preventDefault();
+        alertify.confirm('변경된 내용이 저장되지 않았습니다. 편집 모드를 종료하시겠습니까?', function(ok){
+          if(ok){
+            // FIXME 이 방식으로 하면 화면전체를 새로고침한다. $location.path가 안 먹는데 대안을 찾아보자.
+            location.href = newUrl;
+          }
+        });
+      }
+    });
   })
   .controller('DocumentParentChangeCtrl', function($scope, $modalInstance, Document, currentDocument){
     $scope.currentDocument = currentDocument;
@@ -477,7 +493,7 @@ angular.module('rotowikiApp')
           }, function(){
             $scope.isNowSearching = false;
             $scope.searchResults = [];
-          })
+          });
       }
     };
 
@@ -523,7 +539,7 @@ angular.module('rotowikiApp')
     Document
       .random(function(document){
         $state.go('document', { title: document.title });
-      })
+      });
   })
   .controller('DocumentAllCtrl', function($scope, Document, $timeout, WIKI_NAME){
     window.document.title = WIKI_NAME + ' - 전체보기';
@@ -635,5 +651,5 @@ angular.module('rotowikiApp')
       }, function(){
         alertify.alert('올바르지 않은 문서 주소입니다.');
         $state.go('main');
-      })
+      });
   });

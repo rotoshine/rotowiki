@@ -24,6 +24,7 @@ angular.module('rotowikiApp', [
     moment.locale('ko');
   })
   .run(function($rootScope, $state, Auth){
+    // TODO 좀 더 간편하게 쓸 수 있도록 리팩토링 할 것
     var keydownListeners = {
       mapper: {
         'navbar': new window.keypress.Listener(),
@@ -138,7 +139,7 @@ angular.module('rotowikiApp', [
       }else{
         return '';
       }
-    }
+    };
 
   })
   .filter('toTrusted', function($sce){
@@ -151,7 +152,7 @@ angular.module('rotowikiApp', [
       }else{
         return '';
       }
-    }
+    };
   })
   .filter('from', function(){
     return function(date){
@@ -164,7 +165,7 @@ angular.module('rotowikiApp', [
       }else{
         return '';
       }
-    }
+    };
   });
 /*
   .run(function ($rootScope, $location, Auth) {

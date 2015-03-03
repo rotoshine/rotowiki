@@ -7,17 +7,20 @@
 var Document = require('./document.model');
 
 exports.register = function(socket) {
-  Document.schema.post('save', function (doc) {
-    onSave(socket, doc);
-  });
+  /*Document.schema.post('save', function (doc) {
+      onCreate(socket, doc);
+  });*/
+
   Document.schema.post('remove', function (doc) {
     onRemove(socket, doc);
   });
+};
+
+function onCreate(socket, doc, cb) {
+  socket.emit('document:create', doc);
 }
 
-function onSave(socket, doc, cb) {
-  socket.emit('document:save', doc);
-}
+exports.onCreate = onCreate;
 
 function onRemove(socket, doc, cb) {
   socket.emit('document:remove', doc);
