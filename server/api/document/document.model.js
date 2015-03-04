@@ -48,6 +48,10 @@ var DocumentSchema = new Schema({
   },
   likeUsers: [{
     type: Schema.Types.ObjectId
+  }],
+  postScripts: [{
+    indexNumber: Number,
+    content: String
   }]
 }, {
   toObject: {

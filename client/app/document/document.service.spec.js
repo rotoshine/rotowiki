@@ -6,13 +6,13 @@ describe('Service: document', function () {
   beforeEach(module('rotowikiApp'));
 
   // instantiate service
-  var document;
-  beforeEach(inject(function (_document_) {
-    document = _document_;
+  var Document;
+  beforeEach(inject(function (_Document_) {
+    Document = _Document_;
   }));
 
-  it('should do something', function () {
-    expect(!!document).toBe(true);
+  it('should do Document module init', function () {
+    expect(!!Document).toBe(true);
   });
 
 });

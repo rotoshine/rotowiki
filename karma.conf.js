@@ -17,27 +17,28 @@ module.exports = function(config) {
       'client/bower_components/angular-mocks/angular-mocks.js',
       'client/bower_components/angular-cookies/angular-cookies.js',
       'client/bower_components/angular-sanitize/angular-sanitize.js',
-      'client/bower_components/angular-route/angular-route.js',
       'client/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'client/bower_components/lodash/dist/lodash.compat.js',
       'client/bower_components/angular-socket-io/socket.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'client/bower_components/moment/moment.js',
+      'client/bower_components/ng-file-upload/angular-file-upload.js',
+      'client/bower_components/Keypress/keypress-2.1.0.min.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/locales.min.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/masonry/3.2.2/masonry.pkgd.min.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js',
       'client/app/app.js',
-      'client/app/app.coffee',
       'client/app/**/*.js',
-      'client/app/**/*.coffee',
-      'client/components/**/*.js',
-      'client/components/**/*.coffee',
-      'client/app/**/*.jade',
-      'client/components/**/*.jade',
       'client/app/**/*.html',
+      'client/components/**/*.js',
       'client/components/**/*.html'
+    ],
+    exclude:[
+      'client/components/socket/socket.service.js'
     ],
 
     preprocessors: {
-      '**/*.jade': 'ng-jade2js',
-      '**/*.html': 'html2js',
-      '**/*.coffee': 'coffee'
+      '**/*.html': 'html2js'
     },
 
     ngHtml2JsPreprocessor: {
