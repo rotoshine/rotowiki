@@ -1,4 +1,4 @@
-yeoman의 angular-fullstack 기반으로 작성된 wiki이다.
+yeoman의 angular-fullstack 기반으로 작성된 wiki이다. ![build status](https://travis-ci.org/rotoshine/rotowiki.svg)
 
 # rotowiki 설치 전에 설치 되어야 하는 것
 * mongodb
