@@ -346,6 +346,40 @@ angular.module('rotowikiApp')
             }
           }
         }
+      },
+      SOURCECODE: {
+        name: 'sourcecode',
+        text:'소스코드',
+        iconClass: 'fa-code',
+        linkObject: null,
+        codes: [
+          'javascript',
+          'markup',
+          'css',
+          'sass',
+          'handlebars',
+          'go',
+          'java',
+          'c',
+          'python',
+          'matlab',
+          'php',
+          'scala',
+          'swift',
+          'dart',
+          'object-c'
+        ],
+        linkGenerator: function(){
+          var code = this.linkObject.code;
+
+          // escape 처리
+          code = code
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+          code = '<pre><code class="language-' + this.linkObject.codeType + '">' + code + '</code></pre>\r\n\r\n';
+          return code;
+        }
       }
     };
 
@@ -367,7 +401,7 @@ angular.module('rotowikiApp')
 
         var modalInstance = $modal.open({
           templateUrl: 'linkInsertModal.html',
-          controller: 'LinkInsertModalCtrl',
+          controller: 'DocumentEditHelperModalCtrl',
           resolve: {
             selectedTab: function(){
               return selectedTab;
@@ -461,7 +495,7 @@ angular.module('rotowikiApp')
       }
     };
   })
-  .controller('LinkInsertModalCtrl', function($scope, selectedTab, linkTypes, $modalInstance, Document, $timeout){
+  .controller('DocumentEditHelperModalCtrl', function($scope, selectedTab, linkTypes, $modalInstance, Document, $timeout){
     $scope.selectedTab = selectedTab;
 
     $scope.selectTab = function(tabName){

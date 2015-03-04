@@ -80,7 +80,8 @@ angular.module('rotowikiApp')
       search: function($event){
         var that = this;
 
-        if(this.searchKeyword !== undefined && this.searchKeyword.length > 1){
+        var SEARCH_KEYWORD_MIN_LENGTH = 1;
+        if(this.searchKeyword !== undefined && this.searchKeyword.length >= SEARCH_KEYWORD_MIN_LENGTH){
           $scope.isCollapsed = true;
           this.isNowSearching = true;
           this.showResult();
@@ -95,7 +96,7 @@ angular.module('rotowikiApp')
               that.isNowSearching = false;
             });
         }else{
-          alertify.alert('검색어는 2글자 이상 입력해주세요.');
+          alertify.alert('검색어는 ' + SEARCH_KEYWORD_MIN_LENGTH + '글자 이상 입력해주세요.');
         }
         $event.preventDefault();
         $event.stopPropagation();

@@ -6,7 +6,8 @@ var DocumentSchema = new Schema({
   title: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    index: true
   },
   content: String,
   createdUserTwitterId: String,

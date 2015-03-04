@@ -125,7 +125,7 @@
         <tabset id="link-tabs">
           <tab select="selectTab(linkTypes.DOCUMENT.name)">
             <tab-heading class="tab-{{linkTypes.DOCUMENT.name}}">
-              <i class="fa fa-fw fa-file"></i>문서
+              <i class="fa fa-fw fa-file"></i>
             </tab-heading>
             <div class="form-group">
               <label class="col-xs-4">링크할 문서</label>
@@ -157,7 +157,7 @@
           </tab>
           <tab select="selectTab(linkTypes.EXTERNAL_LINK.name)">
             <tab-heading class="tab-{{linkTypes.EXTERNAL_LINK.name}}">
-              <i class="fa fa-fw fa-external-link"></i> 외부링크
+              <i class="fa fa-fw fa-external-link"></i>
             </tab-heading>
             <div class="form-group">
               <label class="col-xs-4">링크 텍스트</label>
@@ -174,7 +174,7 @@
           </tab>
           <tab select="selectTab(linkTypes.SOUNDCLOUD.name)">
             <tab-heading class="tab-{{linkTypes.SOUNDCLOUD.name}}">
-              <i class="fa fa-fw fa-soundcloud"></i> soundcloud
+              <i class="fa fa-fw fa-soundcloud"></i>
             </tab-heading>
             <div class="form-group">
               <label class="col-xs-4">soundcloud url</label>
@@ -185,13 +185,29 @@
           </tab>
           <tab select="selectTab(linkTypes.YOUTUBE.name)">
             <tab-heading class="tab-{{linkTypes.YOUTUBE.name}}">
-              <i class="fa fa-fw fa-youtube"></i> youtube
+              <i class="fa fa-fw fa-youtube"></i>
             </tab-heading>
             <div class="form-group">
               <label class="col-xs-4">youtube url</label>
               <div class="col-xs-8">
                 <input type="text" class="form-control" placeholder="youtube url을 적어주세요." ng-model="linkTypes.YOUTUBE.linkObject"/>
               </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.SOURCECODE.name)">
+            <tab-heading class="tab-{{linkTypes.SOURCECODE.name}}">
+              <i class="fa fa-fw fa-code"></i>
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">소스코드 종류</label>
+              <div class="col-xs-8">
+                <select class="form-control" ng-model="linkTypes.SOURCECODE.linkObject.codeType" ng-options="code as code for code in linkTypes.SOURCECODE.codes"></select>
+              </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12">
+                  <textarea class="form-control" ng-model="linkTypes.SOURCECODE.linkObject.code" placeholder="소스코드를 입력하세요." rows="10"></textarea>
+                </div>
             </div>
           </tab>
         </tabset>
