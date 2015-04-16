@@ -28,3 +28,11 @@
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
+
+#yellow-ribbon{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width:160px;
+    height:160px;
+}
