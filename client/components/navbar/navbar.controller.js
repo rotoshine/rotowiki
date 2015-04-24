@@ -12,6 +12,106 @@ angular.module('rotowikiApp')
         link: '/document-all'
       }
     ];
+
+    $scope.selectedThemeName = null;
+
+    $scope.themes = [
+      {
+        name: 'default',
+        cssUrl: ''
+      },
+      {
+        name: 'cerulean',
+        cssUrl: 'https://bootswatch.com/cerulean/bootstrap.min.css'
+      },
+      {
+        name: 'cosmo',
+        cssUrl: 'https://bootswatch.com/cosmo/bootstrap.min.css'
+      },
+      {
+        name: 'cyborg',
+        cssUrl: 'https://bootswatch.com/cyborg/bootstrap.min.css'
+      },
+      {
+        name: 'darkly',
+        cssUrl: 'https://bootswatch.com/darkly/bootstrap.min.css'
+      },
+      {
+        name: 'flatly',
+        cssUrl: 'https://bootswatch.com/flatly/bootstrap.min.css'
+      },
+      {
+        name: 'journal',
+        cssUrl: 'https://bootswatch.com/journal/bootstrap.min.css'
+      },
+      {
+        name: 'lumen',
+        cssUrl: 'https://bootswatch.com/lumen/bootstrap.min.css'
+      },
+      {
+        name: 'paper',
+        cssUrl: 'https://bootswatch.com/paper/bootstrap.min.css'
+      },
+      {
+        name: 'readable',
+        cssUrl: 'https://bootswatch.com/readable/bootstrap.min.css'
+      },
+      {
+        name: 'sandstone',
+        cssUrl: 'https://bootswatch.com/sandstone/bootstrap.min.css'
+      },
+      {
+        name: 'simplex',
+        cssUrl: 'https://bootswatch.com/simplex/bootstrap.min.css'
+      },
+      {
+        name: 'slate',
+        cssUrl: 'https://bootswatch.com/slate/bootstrap.min.css'
+      },
+      {
+        name: 'spacelab',
+        cssUrl: 'https://bootswatch.com/spacelab/bootstrap.min.css'
+      },
+      {
+        name: 'superhero',
+        cssUrl: 'https://bootswatch.com/superhero/bootstrap.min.css'
+      },
+      {
+        name: 'united',
+        cssUrl: 'https://bootswatch.com/united/bootstrap.min.css'
+      },
+      {
+        name: 'yeti',
+        cssUrl: 'https://bootswatch.com/yeti/bootstrap.min.css'
+      }
+    ];
+
+    var THEME_KEY = 'selectedTheme';
+
+    $scope.changeTheme = function(theme, $event){
+      if($event !== undefined){
+        $event.preventDefault();
+      }
+      $('#themeCSS').attr('href', theme.cssUrl);
+
+      $scope.selectedThemeName = theme.name;
+      localStorage.setItem(THEME_KEY, JSON.stringify({
+        name: theme.name,
+        cssUrl: theme.cssUrl
+      }));
+    };
+
+    $scope.loadSavedTheme = function(){
+      var savedTheme = localStorage.getItem(THEME_KEY);
+
+      // local storage에서 선택된 테마가 있는지 체크
+      if(savedTheme !== undefined){
+        $scope.changeTheme(JSON.parse(savedTheme));
+      }else{
+        $scope.selectedThemeName = 'default';
+      }
+    };
+
     $scope.logout = function() {
       if(window.localStorage && window.localStorage[LAST_VISIT_URL_KEY]){
         window.localStorage.removeItem(LAST_VISIT_URL_KEY);
@@ -108,6 +208,10 @@ angular.module('rotowikiApp')
         templateUrl: 'shortcut-modal.html',
         controller: 'ShortcutModalCtrl'
       });
+    };
+
+    $scope.init = function(){
+      $scope.loadSavedTheme();
     };
   })
   .controller('ShortcutModalCtrl', function($scope, $modalInstance){

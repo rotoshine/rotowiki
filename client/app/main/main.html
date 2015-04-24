@@ -1,13 +1,10 @@
-<header class="hero-unit" id="banner">
-  <div class="container">
-    <h1>위키를 만들고 있습니다.</h1>
-    <p class="lead">여러분의 잉여력을 기다립니다.</p>
-    <img id="yellow-ribbon" src="/images/yellow_ribbon.jpg" alt="세월호 희생자 및 유가족들을 기억하며 위로를 보냅니다." title="세월호 희생자 및 유가족들을 기억하며 위로를 보냅니다."/>
+<div class="container" ng-init="init()">
+  <div class="row">
+    <div class="jumbotron">
+      <h1>위키를 만들고 있습니다.</h1>
+      <p class="lead">여러분의 잉여력을 기다립니다.</p>      
     </div>
   </div>
-</header>
-
-<div class="container" ng-init="init()">
   <div class="row">
     <documents-widget heading="최근 수정된 문서" querystring="page=1&sort=updatedAt&pageCount=20&asc=-1" display-field="from"></documents-widget>
     <documents-widget heading="사람들이 많이 읽은 문서" querystring="sort=readCount&asc=-1&page=1&pageCount=20" display-field="readCount"></documents-widget>
