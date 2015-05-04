@@ -61,9 +61,7 @@ pm2 restart rotowiki
 pm2 stop rotowiki
 ```
 # DEMO
-[http://54.65.226.229:9000/](http://54.65.226.229:9000/)
+[http://wiki.winterwolf.me/](http://wiki.winterwolf.me/)
 
 # TODO
-* 검색엔진 최적화
-* 이미지 업로드
 * e2e 테스트 코드 작성
