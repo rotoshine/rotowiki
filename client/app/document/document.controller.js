@@ -5,6 +5,12 @@ angular.module('rotowikiApp')
     var _ = window._;
 
     $scope.title = $stateParams.title;
+
+    if($scope.title === undefined || $scope.title === ''){
+      alertify.alert('잘못된 문서 접근입니다.');
+      $state.go('main');
+    }
+
     $scope.isNotExistDocument = false;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.document = null;
@@ -92,6 +98,7 @@ angular.module('rotowikiApp')
         });
     };
 
+    // 하위 문서를 만든다.
     $scope.createSubDocument = function(){
       $rootScope.keydownListeners.stopAll();
       alertify.prompt($scope.document.title + '의 하위 문서를 만듭니다. 하위 문서 제목을 입력해주세요.', function(answer, title){
@@ -170,6 +177,8 @@ angular.module('rotowikiApp')
 
     $scope.markdownRender = function(){
       $scope.markdownToHTML = markdownService.toHTML($scope.editor.getValue());
+
+      // prism.js apply
       setTimeout(function(){
         window.Prism.highlightAll();
       });
@@ -194,23 +203,26 @@ angular.module('rotowikiApp')
 
           $scope.editingBeforeContent = $scope.document.content;
 
-          $timeout(function(){
-            var ace = window.ace;
+          // wide 환경인 경우에만 적용
+          if($(window).width() > 780){
+            $timeout(function(){
+              var ace = window.ace;
 
-            $('#ace-editor').width($('.document-edit-wrapper').width());
-            var editor = ace.edit('ace-editor');
-            editor.on('blur', function (event, editor) {
-              $scope.currentCursor = editor.selection.getCursor();
-            });
-            editor.on('change', function(){
-              $scope.isChanged = true;
-            });
-            var MarkdownMode = ace.require('ace/mode/markdown').Mode;
+              $('#ace-editor').width($('.document-edit-wrapper').width());
+              var editor = ace.edit('ace-editor');
+              editor.on('blur', function (event, editor) {
+                $scope.currentCursor = editor.selection.getCursor();
+              });
+              editor.on('change', function(){
+                $scope.isChanged = true;
+              });
+              var MarkdownMode = ace.require('ace/mode/markdown').Mode;
 
-            editor.getSession().setMode(new MarkdownMode());
-            editor.focus();
-            $scope.editor = editor;
-          });
+              editor.getSession().setMode(new MarkdownMode());
+              editor.focus();
+              $scope.editor = editor;
+            });
+          }
         });
     };
 

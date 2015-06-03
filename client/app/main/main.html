@@ -2,7 +2,23 @@
   <div class="row">
     <div class="jumbotron">
       <h1>위키를 만들고 있습니다.</h1>
-      <p class="lead">여러분의 잉여력을 기다립니다.</p>      
+      <p class="lead">여러분의 잉여력을 기다립니다.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>무작위로 불러온 문서</h3>
+      <div ng-show="randomDocument === null">
+        <i class="fa fa-spin fa-spinner"></i> 무작위로 문서를 불러오고 있습니다...
+      </div>
+      <div ng-show="randomDocument !== null">
+        <h5>{{randomDocument.title}}</h5>
+        <div>{{randomDocument.content}}</div>
+        <div class="text-right" ng-show="randomDocument !== null && isSuccessGettingRandomDocument">
+          <a class="btn btn-default" ui-sref="document({title:randomDocument.title})">
+            <i class="fa fa-book"></i> 자세히 읽기</a>
+        </div>
+      </div>
     </div>
   </div>
   <div class="row">

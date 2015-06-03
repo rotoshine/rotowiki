@@ -219,3 +219,15 @@ body{
 .share-twitter-button{
   margin-right:20px;
 }
+
+.default-bottom-margin{
+  margin-bottom:10px;
+}
+
+.default-right-margin{
+  margin-right:10px;
+}
+
+.inline-block{
+  display:inline-block;
+}

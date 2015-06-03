@@ -18,20 +18,24 @@ angular.module('rotowikiApp')
       applyCustomHTMLSyntax: function(markdownText){
         var regExps = [
           {
-            regExp: '(&amp;|&)\\[(.*?)\\|(.*?)\\]',
+            regExp: '(&amp;|&)\\[(.*?)\\|(.*?)\\]', // ex) &[link title|document_title]
             replace: '[$2](/document/$3)'
           },
           {
-            regExp: '(&amp;|&)\\[(.*?)\\]',
+            regExp: '(&amp;|&)\\[(.*?)\\]', // ex) &[document_title]
             replace: '[$2](/document/$2)'
           },
           {
-            regExp: '-\\[(.*?)\\]',
+            regExp: '-\\[(.*?)\\]', // ex) -[text]
             replace: '<strike>$1</strike>'
           },
           {
-            regExp: '\\*\\[(.*?)\\|(.*?)\\]',
+            regExp: '\\*\\[(.*?)\\|(.*?)\\]', // ex) *[text|external_link]
             replace:'<a href="$2" target="_blank">$1<i class="fa fa-external-link"></i></a>'
+          },
+          {
+            regExp: '\\^\\[(0-9)\\|(.*?)\\]', // ex) ^[3|내용]
+            replace: '' // TODO tooltip 만들자.
           }
           //'(```)([\\w]*)\\n([\\d\\D]*){1,}(```)': '<pre><code class="language-$2">$3</code></pre>',
         ];
