@@ -7,16 +7,19 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <h3>무작위로 불러온 문서</h3>
+      <h1>무작위로 불러온 문서</h1>
       <div ng-show="randomDocument === null">
         <i class="fa fa-spin fa-spinner"></i> 무작위로 문서를 불러오고 있습니다...
       </div>
       <div ng-show="randomDocument !== null">
-        <h5>{{randomDocument.title}}</h5>
-        <document class="markdown-view" ng-show="randomDocument.content !== ''" id="markdown-view" content="randomDocument.content | markdownToHTML"></document>
-        <div class="text-right" ng-show="randomDocument !== null && isSuccessGettingRandomDocument">
-          <a class="btn btn-default" ui-sref="document({title:randomDocument.title})">
-            <i class="fa fa-book"></i> 자세히 읽기</a>
+        <div class="well">
+          <h2>{{randomDocument.title}}</h2>
+          <hr/>
+          <document ng-show="randomDocument.content !== ''" content="randomDocument.content | markdownToHTML"></document>
+          <div class="text-right" ng-show="randomDocument !== null && isSuccessGettingRandomDocument">
+            <a class="btn btn-default" ui-sref="document({title:randomDocument.title})">
+              <i class="fa fa-book"></i> 자세히 읽기</a>
+          </div>
         </div>
       </div>
     </div>
