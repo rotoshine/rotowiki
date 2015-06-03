@@ -13,7 +13,7 @@
       </div>
       <div ng-show="randomDocument !== null">
         <h5>{{randomDocument.title}}</h5>
-        <div>{{randomDocument.content}}</div>
+        <document class="markdown-view" ng-show="randomDocument.content !== ''" id="markdown-view" content="randomDocument.content | markdownToHTML"></document>
         <div class="text-right" ng-show="randomDocument !== null && isSuccessGettingRandomDocument">
           <a class="btn btn-default" ui-sref="document({title:randomDocument.title})">
             <i class="fa fa-book"></i> 자세히 읽기</a>
