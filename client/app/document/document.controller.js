@@ -11,6 +11,10 @@ angular.module('rotowikiApp')
       $state.go('main');
     }
 
+    $scope.notifyNeedLogin = function(){
+      alertify.alert('로그인 후 이 문서를 추천할 수 있습니다.');
+    };
+
     $scope.isNotExistDocument = false;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.document = null;

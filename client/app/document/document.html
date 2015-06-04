@@ -63,7 +63,8 @@
         </div>
         <div ng-if="!isLoggedIn()">
           <button class="btn btn-primary btn-lg"
-            popover="로그인 후 이 문서를 추천할 수 있습니다.">
+            popover="로그인 후 이 문서를 추천할 수 있습니다."
+            ng-click="notifyNeedLogin();">
             <i class="fa fa-thumbs-up"></i> {{document.likeCount}}
           </button>
         </div>
