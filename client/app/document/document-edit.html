@@ -12,26 +12,49 @@
           <div class="alert alert-info" role="alert" ng-show="hasChangeParentDocument">
             <strong>알림</strong> 상위문서가 변경되었습니다. <span>{{document.parent.title}}</span> (으)로 변경되었습니다.
           </div>
-          <div class="document-edit-utils">
-            <button class="btn btn-default btn-sm" ng-model="uploadImage" ng-file-select
-                    ng-file-change="imageUpload($files, $event)" ng-multiple="false"
-                    accept="image/*"><i class="fa fa-image"></i></button>
-            <div class="btn-group" dropdown is-open="status.linkButtonsOpen">
-              <button class="btn btn-default btn-sm dropdown-toggle">
-                <i class="fa fa-anchor fa-fw"></i><span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
-                <li ng-repeat="(key, linkType) in linkTypes">
-                  <a href="#" ng-click="linkInsertModal.show(linkType.name)"><i class="fa fa-fw {{linkType.iconClass}}"></i> {{linkType.text}}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <hr/>
           <form class="form col-xs-12" action="/api/documents" method="POST">
+            <div class="row default-margin-bottom">
+              <div class="col-xs-12 default-bottom-half-margin">
+                <input type="text" class="col-xs-12 form-control" ng-model="changedDocumentTitle" placeholder="문서의 제목을 입력하세요."/>
+              </div>
+            </div>
             <div class="row">
-              <input type="text" class="col-xs-11 form-control" ng-model="changedDocumentTitle" placeholder="문서의 제목을 입력하세요."/>
-              <div class="col-xs-12"></div>
+              <div class="col-xs-12">
+                <div class="document-edit-utils">
+                  <button class="btn btn-default btn-sm" ng-model="uploadImage"
+                          type="button" ng-file-select
+                          ng-file-change="imageUpload($files, $event)" ng-multiple="false"
+                          accept="image/*"><i class="fa fa-image"></i></button>
+                  <div class="btn-group" role="group" dropdown is-open="status.linkButtonsOpen">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle">
+                      <i class="fa fa-anchor fa-fw"></i><span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li ng-repeat="(key, linkType) in linkTypes">
+                        <a href="#" ng-click="linkInsertModal.show(linkType.name)"><i class="fa fa-fw {{linkType.iconClass}}"></i> {{linkType.text}}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- TODO 이 부분도 루프 시키자 -->
+                  <div class="btn-group" role="group">
+                    <button type="button"
+                      class="btn btn-default btn-sm"
+                      ng-click="documentQuickEditHandler('bold')">
+                      <strong>B</strong>
+                    </button>
+                    <button type="button"
+                      class="btn btn-default btn-sm"
+                      ng-click="documentQuickEditHandler('italic')">
+                      <em>I</em>
+                    </button>
+                    <button type="button"
+                      class="btn btn-default btn-sm"
+                      ng-click="documentQuickEditHandler('strike')">
+                      <strike>s</strike>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="row">
               <div class="col-xs-12 document-edit-wrapper">

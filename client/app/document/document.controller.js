@@ -143,6 +143,32 @@ angular.module('rotowikiApp')
 
     $scope.uploadImage = null;
 
+    $scope.documentQuickEditHandler = function(type){
+      if($scope.editor !== null){
+        var range = $scope.editor.getSelectionRange();
+        var selectionText = $scope.editor.getSelectedText();
+
+        if(documentUtils[type] !== undefined && selectionText !== ''){
+          documentUtils[type](range, selectionText);
+        }
+      }
+    };
+
+    // TODO 나중에 모듈로 빼자.
+    // TODO 텍스트 앞뒤로 이미 추가된 텍스트인지 확인하는 옵션 추가할 것.(토글링 되게)
+    // TODO 정규표현식으로 간단하게 처리할 수 있을 거 같기도 함.
+    var documentUtils = {
+      bold: function(range, selectionText){
+        $scope.editor.getSession().replace(range, '**' + selectionText + '**');
+      },
+      italic: function(range, selectionText){
+        $scope.editor.getSession().replace(range, '_' + selectionText + '_');
+      },
+      strike: function(range, selectionText){
+        $scope.editor.getSession().replace(range, '-[' + selectionText + ']');
+      }
+    };
+
     var fileUrl = '/api/documents/' + $stateParams.title + '/files';
     $scope.imageUpload = function ($files) {
       if ($files.length === 1) {
