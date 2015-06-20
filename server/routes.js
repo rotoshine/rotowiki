@@ -11,7 +11,7 @@ var seoRenderer = require('./components/seo/documentRenderer');
 module.exports = function(app) {
   // seo 처리
   app.get('*', function(req, res, next){
-    if(req.query.hasOwnProperty('_escaped_fragment_')){
+    if(req.query.hasOwnProperty('_escaped_fragment_=') || req.query.hasOwnProperty('_escaped_fragment_')){
       // 임시처리
       if(req.url.indexOf('/document/') > -1){
         var title = req.url.split('?')[0].replace('/document/', '');
