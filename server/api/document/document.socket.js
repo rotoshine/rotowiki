@@ -35,8 +35,9 @@ exports.onRemove = onRemove;
 
 var ONE_MINUTE = 1000 * 60;
 function onModify(socket, doc){
-  // 업데이트 된지 1분 이내의 것만 알리게 하기 위함
+  // 업데이트 된지 1분 이후의 것만 알리게 하기 위함
   var updatedTime = new Date() - doc.updatedAt;
+
   if(updatedTime && updatedTime >= ONE_MINUTE){
     socket.emit('document:update', doc);
   }

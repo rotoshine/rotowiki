@@ -7,7 +7,7 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <h1>무작위로 불러온 문서</h1>
+      <h3>무작위로 불러온 문서</h3>
       <div ng-show="randomDocument === null">
         <i class="fa fa-spin fa-spinner"></i> 무작위로 문서를 불러오고 있습니다...
       </div>
@@ -34,7 +34,7 @@
 
 <script id="documentsWidget.html" type="text/ng-template">
   <div class="col-md-6 col-xs-12" ng-init="init()">
-    <h1 class="page-header">{{heading}}</h1>
+    <h3 class="page-header">{{heading}}</h3>
     <div ng-show="isNowLoading">
       <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
     </div>

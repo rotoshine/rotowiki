@@ -22,6 +22,7 @@ angular.module('rotowikiApp')
             var keyAndValue = params[i].split('=');
             query[keyAndValue[0]] = keyAndValue[1];
           }
+
           Document
             .query(query)
             .$promise

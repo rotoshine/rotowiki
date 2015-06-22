@@ -109,10 +109,7 @@ exports.show = function(req, res) {
       if(!document) { return res.send(404); }
 
       // read count 늘리기
-      if(req.params.notIncreaseReadCount){
-        document.readCount = document.readCount + 1;
-      }
-      document.save(function(){
+      increaseReadCount(document.title, function(){
         Document.find({parent: document._id}, function(err, subDocuments){
           if(err) { return handleError(res, err); }
 
@@ -123,6 +120,16 @@ exports.show = function(req, res) {
       });
   });
 };
+
+function increaseReadCount(title, callback){
+  Document.update(
+    {
+      title: title
+    },
+    {
+      $inc: { readCount: 1 }
+    }, callback);
+}
 
 function historyLoggingAndHandleDocument(document, currentUser, statusCode, res){
   DocumentHistory.create({
