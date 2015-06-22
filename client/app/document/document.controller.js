@@ -234,7 +234,7 @@ angular.module('rotowikiApp')
           $scope.editingBeforeContent = $scope.document.content;
 
           // wide 환경인 경우에만 적용
-          if($(window).width() > 780){
+          if($('#ace-editor').css('display') !== 'none'){
             $timeout(function(){
               var ace = window.ace;
 
@@ -261,9 +261,14 @@ angular.module('rotowikiApp')
       $scope.isNowSaving = true;
 
       var saveDocument = {
-        title: $scope.document.title,
-        content: $scope.editor.getSession().getValue()
+        title: $scope.document.title
       };
+
+      if($scope.editor == null){
+        saveDocument.content = $scope.document.content;
+      }else{
+        saveDocument.content = $scope.editor.getSession().getValue();
+      }
 
       if ($scope.changedDocumentTitle !== $scope.document.title){
         saveDocument.changedDocumentTitle = $scope.changedDocumentTitle;

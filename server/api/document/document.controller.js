@@ -6,7 +6,6 @@ var Document = require('./document.model');
 var DocumentHistory = require('../documentHistory/documentHistory.model');
 var File = require('../file/file.model');
 var fs = require('fs');
-
 var express = require('express');
 
 
@@ -110,7 +109,9 @@ exports.show = function(req, res) {
       if(!document) { return res.send(404); }
 
       // read count 늘리기
-      document.readCount = document.readCount + 1;
+      if(req.params.notIncreaseReadCount){
+        document.readCount = document.readCount + 1;
+      }
       document.save(function(){
         Document.find({parent: document._id}, function(err, subDocuments){
           if(err) { return handleError(res, err); }
@@ -146,7 +147,6 @@ exports.create = function(req, res) {
       }
       Document.create(document, function(err) {
         if(err) { return handleError(res, err); }
-        //socket.emit('document:create', {document: document});
 
         historyLoggingAndHandleDocument(document, req.user, 201, res);
       });
