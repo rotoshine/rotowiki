@@ -32,9 +32,9 @@ angular.module('rotowikiApp')
           window.document.title = WIKI_NAME + ' - ' + document.title;
           setTimeout(function(){
             window.Prism.highlightAll();
-            new window.Masonry($('#markdown-view').get(0), {
+            /*new window.Masonry($('#markdown-view').get(0), {
               itemSelector: '.discography'
-            });
+            });*/
           });
           $scope.isNowLoading = false;
         }, function(err){
