@@ -109,9 +109,8 @@ exports.show = function(req, res) {
       if(!document) { return res.send(404); }
 
       // read count 늘리기
-      if(req.params.notIncreaseReadCount){
-        document.readCount = document.readCount + 1;
-      }
+      document.readCount = document.readCount + 1;
+      
       document.save(function(){
         Document.find({parent: document._id}, function(err, subDocuments){
           if(err) { return handleError(res, err); }

@@ -31,29 +31,3 @@
     <documents-widget heading="사람들이 좋아하는 문서" querystring="sort=likeCount&asc=-1&page=1&pageCount=5" display-field="likeCount"></documents-widget>
   </div>
 </div>
-
-<script id="documentsWidget.html" type="text/ng-template">
-  <div class="col-md-6 col-xs-12" ng-init="init()">
-    <h1 class="page-header">{{heading}}</h1>
-    <div ng-show="isNowLoading">
-      <i class="fa fa-spin fa-spinner"></i> 문서를 불러오고 있습니다...
-    </div>
-    <ul class="list-unstyled">
-      <li ng-repeat="document in documents">
-        <div class="row">
-          <a href="/document/{{document.title}}">
-            <div class="col-md-6 col-xs-8">
-              {{document.title}}
-            </div>
-            <div class="col-md-6 col-xs-4">
-              <span ng-if="displayField === 'from'">{{document.updatedAt | from}}</span>
-              <span ng-if="displayField === 'readCount'" class="label label-info">{{document.readCount}}</span>
-              <span ng-if="displayField === 'likeCount'" class="label label-primary"><i class="fa fa-heart"></i> {{document.likeCount}}</span>
-            </div>
-          </a>
-        </div>
-      </li>
-    </ul>
-    <div class="well" ng-show="!isNowLoading && documents.length === 0">문서가 없습니다.</div>
-  </div>
-</script>

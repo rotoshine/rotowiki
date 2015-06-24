@@ -16,11 +16,13 @@ angular.module('rotowikiApp')
         $scope.documents = null;
         $scope.init = function(){
           var query = {};
-          var params = $scope.querystring.split('&');
+          if($scope.querystring !== undefined){
+            var params = $scope.querystring.split('&');
 
-          for(var i = 0; i < params.length; i++){
-            var keyAndValue = params[i].split('=');
-            query[keyAndValue[0]] = keyAndValue[1];
+            for(var i = 0; i < params.length; i++){
+              var keyAndValue = params[i].split('=');
+              query[keyAndValue[0]] = keyAndValue[1];
+            }
           }
           Document
             .query(query)
@@ -61,5 +63,17 @@ angular.module('rotowikiApp')
 
         $compile(element.contents())(scope);
       });
+    };
+  })
+  .directive('discography', function(){
+    return {
+      restrict: 'E',
+      transclude: true,
+      scope: {
+        name: '@',
+        releaseDate: '@',
+        thumbnailUrl: '@'
+      },
+      templateUrl: 'discography.html'
     };
   });
