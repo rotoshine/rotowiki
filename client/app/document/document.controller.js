@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME) {
+  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME, $timeout) {
     var _ = window._;
 
     $scope.title = $stateParams.title;
@@ -32,6 +32,9 @@ angular.module('rotowikiApp')
           window.document.title = WIKI_NAME + ' - ' + document.title;
           setTimeout(function(){
             window.Prism.highlightAll();
+            /*new window.Masonry($('#markdown-view').get(0), {
+              itemSelector: '.discography'
+            });*/
           });
           $scope.isNowLoading = false;
         }, function(err){
@@ -126,7 +129,7 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $timeout) {
+  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $timeout, socket) {
 
     function simpleTemplate(text, data){
       for(var key in data){
@@ -279,10 +282,17 @@ angular.module('rotowikiApp')
       } else {
         saveDocument.parent = $scope.document.parent;
       }
+
+      var updateBeforeDate = $scope.document.updatedAt;
+
       Document
         .update(saveDocument)
         .$promise
         .then(function (updatedDocument) {
+          var beforeUpdatedSeconds = (new Date() - new Date(updateBeforeDate) ) / 1000;
+          if(beforeUpdatedSeconds > 30){
+            socket.socket.emit('document:update', angular.toJson(updatedDocument));
+          }
           $scope.isNowSaving = false;
           $state.go('document', {title: updatedDocument.title});
         }, function (err) {

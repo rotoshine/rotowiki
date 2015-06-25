@@ -46,18 +46,6 @@ angular.module('rotowikiApp')
 
     Document
       .random(randomDocumentCallback);
-
-    function documentChangeAlert(text){
-      alertify.log(text, 'success', 5000);
-    }
-
-    socket.socket.on('document:create', function(document) {
-      documentChangeAlert(document.title + ' 문서가 생성되었습니다.');
-    });
-
-    socket.socket.on('document:update', function(document){
-      documentChangeAlert(document.title + ' 문서가 수정되었습니다.');
-    });
   })
   .controller('FooterCtrl', function($scope){
     $scope.hello = 'world';

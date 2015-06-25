@@ -13,5 +13,7 @@ module.exports = {
   TWITTER_SECRET:   'secret',
 
   // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+  DEBUG: '',
+  TELEGRAM_BOT_TOKEN: '',
+  TELEGRAM_NOTIFY_CHAT_ID: -1
 };

@@ -1,12 +1,13 @@
 'use strict';
 
 var _ = require('lodash');
-
+var telegram = require('../../components/telegram/telegram');
 var Document = require('./document.model');
 var DocumentHistory = require('../documentHistory/documentHistory.model');
 var File = require('../file/file.model');
 var fs = require('fs');
 var express = require('express');
+
 
 
 exports.find = function(req, res) {
@@ -109,7 +110,9 @@ exports.show = function(req, res) {
       if(!document) { return res.send(404); }
 
       // read count 늘리기
-      increaseReadCount(document.title, function(){
+      document.readCount = document.readCount + 1;
+
+      document.save(function(){
         Document.find({parent: document._id}, function(err, subDocuments){
           if(err) { return handleError(res, err); }
 
@@ -120,16 +123,6 @@ exports.show = function(req, res) {
       });
   });
 };
-
-function increaseReadCount(title, callback){
-  Document.update(
-    {
-      title: title
-    },
-    {
-      $inc: { readCount: 1 }
-    }, callback);
-}
 
 function historyLoggingAndHandleDocument(document, currentUser, statusCode, res){
   DocumentHistory.create({
@@ -152,10 +145,21 @@ exports.create = function(req, res) {
       if(req.user.twitter !== undefined){
         document.createdUserTwitterId = req.user.twitter.screen_name;
       }
-      Document.create(document, function(err) {
+
+      var newDocument = new Document(document);
+
+
+      newDocument.save(function(err) {
         if(err) { return handleError(res, err); }
 
-        historyLoggingAndHandleDocument(document, req.user, 201, res);
+        if(telegram.hasTelegramSetup()){
+          telegram.sendNewDocumentMessage(newDocument, function(){
+            return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
+          });
+        }else{
+          return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
+        }
+
       });
     }else{
       document.updatedAt = new Date();
