@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME, $timeout) {
+  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME) {
     var _ = window._;
 
     $scope.title = $stateParams.title;
@@ -134,7 +134,9 @@ angular.module('rotowikiApp')
     function simpleTemplate(text, data){
       for(var key in data){
         var regExp = new RegExp('{' + key + '}', 'g');
-        text = text.replace(regExp, data[key]);
+        if(data.hasOwnProperty(key)){
+          text = text.replace(regExp, data[key]);
+        }
       }
       return text;
     }
@@ -267,7 +269,7 @@ angular.module('rotowikiApp')
         title: $scope.document.title
       };
 
-      if($scope.editor == null){
+      if($scope.editor === null){
         saveDocument.content = $scope.document.content;
       }else{
         saveDocument.content = $scope.editor.getSession().getValue();
@@ -614,14 +616,18 @@ angular.module('rotowikiApp')
       if(currentTab !== null && currentTab.linkObject !== null){
         $modalInstance.close(currentTab.linkGenerator());
         for(var key in $scope.linkTypes){
-          $scope.linkTypes[key].linkObject = null;
+          if($scope.linkTypes.hasOwnProperty(key)){
+            $scope.linkTypes[key].linkObject = null;
+          }
         }
       }
     };
 
     $scope.hide = function(){
       for(var key in $scope.linkTypes){
-        $scope.linkTypes[key].linkObject = null;
+        if($scope.linkTypes.hasOwnProperty(key)){
+          $scope.linkTypes[key].linkObject = null;
+        }
       }
       $modalInstance.dismiss('cancel');
     };
