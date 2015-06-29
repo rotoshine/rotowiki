@@ -210,8 +210,18 @@ angular.module('rotowikiApp')
     $scope.editor = null;
     $scope.markdownToHTML = '';
 
+    var getEditingContentValue = function(){
+      var content;
+      if($scope.editor === null){
+        content = $scope.document.content;
+      }else{
+        content = $scope.editor.getValue();
+      }
+      return content;
+    };
+
     $scope.markdownRender = function(){
-      $scope.markdownToHTML = markdownService.toHTML($scope.editor.getValue());
+      $scope.markdownToHTML = markdownService.toHTML(getEditingContentValue());
 
       // prism.js apply
       setTimeout(function(){
@@ -240,25 +250,30 @@ angular.module('rotowikiApp')
 
           // wide 환경인 경우에만 적용
           if($('#ace-editor').css('display') !== 'none'){
-            $timeout(function(){
-              var ace = window.ace;
-
-              $('#ace-editor').width($('.document-edit-wrapper').width());
-              var editor = ace.edit('ace-editor');
-              editor.on('blur', function (event, editor) {
-                $scope.currentCursor = editor.selection.getCursor();
-              });
-              editor.on('change', function(){
-                $scope.isChanged = true;
-              });
-              var MarkdownMode = ace.require('ace/mode/markdown').Mode;
-
-              editor.getSession().setMode(new MarkdownMode());
-              editor.focus();
-              $scope.editor = editor;
-            });
+            $scope.initAceEditor();
           }
         });
+    };
+
+    $scope.initAceEditor = function(){
+      $timeout(function(){
+        var ace = window.ace;
+
+        //$('#ace-editor').width($('#').width());
+        var editor = ace.edit('ace-editor');
+        editor.on('blur', function (event, editor) {
+          $scope.currentCursor = editor.selection.getCursor();
+        });
+        editor.on('change', function(){
+          $scope.isChanged = true;
+        });
+        var MarkdownMode = ace.require('ace/mode/markdown').Mode;
+
+        editor.getSession().setMode(new MarkdownMode());
+        editor.setOption('showPrintMargin', false);
+        editor.focus();
+        $scope.editor = editor;
+      });
     };
 
     $scope.isNowSaving = false;
@@ -269,11 +284,8 @@ angular.module('rotowikiApp')
         title: $scope.document.title
       };
 
-      if($scope.editor === null){
-        saveDocument.content = $scope.document.content;
-      }else{
-        saveDocument.content = $scope.editor.getSession().getValue();
-      }
+      saveDocument.content = getEditingContentValue();
+
 
       if ($scope.changedDocumentTitle !== $scope.document.title){
         saveDocument.changedDocumentTitle = $scope.changedDocumentTitle;

@@ -60,7 +60,75 @@
               <div class="col-xs-12 document-edit-wrapper">
                 <tabset>
                   <tab heading="편집" id="document-edit-tab">
-                    <div id="ace-editor" class="ace-editor hidden-xs hiddem-sm">{{document.content}}</div>
+                    <div id="ace-editor" class="ace-editor col-xs-9 hidden-xs hidden-sm">{{document.content}}</div>
+                    <div class="col-xs-3 edit-manual">
+                      <h3>문서 문법 일람</h3>
+                      <div>
+                        <h5>강조</h5>
+                        <div class="well">
+                          *문자*<br>
+                          **문자**<br>
+                          __문자__<br>
+                        </div>
+                      </div>
+                      <div>
+                        <h5>줄긋기</h5>
+                          <div class="well">
+                            -[문자]
+                          </div>
+                      </div>
+                      <div>
+                        <h5>내부 문서 링크</h5>
+                        <div class="well">
+                          &amp;[문자]
+                        </div>
+                      </div>
+                      <div>
+                        <h5>외부 문서 링크</h5>
+                        <div class="well">
+                          *[문서명|https://twitter.com]
+                        </div>
+                      </div>
+                      <div>
+                        <h5>인용문</h5>
+                        <div class="well">
+                          > 문자
+                        </div>
+                      </div>
+                      <div>
+                        <h5>이미지 링크 삽입</h5>
+                        <div class="well">
+                          ![이미지 설명 텍스트](이미지_주소)
+                        </div>
+                      </div>
+                      <div>
+                        <h5>영역 강조 기능</h5>
+                        <div class="well">
+                          &lt;info type="영역타입"&gt;내용&lt;/info&gt;<br>
+                          영역타입의 종류는 <code>info</code>, <code>success</code>,
+                          <code>warning</code>, <code>danger</code>
+                        </div>
+                      </div>
+                      <div>
+                        <h5>아무도 모르지만 아주 예전에 구현해둔 단축키</h5>
+                        <div class="well">
+                          <ul class="list-unstyled">
+                            <li>
+                              <kbd>ctrl + s</kbd> 문서 저장
+                            </li>
+                            <li>
+                              <kbd>ctrl + e</kbd> 문서 편집 탭 활성화
+                            </li>
+                            <li>
+                              <kbd>ctrl + b</kbd> 문서 미리보기 탭 활성화
+                            </li>
+                            <li>
+                              <kbd>esc</kbd> 문서 편집 취소
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                     <textarea class="form-control visible-xs visible-sm" name="content" id="content" cols="30" rows="15" ng-model="document.content"
                               placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."></textarea>
                   </tab>

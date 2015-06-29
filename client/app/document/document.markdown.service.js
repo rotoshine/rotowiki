@@ -35,7 +35,7 @@ angular.module('rotowikiApp')
           },
           {
             regExp: '\\^\\[(0-9)\\|(.*?)\\]', // ex) ^[3|내용]
-            replace: '' // TODO tooltip 만들자.
+            replace: '<button popover="$2" class="btn btn-info">$1</button>' // TODO tooltip 만들자.
           }
           //'(```)([\\w]*)\\n([\\d\\D]*){1,}(```)': '<pre><code class="language-$2">$3</code></pre>',
         ];

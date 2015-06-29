@@ -6,3 +6,7 @@
   bottom:0;
   height: 400px;
 }
+.edit-manual{
+  height:400px;
+  overflow-y:auto;
+}
