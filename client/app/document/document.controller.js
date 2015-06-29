@@ -271,11 +271,12 @@ angular.module('rotowikiApp')
 
         editor.getSession().setMode(new MarkdownMode());
         editor.setOptions({
-          maxLines: 25,
+          maxLines: Infinity,
           autoScrollEditorIntoView: true,
           theme: "ace/theme/clouds",
           showPrintMargin: false
         });
+        editor.resize();
         editor.focus();
         $scope.editor = editor;
       });
