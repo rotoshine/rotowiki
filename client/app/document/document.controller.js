@@ -270,7 +270,12 @@ angular.module('rotowikiApp')
         var MarkdownMode = ace.require('ace/mode/markdown').Mode;
 
         editor.getSession().setMode(new MarkdownMode());
-        editor.setOption('showPrintMargin', false);
+        editor.setOptions({
+          maxLines: 25,
+          autoScrollEditorIntoView: true,
+          theme: "ace/theme/clouds",
+          showPrintMargin: false
+        });
         editor.focus();
         $scope.editor = editor;
       });
