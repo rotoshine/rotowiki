@@ -148,18 +148,18 @@ angular.module('rotowikiApp')
                 .get({title: title})
                 .$promise.then(function(document){
                   if(document){
-                    alertify.alert('해당 제목의 문서가 이미 존재합니다.');
+                    return alertify.alert('해당 제목의 문서가 이미 존재합니다.');
                   }
                 }, function(){
                   // 문서를 생성한 후 문서 편집으로 이동.
-                  Document.save({
+                  return Document.save({
                     title: title
                   }, function(){
                     $state.go('document edit', {title: title});
                   });
                 });
             }else{
-              alertify.alert('문서 제목은 1글자 이상 입력해주세요.');
+              return alertify.alert('문서 제목은 1글자 이상 입력해주세요.');
             }
           }
         });

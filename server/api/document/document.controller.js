@@ -148,18 +148,9 @@ exports.create = function(req, res) {
 
       var newDocument = new Document(document);
 
-
       newDocument.save(function(err) {
         if(err) { return handleError(res, err); }
-
-        if(telegram.hasTelegramSetup()){
-          telegram.sendNewDocumentMessage(newDocument, function(){
-            return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
-          });
-        }else{
-          return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
-        }
-
+        return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
       });
     }else{
       document.updatedAt = new Date();
@@ -190,9 +181,19 @@ exports.update = function(req, res) {
       updated.parent = updated.parent._id;
     }
 
+    var isFirstUpdate = updated.__v === 0;
+
+    updated.__v = updated.__v + 1;
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      historyLoggingAndHandleDocument(updated, req.user, 200, res);
+
+      if(isFirstUpdate){
+        return telegram.sendNewDocumentMessage(updated, function(){
+            return historyLoggingAndHandleDocument(updated, req.user, 201, res);
+          });
+      }else{
+        historyLoggingAndHandleDocument(updated, req.user, 200, res);
+      }
     });
   });
 };

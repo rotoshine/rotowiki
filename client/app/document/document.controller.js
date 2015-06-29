@@ -302,16 +302,20 @@ angular.module('rotowikiApp')
       } else {
         saveDocument.parent = $scope.document.parent;
       }
-
+      var isFirstUpdate = $scope.document.__v === 0;
       var updateBeforeDate = $scope.document.updatedAt;
 
       Document
         .update(saveDocument)
         .$promise
         .then(function (updatedDocument) {
-          var beforeUpdatedSeconds = (new Date() - new Date(updateBeforeDate) ) / 1000;
-          if(beforeUpdatedSeconds > 30){
-            socket.socket.emit('document:update', angular.toJson(updatedDocument));
+          if(isFirstUpdate){
+            socket.socket.emit('document:create', angular.toJson(updatedDocument));
+          }else{
+            var beforeUpdatedSeconds = (new Date() - new Date(updateBeforeDate) ) / 1000;
+            if(beforeUpdatedSeconds > 30){
+              socket.socket.emit('document:update', angular.toJson(updatedDocument));
+            }
           }
           $scope.isNowSaving = false;
           $state.go('document', {title: updatedDocument.title});

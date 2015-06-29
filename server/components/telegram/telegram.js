@@ -7,12 +7,14 @@ exports.hasTelegramSetup = function(){
 };
 
 exports.sendNewDocumentMessage = function(document, callback){
-  var message = '로토위키에 새 문서가 등록되었습니다. "' + document.title + '" - ' + localEnv.DOMAIN + '/document-by-id/' + document.id;
+  var message = encodeURI('위키에 새 문서가 등록되었습니다. "' + document.title + '" - ' +
+    localEnv.DOMAIN + '/document-by-id/' + document.id);
+  var requestUrl = TELEGRAM_SEND_MESSAGE_API + '?chat_id=' + localEnv.TELEGRAM_NOTIFY_CHAT_ID + '&text=' + message;
 
-  request(TELEGRAM_SEND_MESSAGE_API + '?chat_id=' + localEnv.TELEGRAM_NOTIFY_CHAT_ID + '&text=' + message, function(err, res, result){
-    if(result){
-      result = JSON.parse(result);
+  request(requestUrl, function(err, res, result){
+    if(err){
+      console.log(err);
     }
-    callback(err, result);
+    return callback(err, result);
   });
 };

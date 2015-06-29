@@ -112,19 +112,24 @@ angular.module('rotowikiApp', [
       alertify.log(text, 'success', 5000);
     }
 
+    function jsonStringHandle(obj){
+      if(typeof obj === 'string'){
+        try{
+          return JSON.parse(obj);
+        }catch(e){
+          console.log(e);
+          return null;
+        }
+      }
+    }
+
     socket.socket.on('document:create', function(document) {
-      documentChangeAlert(document.title + ' 문서가 생성되었습니다.');
+      documentChangeAlert(jsonStringHandle(document).title + ' 문서가 생성되었습니다.');
     });
 
     socket.socket.on('document:update', function(document){
-      if(typeof document === 'string'){
-        try{
-          document = JSON.parse(document);
-        }catch(e){
-          console.log(e);
-        }
-      }
-      documentChangeAlert(document.title + ' 문서가 수정되었습니다.');
+
+      documentChangeAlert(jsonStringHandle(document).title + ' 문서가 수정되었습니다.');
     });
   })
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
