@@ -4,12 +4,12 @@ var _ = require('lodash');
 var telegram = require('../../components/telegram/telegram');
 var Document = require('./document.model');
 var DocumentHistory = require('../documentHistory/documentHistory.model');
+var autoLink = require('../..//components/autoLink');
 var File = require('../file/file.model');
 var fs = require('fs');
 var express = require('express');
 
-
-
+autoLink.loadDocumentTitlesCache();
 exports.find = function(req, res) {
   var query = {};
 
@@ -149,8 +149,12 @@ exports.create = function(req, res) {
       var newDocument = new Document(document);
 
       newDocument.save(function(err) {
-        if(err) { return handleError(res, err); }
-        return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
+        if(err) {
+          return handleError(res, err);
+        }else{
+          autoLink.addDocumentTitlesCache(newDocument.title);
+          return historyLoggingAndHandleDocument(newDocument, req.user, 201, res);
+        }
       });
     }else{
       document.updatedAt = new Date();
@@ -171,12 +175,18 @@ exports.update = function(req, res) {
     if (err) { return handleError(res, err); }
     if(!document) { return res.send(404); }
     var updated = _.merge(document, req.body);
+
+    // auto link
+    updated.content = autoLink.apply(updated.content);
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
     updated.updatedAt = new Date();
 
-    if(req.body.changedDocumentTitle){
-      updated.title = req.body.changedDocumentTitle;
+    var changedDocumentTitle = req.body.changedDocumentTitle;
+    if(changedDocumentTitle !== undefined){
+      autoLink.updateDocumentTitlesCache(updated.title, changedDocumentTitle);
+      updated.title = changedDocumentTitle;
     }
+
     if(updated.parent && updated.parent._id !== undefined){
       updated.parent = updated.parent._id;
     }
@@ -187,13 +197,8 @@ exports.update = function(req, res) {
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
 
-      if(isFirstUpdate){
-        return telegram.sendNewDocumentMessage(updated, function(){
-            return historyLoggingAndHandleDocument(updated, req.user, 201, res);
-          });
-      }else{
-        historyLoggingAndHandleDocument(updated, req.user, 200, res);
-      }
+      // TODO 알람 옵션에 따라 텔레그램 알람을 보내든 트위터 알람을 보내든 하자.
+      return historyLoggingAndHandleDocument(updated, req.user, 201, res);
     });
   });
 };
