@@ -177,7 +177,7 @@ exports.update = function(req, res) {
     var updated = _.merge(document, req.body);
 
     // auto link
-    updated.content = autoLink.apply(updated.content);
+    //updated.content = autoLink.apply(updated.content);
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
     updated.updatedAt = new Date();
 
