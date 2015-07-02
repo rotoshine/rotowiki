@@ -7,8 +7,7 @@ angular.module('rotowikiApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'angularFileUpload',
-  'ngTagsInput'
+  'angularFileUpload'
 ])
   .constant('WIKI_NAME', '로토위키')
   .constant('LAST_VISIT_URL_KEY', 'lastVisitUrl')
