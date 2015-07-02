@@ -10,7 +10,10 @@
         <div class="panel-heading">문서 편집</div>
         <div class="panel-body">
           <div class="alert alert-info" role="alert" ng-show="hasChangeParentDocument">
-            <strong>알림</strong> 상위문서가 변경되었습니다. <span>{{document.parent.title}}</span> (으)로 변경되었습니다.
+            <strong>알림</strong> 상위문서가 변경되었습니다. 
+            <span ng-repeat="parentDocument in document.parents">
+              {{parentDocument.title}} <span ng-if="!$last">, </span>
+            </span>
           </div>
           <form class="form col-xs-12" action="/api/documents" method="POST">
             <div class="row default-margin-bottom">
@@ -161,46 +164,51 @@
     <form class="form form-horizontal">
       <div class="modal-body">
         <div class="form-group">
-          <label class="col-xs-4">현재 상위문서</label>
+          <label class="col-xs-4">상위문서</label>
           <div class="col-xs-8">
-            <input ng-show="currentDocument.parent.title !== ''" type="text" class="form-control" ng-model="currentDocument.parent.title" readonly/>
-            <div ng-show="currentDocument.parent.title === ''">상위문서가 없습니다.</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-xs-4">변경할 상위문서</label>
-          <div class="col-xs-8">
-            <input type="text" class="form-control" placeholder="문서명을 2글자 이상 입력하세요." ng-model="searchParentDocumentTitle" ng-keyup="searchParentDocument()"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-xs-8 col-xs-offset-4">
-            <div class="parent-search-result">
-              <div ng-show="isNowSearching">
-                <i class="fa fa-spin fa-spinner"></i> 검색 중입니다...
+            <div id="parent-document-search-result" 
+                 ng-show="searchComplete && documentSearchQuery.length > 0 && searchResultShow">
+              <div ng-show="searchResults.length === 0 && searchResultShow"><strong>{{documentSearchQuery}}</strong>의 검색결과가 없습니다.</div>
+              <ul class="list-unstyled" ng-show="searchResults.length > 0">
+                <li class="selectable" ng-repeat="searchDocument in searchResults" 
+                    ng-mouseenter="mouseEnterEffect($index)"
+                    ng-class="{ 'selected' : searchDocument.selected }"
+                    ng-click="selectParent(searchDocument)">
+                  {{searchDocument.title}}
+                </li>
+              </ul>
+              <hr>
+              <div><kbd>esc</kbd>를 누르면 사라집니다.</div>
+            </div>
+            <div>
+              <input id="document-search-query" type="text" class="form-control" 
+                     ng-model="documentSearchQuery" placeholder="문서 제목을 입력하세요" 
+                     ng-click="search(documentSearchQuery)"
+                     ng-keydown="searchHandler(documentSearchQuery, $event)"> 
+            </div>
+            <div>
+              <div ng-show="currentDocument.parents.length === 0" class="well">
+                상위문서가 없습니다.
               </div>
-              <div class="alert alert-danger" role="alert" ng-show="parentAndSubSameError">
-                <strong>에러</strong> 현재 문서를 상위문서로 지정할 수 없습니다 이자식아.
-              </div>
-              <div ng-show="!isNowSearching && searchResults.length === 0">
-                검색 결과가 없습니다.
-              </div>
-              <div ng-show="!isNowSearching && searchResults.length > 0">
-                <div>아래 문서 중 하나를 선택하세요.</div>
-                <ul class="list-unstyled">
-                  <li class="selectable" ng-repeat="parentDocument in searchResults" ng-class="{'selected': parentDocument.selected}"
-                      ng-click="select(parentDocument)">
-                    {{parentDocument.title}}
-                  </li>
-                </ul>
-              </div>
+              <div ng-show="parentAndSubSameError" class="alert alert-danger">
+                <strong>알림</strong>현재 문서를 상위 문서로 지정할 수 없습니다 이자식아.
+              </div> 
+              <ul class="list-unstyled">
+                <li ng-repeat="parentDocument in currentDocument.parents">
+                  <div class="pull-left">{{parentDocument.title}}</div>
+                  <button type="button" class="btn btn-danger pull-right" ng-click="removeParentDocument($index)">
+                    <i class="fa fa-close"></i>
+                  </button>
+                  <div class="clearfix"></div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="hide()">닫기</button>
-        <button type="button" class="btn btn-primary" ng-click="change()" ng-disabled="selectedParentDocument === null">변경</button>
+        <button type="button" class="btn btn-primary" ng-click="applyChange()" ng-disabled="selectedParentDocument === null">변경</button>
       </div>
     </form>
   </script>

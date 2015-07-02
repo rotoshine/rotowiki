@@ -2,6 +2,7 @@ node_modules
 public
 .tmp
 .idea
+.settings
 client/bower_components
 dist
 /server/config/local.env.js
@@ -9,3 +10,4 @@ npm-debug.log
 deploy.json
 googlecfbf217d413bbffa.html
 nohup.out
+/uploads/*

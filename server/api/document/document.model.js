@@ -16,19 +16,21 @@ var DocumentSchema = new Schema({
     ref: 'User',
     type: Schema.Types.ObjectId
   },
-  updateCount: {
-    type: Number,
-    default: 0
-  },
   readCount: {
     type: Number,
     default: 0
   },
+  // migration 이후 필드 삭제할 것.
   parent: {
     required: false,
     ref: 'Document',
     type: Schema.Types.ObjectId
   },
+  parents: [{
+    required: false,
+    ref: 'Document',
+    type: Schema.Types.ObjectId
+  }],
   createdAt: {
     type: Date,
     default: Date.now
@@ -37,7 +39,6 @@ var DocumentSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  hashTag: String,
   files: [{
     ref: 'File',
     type: Schema.Types.ObjectId

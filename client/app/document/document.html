@@ -1,9 +1,14 @@
 <div class="container" ng-init="init()" ng-cloak>
   <div ng-show="!isNotExistDocument">
-    <div class="row" ng-show="document.parent !== undefined">
+    <div class="row" ng-show="document.parents.length > 0">
       <div class="col-xs-12">
         <div class="alert alert-info" role="alert">
-          이 문서는 <a href="/document/{{document.parent.title}}">{{document.parent.title}}</a> 문서의 하위문서 입니다.
+          이 문서는
+          <span ng-repeat="parent in document.parents">
+            <a href="/document/{{parent.title}}">{{parent.title}}</a>
+            <span ng-if="!$last">, </span>
+          </span>
+          문서의 하위문서 입니다.
         </div>
       </div>
     </div>

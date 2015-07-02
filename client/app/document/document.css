@@ -10,3 +10,15 @@
   height:400px;
   overflow-y:auto;
 }
+
+#parent-document-search-result{
+  position:absolute;
+  z-index:10;
+  background-color:#FFFFFF;
+  padding:6px;
+  border-radius:5px;
+  border:1px solid #487dce;
+}
+.selectable{
+  cursor: pointer;
+}

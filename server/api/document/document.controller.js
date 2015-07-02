@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var mongoose = require('mongoose');
 var telegram = require('../../components/telegram/telegram');
 var Document = require('./document.model');
 var DocumentHistory = require('../documentHistory/documentHistory.model');
@@ -8,11 +9,11 @@ var autoLink = require('../..//components/autoLink');
 var File = require('../file/file.model');
 var fs = require('fs');
 var express = require('express');
+var DEFAULT_GETTING_FIELD = '__v _id title content files likeCount parents readCount updatedAt';
 
 autoLink.loadDocumentTitlesCache();
 exports.find = function(req, res) {
   var query = {};
-
 
   if(req.query.hasOwnProperty('title')){
     query.title = new RegExp(req.query.title, 'i');
@@ -75,18 +76,64 @@ exports.find = function(req, res) {
 
 };
 
+function loadSubDocument(parentDocumentId, callback){
+  return Document
+    .find({parent: parentDocumentId})
+    .sort('title')
+    .exec(callback);
+}
+
 exports.findByParent = function(req, res){
   var title = req.params.title;
 
   Document.findByTitle(title, function(err, document){
     if(err){ return handleError(res, err); }
     if(document){
-      Document.find({parent: document._id}, function(err, subDocuments){
+      loadSubDocument(document._id, function(err, subDocuments){
         if(err){ return handleError(res, err); }
         return res.json(subDocuments);
       });
     }
   })
+};
+
+exports.migrate = function(req, res){
+  var async = require('async');
+  var result = [];
+  return Document
+    .find()
+    .exec(function(err, documents){
+      var works = [];
+      for(var i = 0; i < documents.length; i++){
+        _.each(documents, function(document){
+          console.log(document.parents, document.parent);
+          if(document.parents.length === 0 && document.parent !== undefined){
+            works.push(function(next){
+              document.parents = [document.parent];
+              result.push('migrate: ' + document.title);
+              return document.save(next);
+            });
+          }
+        });
+
+        if(works.length > 0){
+          async.parallel(works, function(err){
+            if(err){
+              console.log(err);
+              return res.send(err);
+            }else{
+              return res.json({
+                result: result
+              });
+            }
+          });
+        }else{
+          return res.json({
+            result: 'migrate target not found.'
+          });
+        }
+      }
+    });
 };
 
 // Get a single document
@@ -103,8 +150,16 @@ exports.show = function(req, res) {
   }
 
   Document
-    .findOne(query)
-    .populate('parent')
+    .findOne(query, DEFAULT_GETTING_FIELD)
+    .populate({
+      path: 'parents',
+      select: DEFAULT_GETTING_FIELD,
+      options: {
+        sort: {
+          title: 1
+        }
+      }
+    })
     .exec(function (err, document) {
       if(err) { return handleError(res, err); }
       if(!document) { return res.send(404); }
@@ -112,8 +167,8 @@ exports.show = function(req, res) {
       // read count 늘리기
       document.readCount = document.readCount + 1;
 
-      document.save(function(){
-        Document.find({parent: document._id}, function(err, subDocuments){
+      return document.save(function(){
+        return loadSubDocument(document._id, function(err, subDocuments){
           if(err) { return handleError(res, err); }
 
           document.set('subDocuments', subDocuments);
@@ -177,7 +232,7 @@ exports.update = function(req, res) {
     var updated = _.merge(document, req.body);
 
     // auto link
-    //updated.content = autoLink.apply(updated.content);
+    updated.content = autoLink.apply(updated.content);
     updated.lastUpdatedUserTwitterId = req.user.twitter.screen_name;
     updated.updatedAt = new Date();
 
@@ -186,19 +241,36 @@ exports.update = function(req, res) {
       autoLink.updateDocumentTitlesCache(updated.title, changedDocumentTitle);
       updated.title = changedDocumentTitle;
     }
-
-    if(updated.parent && updated.parent._id !== undefined){
-      updated.parent = updated.parent._id;
+    
+    var parents = [];
+    if(req.body.parents !== undefined){
+      for(var i = 0; i < req.body.parents.length; i++){
+        parents.push(new mongoose.Types.ObjectId(req.body.parents[i]));  
+      }
     }
-
+    
     var isFirstUpdate = updated.__v === 0;
 
     updated.__v = updated.__v + 1;
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-
-      // TODO 알람 옵션에 따라 텔레그램 알람을 보내든 트위터 알람을 보내든 하자.
-      return historyLoggingAndHandleDocument(updated, req.user, 201, res);
+      // ref array가 저장이 안 되서 따로 처리...
+      return Document
+        .update(
+          {
+            title: updated.title
+          }, 
+          {
+            $set: { 
+              parents: parents 
+            }
+          }, 
+          function(err){
+            if (err) { return handleError(res, err); }
+            // TODO 알람 옵션에 따라 텔레그램 알람을 보내든 트위터 알람을 보내든 하자.
+            return historyLoggingAndHandleDocument(updated, req.user, 201, res);
+          });
+    
     });
   });
 };
@@ -324,12 +396,10 @@ exports.uploadFile = function(req, res){
 
       // 업로드가 제대로 됐는지 확인.
       // 업로드된 파일이 없으면 용량 초과해서 지운 것.
-
       file.save(function(err) {
         if (err) {
           return handleError(res, err);
-        }
-        else {
+        }else {
           Document.findByTitle(title, function (err, document) {
             if (err) {
               return handleError(res, err);

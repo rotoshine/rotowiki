@@ -143,7 +143,11 @@ angular.module('rotowikiApp')
           $scope.nowShowCreateDocumentPrompt = false;
           $scope.keydownListeners.listen('navbar');
           if(answer){
-            if(title.length > 0){
+            if(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%\\\=\(\'\"]/gi.test(title)){
+              return alertfy.alert('허용되지 않는 문자열ㅇ 포함되어 있습니다.')
+            }else if(title.length > 0){
+              // &는 허용문자이지만 제목이 들어가있으면 entity로 치환환
+              title = title.replace(/&/g, '&amps');
               Document
                 .get({title: title})
                 .$promise.then(function(document){
@@ -166,6 +170,13 @@ angular.module('rotowikiApp')
       }
     };
 
+    // android에서 backbutton touch 시 검색결과 무조건 숨기게 하기
+    document.addEventListener('backbutton', function(e){
+      if($scope.searchService.isShow){
+        e.preventDefault();
+        $scope.searchService.hideResult();
+      }
+    }, false);
     $scope.searchService = {
       isShow: false,
       isNowSearching: false,

@@ -259,7 +259,6 @@ angular.module('rotowikiApp')
       $timeout(function(){
         var ace = window.ace;
 
-        //$('#ace-editor').width($('#').width());
         var editor = ace.edit('ace-editor');
         editor.on('blur', function (event, editor) {
           $scope.currentCursor = editor.selection.getCursor();
@@ -271,6 +270,7 @@ angular.module('rotowikiApp')
 
         editor.getSession().setMode(new MarkdownMode());
         editor.setOptions({
+          minLines: 20,
           maxLines: Infinity,
           autoScrollEditorIntoView: true,
           theme: "ace/theme/clouds",
@@ -297,11 +297,10 @@ angular.module('rotowikiApp')
         saveDocument.changedDocumentTitle = $scope.changedDocumentTitle;
       }
 
-      if ($scope.document.parent && $scope.document.parent._id) {
-        saveDocument.parent = $scope.document.parent._id;
-      } else {
-        saveDocument.parent = $scope.document.parent;
+      if($scope.document.parents.length > 0){
+        saveDocument.parents = _.pluck($scope.document.parents, '_id');  
       }
+      
       var isFirstUpdate = $scope.document.__v === 0;
       var updateBeforeDate = $scope.document.updatedAt;
 
@@ -335,6 +334,7 @@ angular.module('rotowikiApp')
         var modalInstance = $modal.open({
           templateUrl: 'parentChangeModal.html',
           controller: 'DocumentParentChangeCtrl',
+          keyboard: false,
           resolve: {
             currentDocument: function () {
               return $scope.document;
@@ -342,9 +342,11 @@ angular.module('rotowikiApp')
           }
         });
 
-        modalInstance.result.then(function (parentDocument) {
-          $scope.document.parent = parentDocument;
-          $scope.hasChangeParentDocument = true;
+        modalInstance.result.then(function (parentDocuments) {
+          if(parentDocuments !== null){
+            $scope.document.parents = parentDocuments;
+            $scope.hasChangeParentDocument = true;
+          }
           $scope.keydownListeners.listen('documentEdit');
         });
       }
@@ -504,7 +506,9 @@ angular.module('rotowikiApp')
     };
 
     $scope.$on('$locationChangeStart', function(event, newUrl){
-      if($scope.editor !== null && $scope.editor.getSession().getValue() !== $scope.editingBeforeContent){
+      // TODO 로그인 세션이 끊겨서 로그인 화면으로 보내는거면 그냥 보내게 처리하자.
+      var content = getEditingContentValue();
+      if(content !== $scope.editingBeforeContent){
         event.preventDefault();
         alertify.confirm('변경된 내용이 저장되지 않았습니다. 편집 모드를 종료하시겠습니까?', function(ok){
           if(ok){
@@ -516,64 +520,190 @@ angular.module('rotowikiApp')
     });
   })
   .controller('DocumentParentChangeCtrl', function($scope, $modalInstance, Document, currentDocument){
+    setTimeout(function(){
+      $('#document-search-query').focus();
+    }, 500);
     $scope.currentDocument = currentDocument;
-    if($scope.currentDocument.parent === undefined){
-      $scope.currentDocument.parent = {
-        title: ''
-      };
-    }
-    $scope.isNowSearching = false;
-    $scope.searchParentDocumentTitle = '';
-    $scope.searchResults = null;
-    $scope.selectedParentDocument = null;
-    $scope.parentAndSubSameError = false;
-
-    $scope.select = function(parentDocument){
-      if(parentDocument.title === $scope.currentDocument.title){
-        $scope.parentAndSubSameError = true;
-      }else{
-        for(var i = 0; i < $scope.searchResults.length; i++){
-          $scope.searchResults[i].selected = false;
-        }
-        parentDocument.selected = true;
-        $scope.selectedParentDocument = parentDocument;
-        $scope.parentAndSubSameError = false;
-      }
-    };
-
-    $scope.change = function(){
-      if($scope.selectedParentDocument !== null){
-        $modalInstance.close($scope.selectedParentDocument);
-      }else{
-        alertify.alert('상위문서를 선택해주세요.');
-      }
-    };
-
+    
     $scope.hide = function(){
       $modalInstance.dismiss('cancel');
     };
 
-
-    $scope.searchParentDocument = function(){
-      if($scope.searchParentDocumentTitle.length > 1){
-        if($scope.searchParentDocumentTitle === $scope.currentDocument.title){
+    $scope.searchComplete = false;
+    
+    $scope.searchHandler = function(query, $e){
+      // 검색결과 순회를 위해 위, 아래 키를 눌렀을 때는 검색이 안 되도록.
+      var keyCode = $e.keyCode;
+      
+      if(keyCode !== KEY_CODE.UP && keyCode !== KEY_CODE.DOWN){
+        $scope.search(query);
+      }
+    };
+    
+    $scope.search = function(query){
+      if(query !== undefined && query.length > 0){
+        if(query === $scope.currentDocument.title){
           $scope.parentAndSubSameError = true;
         }else {
           $scope.parentAndSubSameError = false;
           $scope.isNowSearching = true;
           Document
             .query({
-              title: $scope.searchParentDocumentTitle
+              title: query
             })
             .$promise.then(function (documents) {
               $scope.isNowSearching = false;
+              
+              var parentsIds = _.pluck($scope.currentDocument.parents, '_id');
+              for(var i = 0; i < documents.length; i++){
+                documents[i].selected = i === 0;        
+                
+                if(_.include(parentsIds, documents[i]._id)){
+                  documents.splice(i, 1);
+                  i--;
+                }
+                
+              }
+              
               $scope.searchResults = documents;
+              $scope.searchComplete = true; 
+              adjustSearchResultPosition();
             }, function () {
               $scope.isNowSearching = false;
               $scope.searchResults = [];
+              $scope.searchComplete = true;
+              adjustSearchResultPosition();
             });
         }
       }
+    };
+    
+    $scope.selectParent = function(document){
+      $scope.searchComplete = false;
+      $scope.searchResults = [];   
+      $scope.currentDocument.parents.push(document);
+    };
+    
+    var KEY_CODE = {
+      'UP': 38,
+      'DOWN': 40,
+      'ENTER': 13,
+      'ESC': 27
+    };
+    
+    function isControlingKeyDown(keyCode){
+      for(var key in KEY_CODE){
+        if(KEY_CODE[key] === keyCode){
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    
+    // TODO jquery로 직접 핸들링하는 부분들을 angular code base로 바꾸자.
+    function adjustSearchResultPosition(){
+      if($scope.searchResultShow){
+        var $searchField = $('#document-search-query');
+        var position = $searchField.position();
+        var inputPaddingLeft = parseInt($searchField.css('padding-left').replace('px', ''));
+        var fontSize = parseInt($searchField.css('font-size').replace('px', ''));
+        $('#parent-document-search-result').css({
+          top: position.top,
+          left: position.left + inputPaddingLeft + (fontSize * $searchField.val().length)
+        });
+      }
+    }
+    
+    function resetSelected(){
+      for(var i = 0; i < $scope.searchResults.length; i++){
+        $scope.searchResults[i].selected = false;
+      }
+    }
+    
+    function adjustSearchResultSelectedIndex(adjustValue){
+      if($scope.searchResults.length > 1){
+        var selectedIndex, i;
+        
+        // 현재 검색결과의 선택위치를 구함.
+        for(i = 0; i < $scope.searchResults.length; i++){
+          console.log($scope.searchResults[i].selected);
+          if($scope.searchResults[i].selected){
+            selectedIndex = i;
+            break;
+          }
+        }
+        
+        var adjustIndex = selectedIndex + adjustValue;
+        console.log('adjustIndex:' + adjustIndex);
+        if(adjustIndex < 0){
+          adjustIndex = 0;
+        }else if(adjustIndex > $scope.searchResults.length - 1){
+          adjustIndex = $scope.searchResults.length - 1;
+        }
+        console.log('보정된 adjustIndex:' + adjustIndex);
+        
+        // 보정된 값으로 선택위치를 설정.
+        resetSelected();
+        $scope.searchResults[adjustIndex].selected = true;
+        
+        $scope.$apply();
+      }  
+    }
+    
+    $scope.mouseEnterEffect = function($index){
+      resetSelected();
+      $scope.searchResults[$index].selected = true;
+    };
+    
+    $scope.searchResultShow = false;
+    
+    function keyControlHandle(e){
+      var keyCode = e.keyCode;
+      
+      if($scope.searchComplete && $scope.searchResults.length > 0){
+        $scope.searchResultShow = true;
+        if(isControlingKeyDown(keyCode)){
+          if(keyCode === KEY_CODE.UP || keyCode === KEY_CODE.DOWN){
+            e.preventDefault();
+            adjustSearchResultSelectedIndex(keyCode === KEY_CODE.UP ? -1 : 1);
+          }else if(keyCode === KEY_CODE.ENTER){
+            for(var i = 0; i < $scope.searchResults.length; i++){
+              if($scope.searchResults[i].selected){
+                $scope.selectParent($scope.searchResults[i]);
+                break;
+              }
+            }
+          }
+        }
+      } 
+      
+      if(keyCode === KEY_CODE.ESC){
+        e.preventDefault();
+        if($scope.searchResultShow){
+          $scope.searchResultShow = false; 
+          $scope.documentSearchQuery = ''; 
+        }else{
+          $modalInstance.close(null);
+        }
+      }
+    }
+    
+    function keydownHandler(e){
+      adjustSearchResultPosition();
+      keyControlHandle(e);
+    }
+    
+    $(window).on('keydown', keydownHandler);
+    
+    $scope.removeParentDocument = function($index){
+      $scope.currentDocument.parents.splice($index, 1);
+    };
+    
+    $scope.applyChange = function(){
+      $(window).off('keydown', keydownHandler);
+      console.log($scope.currentDocument.parents.length);
+      $modalInstance.close($scope.currentDocument.parents);
     };
   })
   .controller('DocumentEditHelperModalCtrl', function($scope, selectedTab, linkTypes, $modalInstance, Document, $timeout){

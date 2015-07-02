@@ -7,7 +7,8 @@ angular.module('rotowikiApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'angularFileUpload'
+  'angularFileUpload',
+  'ngTagsInput'
 ])
   .constant('WIKI_NAME', '로토위키')
   .constant('LAST_VISIT_URL_KEY', 'lastVisitUrl')
@@ -68,7 +69,9 @@ angular.module('rotowikiApp', [
         $state.go('random document');
       })
       .addCombo('navbar', 'n', function(){
-        $('.nav-create-document-button').click();
+        if(Auth.isLoggedIn()){
+          $('.nav-create-document-button').click();
+        }
       })
       .addCombo('navbar', 's', function(){
         $('#search-text').focus();
