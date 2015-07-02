@@ -78,7 +78,7 @@ exports.find = function(req, res) {
 
 function loadSubDocument(parentDocumentId, callback){
   return Document
-    .find({parent: {$in:[parentDocumentId]}})
+    .find({parents: {$in:[parentDocumentId]}})
     .sort('title')
     .exec(callback);
 }
