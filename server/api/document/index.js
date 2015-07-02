@@ -5,7 +5,6 @@ var controller = require('./document.controller');
 var auth = require('../../auth/auth.service');
 var router = express.Router();
 
-router.get('/migrate', controller.migrate);
 router.get('/random', controller.random);
 router.get('/by-id/:documentId', controller.show);
 router.get('/', controller.find);

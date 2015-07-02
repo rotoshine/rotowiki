@@ -78,7 +78,7 @@ exports.find = function(req, res) {
 
 function loadSubDocument(parentDocumentId, callback){
   return Document
-    .find({parent: parentDocumentId})
+    .find({parent: {$in:[parentDocumentId]}})
     .sort('title')
     .exec(callback);
 }
@@ -97,7 +97,7 @@ exports.findByParent = function(req, res){
   })
 };
 
-exports.migrate = function(req, res){
+exports.migrate = function(callback){
   var async = require('async');
   var result = [];
   return Document
@@ -110,6 +110,7 @@ exports.migrate = function(req, res){
           if(document.parents.length === 0 && document.parent !== undefined){
             works.push(function(next){
               document.parents = [document.parent];
+  
               result.push('migrate: ' + document.title);
               return document.save(next);
             });
@@ -120,15 +121,16 @@ exports.migrate = function(req, res){
           async.parallel(works, function(err){
             if(err){
               console.log(err);
-              return res.send(err);
+              return callback(err);
             }else{
-              return res.json({
+              console.log(result);
+              return callback({
                 result: result
               });
             }
           });
         }else{
-          return res.json({
+          return callback({
             result: 'migrate target not found.'
           });
         }
