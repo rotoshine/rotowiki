@@ -86,6 +86,29 @@
         <div class="well" ng-show="!isNowLoading && documents.length === 0">문서가 없습니다.</div>
       </div>
     </script>
+    <script type="ng-template" id="document-list.html">
+    	<ul class="list-unstyled">
+    		<li ng-repeat="document in rootDocuments">
+    			<a ui-sref="document({title:document.title})">
+    				<div class="document-list">
+    					<button ng-if="document.subDocumentsCount > 0" 
+    						    class="btn btn-info btn-xs"
+    							ng-click="loadSubDocuments(document)">
+    						<i class="fa fa-plus"></i>
+    					</button>
+    					<span class="document-list-title">{{document.title}}</span>
+    					<span class="badge">{{document.subDocumentsCount}}</span>
+    					<span class="pull-right">
+    						<small>{{document.updatedAt | from}} 수정됨</small>
+    					</span>
+    					<div ng-if="document.subDocuments && document.subDocuments.length > 0">
+    						<document-list documents="subDocuments"></document-list>
+    					</div>
+    				</div>
+    			</a>
+    		</li>
+    	</ul>
+    </script>
     <div ng-include="'components/navbar/navbar.html'"></div>
     <!-- Add your site or application content here -->
     <div ui-view=""></div>

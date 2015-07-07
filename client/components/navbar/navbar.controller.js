@@ -10,7 +10,11 @@ angular.module('rotowikiApp')
       {
         title: '전체보기',
         link: '/document-all'
-      }
+      }/*,
+      {
+        title: '문서목록',
+        link: '/document-list'
+      }*/
     ];
 
     $scope.selectedThemeName = null;

@@ -27,8 +27,10 @@ exports.setup = function (User, config) {
           return done(err, user);
         });
       } else {
-        // 사용자 이름 update하기
+        // 사용자 이름 및 프로필  update하기
         user.name = profile.displayName;
+        user.twitter = profile._json;
+        
         user.save(function(err){
           return done(err, user);
         });

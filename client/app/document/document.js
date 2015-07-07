@@ -32,5 +32,11 @@ angular.module('rotowikiApp')
         templateUrl: 'app/document/document-all.html',
         controller: 'DocumentAllCtrl',
         allowKeydownListeners: ['navbar']
+      })
+      .state('document list', {
+        url: '/document-list',
+        templateUrl: 'app/document/document-list.html',
+        controller: 'DocumentListCtrl',
+        allowKeydownListeners: ['navbar']
       });
   });

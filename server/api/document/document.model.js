@@ -88,4 +88,13 @@ DocumentSchema
     this._subDocuments = subDocuments
   });
 
+DocumentSchema
+  .virtual('subDocumentsCount')
+  .get(function(){
+    return this._subDocumentsCount;
+  })
+  .set(function(subDocumentsCount){
+    this._subDocumentsCount = subDocumentsCount;
+  });
+
 module.exports = mongoose.model('Document', DocumentSchema);

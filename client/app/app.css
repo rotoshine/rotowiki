@@ -218,3 +218,11 @@ body{
 .inline-block{
   display:inline-block;
 }
+
+.nav-profile-image{
+  margin-top:-5px;
+  width:30px;
+  height:30px;
+  border:1px solid #eeeeee;
+  border-radius: 15px;
+}

@@ -56,6 +56,7 @@ exports.loadDocumentTitlesCache = loadDocumentTitlesCache;
 function apply(content){
   var LINK_WRAPPER_START = '&[';
   var LINK_WRAPPER_END = ']';
+  var SKIP_BRACKETS = [LINK_WRAPPER_START, '-[', '*[', '(/', '!['];
   var CARAGE_RETURN = '\n'
   if(documentTitlesCache.length > 0 && content !== ''){
     var documentTitle, regex;
@@ -78,9 +79,11 @@ function apply(content){
               // 링크 시작 문법과 같은지 체크
               for(var s = workLineTitleIndex; s > 0; s--){
                 var twoCharacters = workLine.substring(s - 2, s);
-                if(twoCharacters === LINK_WRAPPER_START || twoCharacters === '(/'){
-                  notHasAlreadyLink = false;
-                  break;
+                for(var sb = 0; sb < SKIP_BRACKETS.length; sb ++){
+                  if(SKIP_BRACKETS[sb] === twoCharacters){
+                    notHasAlreadyLink = false;
+                    break;
+                  }
                 }
               }
 

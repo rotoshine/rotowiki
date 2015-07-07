@@ -16,6 +16,10 @@ var FileSchema = new Schema({
   path: {
     type: String,
     required: true
+  },
+  document: {
+    ref: 'Document',
+    type: Schema.Types.ObjectId
   }
 });
 

@@ -76,4 +76,14 @@ angular.module('rotowikiApp')
       },
       templateUrl: 'discography.html'
     };
+  })
+  .directive('documentList', function(){
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        documents: '&'
+      },
+      templateUrl: 'document-list.html'
+    }
   });

@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var async = require('async');
 var mongoose = require('mongoose');
 var telegram = require('../../components/telegram/telegram');
 var Document = require('./document.model');
@@ -33,6 +34,13 @@ exports.find = function(req, res) {
       '$gte': currentDate
     };
   }
+  
+  if(req.query.hasOwnProperty('hasNoParent') && !!req.query.hasNoParent){
+    query.$or = [
+        {parents: { $size:0 } },
+        { parents: null }
+      ];
+  }
 
   if(req.query.sort === 'likeCount'){
     query.likeCount = {
@@ -51,6 +59,7 @@ exports.find = function(req, res) {
     queryRunner
       .sort(sortQuery);
   }
+  
   if(req.query.hasOwnProperty('recent')) {
     queryRunner
       .sort({ createdAt: -1 })
@@ -71,7 +80,36 @@ exports.find = function(req, res) {
 
   queryRunner.exec(function (err, documents) {
     if(err) { return handleError(res, err); }
-    return res.json(200, documents);
+    
+    if(req.query.hasSubDocumentCount && documents.length > 0){
+      // count를 loop를 통해서 하는 방법. 이게 최선일까?
+      var works = [];  
+      _.each(documents, function(document){
+        works.push(function(next){
+          return Document
+            .count({
+              parents: {
+                $in:[mongoose.Types.ObjectId(document._id)]
+              }
+            }, function(err, count){
+              if(err){
+                return next(err);
+              }else{
+                document.set('subDocumentsCount', count);
+                return next();
+              }
+            });
+        });
+      });
+      return async.parallel(works, function(err){
+        if(err){ console.log(err); return handleError(res, err); }
+        else{
+          return res.json(200, documents);
+        }
+      });
+    }else{
+      return res.json(200, documents);
+    }
   });
 
 };
@@ -94,11 +132,10 @@ exports.findByParent = function(req, res){
         return res.json(subDocuments);
       });
     }
-  })
+  });
 };
 
 exports.migrate = function(callback){
-  var async = require('async');
   var result = [];
   return Document
     .find()
@@ -383,7 +420,7 @@ exports.unlike = function(req, res){
 };
 
 exports.uploadFile = function(req, res){
-  var title = req.params.title;
+  var documentId = req.params.documentId;
   var uploadedFile = req.files.file;
 
   fs.exists(uploadedFile.path, function(exists){
@@ -393,7 +430,8 @@ exports.uploadFile = function(req, res){
         originalName: uploadedFile.originalname,
         mimeType: uploadedFile.mimetype,
         path: uploadedFile.path,
-        size: uploadedFile.size
+        size: uploadedFile.size,
+        document: documentId
       });
 
       // 업로드가 제대로 됐는지 확인.
@@ -402,7 +440,7 @@ exports.uploadFile = function(req, res){
         if (err) {
           return handleError(res, err);
         }else {
-          Document.findByTitle(title, function (err, document) {
+          Document.findById(documentId, function (err, document) {
             if (err) {
               return handleError(res, err);
             }
@@ -416,7 +454,7 @@ exports.uploadFile = function(req, res){
                     return handleError(res, err);
                   }
                   else {
-                    console.log(title + ' 문서에 파일 추가됨.' + file.name);
+                    console.log(document.title + ' 문서에 파일 추가됨.' + file.name);
                     return res.json(200, file);
                   }
                 })

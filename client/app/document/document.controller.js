@@ -35,6 +35,12 @@ angular.module('rotowikiApp')
             /*new window.Masonry($('#markdown-view').get(0), {
               itemSelector: '.discography'
             });*/
+            
+            // 이미지가 404일 때...
+            // rm -rf를 조심하자 ㅜㅠ
+            $('img').on('error', function(){
+              $(this).attr('src', '/images/cute_cat_404_error_im_sorry.jpg');  
+            });
           });
           $scope.isNowLoading = false;
         }, function(err){
@@ -120,7 +126,7 @@ angular.module('rotowikiApp')
               Document
                 .save({
                   title: title,
-                  parent: $scope.document._id
+                  parents: [$scope.document._id]
                 }, function(){
                   $state.go('document edit', {title: title});
                 });
@@ -174,26 +180,25 @@ angular.module('rotowikiApp')
       }
     };
 
-    var fileUrl = '/api/documents/' + $stateParams.title + '/files';
+    var fileUrl = null;
     $scope.imageUpload = function ($files) {
-      if ($files.length === 1) {
-        $upload.upload({
-          file: $files[0],
-          url: fileUrl
-        }).success(function (imageFile) {
-          var imgTag = simpleTemplate('![{title}의 이미지]({imageUrl})', {
-              title: $stateParams.title,
-              imageUrl: fileUrl + '/' + imageFile._id
-            }) + CARRIAGE_RETURN_CHAR;
-
-          if ($scope.currentCursor !== null) {
-            imgTag = CARRIAGE_RETURN_CHAR + imgTag;
-          }
-
-          $scope.appendHTML(imgTag);
-        }).error(function () {
-          alertify.alert('파일 업로드 중 에러가 발생했습니다.');
-        });
+      if(fileUrl !== null){
+        if ($files.length === 1) {
+          $upload.upload({
+            file: $files[0],
+            url: fileUrl
+          }).success(function (imageFile) {
+            var imgTag = simpleTemplate('![{title}의 이미지]({imageUrl})', {
+                title: $stateParams.title,
+                imageUrl: fileUrl + '/' + imageFile._id
+              }) + CARRIAGE_RETURN_CHAR;
+            $scope.appendHTML(imgTag);
+          }).error(function () {
+            alertify.alert('파일 업로드 중 에러가 발생했습니다.');
+          });
+        }  
+      }else{
+        alertify.alert('파일 업로드가 뭔가 이상합니다. 개발자를 갈요.');  
       }
     };
 
@@ -240,6 +245,9 @@ angular.module('rotowikiApp')
         .get({title: $scope.document.title})
         .$promise.then(function (document) {
           $scope.document = document;
+          
+          // file url setting
+          fileUrl = '/api/documents/by-id/' + document._id + '/files';
 
           $scope.changedDocumentTitle = document.title;
           if ($scope.document.content === undefined) {
@@ -901,4 +909,49 @@ angular.module('rotowikiApp')
         alertify.alert('올바르지 않은 문서 주소입니다.');
         $state.go('main');
       });
-  });
+  })
+  .controller('DocumentListCtrl', function($scope, Document){
+    $scope.rootDocuments = [];
+    $scope.page = {
+      currentPage: 1,
+      pageCount: 10,
+      isArriveLast: false
+    };
+    
+    $scope.isNowLoading = false;
+    
+    $scope.loadRootDocuments = function(callback){
+      if($scope.page.isArriveLast || $scope.isNowLoading){
+        if(callback){
+            return callback();  
+          }
+      }else{
+        $scope.isNowLoading = true;
+        
+        // subDocument 없는 문서들 로드  
+        return Document
+          .findByNoParents({
+            page: $scope.page.currentPage      
+          },function(rootDocuments){
+            $scope.page.currentPage = $scope.page.currentPage + 1;
+            if($scope.page.pageCount > rootDocuments.length){
+              $scope.page.isArriveLast = true;
+            }
+            for(var i = 0; i < rootDocuments.length; i++){
+              rootDocuments[i].hoverable = rootDocuments[i].subDocumentsCount > 0;
+            }
+            $scope.rootDocuments = $scope.rootDocuments.concat(rootDocuments);
+            
+            $scope.isNowLoading = false;
+            if(callback){
+              return callback(rootDocuments);  
+            }
+            
+        });  
+      }
+    };
+    
+    $scope.init = function(){
+      $scope.loadRootDocuments();
+    };
+  }); 

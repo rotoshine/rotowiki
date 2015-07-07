@@ -38,12 +38,13 @@
               </li>
             </ul>
           </li>
-          <li ng-show="isLoggedIn()"><p class="navbar-text">{{ getCurrentUser().name }}님 안녕하세요!</p> </li>
+          <li ng-show="isLoggedIn()"><p class="navbar-text"><img class="nav-profile-image" src="{{getCurrentUser().twitter.profile_image_url}}" alt="">
+          {{ getCurrentUser().name }}</p> </li>
           <li>
             <div class="nav-right-button-wrapper">
               <button ng-hide="isLoggedIn()" class="btn btn-primary btn-sm" ng-click="goLogin()"><i class="fa fa-twitter"></i> Twitter 로그인</button>
-              <button ng-show="isLoggedIn()" class="btn btn-info btn-sm nav-create-document-button" ng-click="createDocument()"><i class="fa fa-file"></i> 새 문서 만들기</button>
-              <a href="/document-random" class="btn btn-success btn-sm random-document-button"><i class="fa fa-random"></i> 무작위 문서</a>
+              <button ng-show="isLoggedIn()" class="btn btn-info btn-sm nav-create-document-button" ng-click="createDocument()"><i class="fa fa-file"></i> 새문서</button>
+              <a href="/document-random" class="btn btn-success btn-sm random-document-button"><i class="fa fa-random"></i> </a>
               <button class="btn btn-default btn-sm" ng-click="showShortcut()"><i class="fa fa-bolt"></i>단축키</button>
             </div>
           </li>

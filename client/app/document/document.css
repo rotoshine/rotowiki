@@ -1,13 +1,8 @@
 .ace-editor{
-  position:relative;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
   height: 400px;
 }
 .edit-manual{
-  height:400px;
+  height:100%;
   overflow-y:auto;
 }
 
@@ -21,4 +16,21 @@
 }
 .selectable{
   cursor: pointer;
+}
+
+.document-list{
+  border:1px solid #434ab6 ;
+  margin-bottom:4px;
+  border-radius:5px;
+  padding:5px;
+}
+
+.document-list:hover{
+  background-color:#434ab6 ;  
+  cursor: pointer;
+  color: #eeeeee;
+}
+.document-list a, .document-list a:visited{
+  text-decoration: none;
+  color: #000000;
 }
