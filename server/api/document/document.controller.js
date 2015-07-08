@@ -419,17 +419,41 @@ exports.unlike = function(req, res){
 
 };
 
+exports.findDocumentFiles = function(req, res){
+  var documentId = req.params.documentId;
+  
+  return File.find({
+    document: documentId
+  }, function(err, files){
+    if(err){
+      return handleError(res, err);
+    }else{
+      return res.json(200, files);
+    }   
+  });
+};
+
 exports.uploadFile = function(req, res){
   var documentId = req.params.documentId;
   var uploadedFile = req.files.file;
 
   fs.exists(uploadedFile.path, function(exists){
     if(exists){
+      
+      // 파일 리네임하기
+      var PATH_SEPERATOR = '/'
+      var renameFileName = new Date().getTime();
+      var alreadyUploadedPaths = uploadedFile.path.split('/');
+      alreadyUploadedPaths.splice(alreadyUploadedPaths.length - 1, 1);
+      var renameFilePath = alreadyUploadedPaths.join('/') + '/' + renameFileName;
+      
+      fs.renameSync(uploadedFile.path, renameFilePath);
+      
       var file = new File({
-        name: uploadedFile.name,
+        name: renameFileName,
         originalName: uploadedFile.originalname,
         mimeType: uploadedFile.mimetype,
-        path: uploadedFile.path,
+        path: renameFilePath,
         size: uploadedFile.size,
         document: documentId
       });

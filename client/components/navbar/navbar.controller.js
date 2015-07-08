@@ -148,7 +148,9 @@ angular.module('rotowikiApp')
           $scope.keydownListeners.listen('navbar');
           if(answer){
             if(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%\\\=\(\'\"]/gi.test(title)){
-              return alertfy.alert('허용되지 않는 문자열ㅇ 포함되어 있습니다.')
+              return alertify.alert('허용되지 않는 문자열이 포함되어 있습니다.<br>' +
+                '?, !와 같은 기호는 뺴고 넣어주세요.<br>' +
+                '안 그러면 개발자 힘들다.');
             }else if(title.length > 0){
               // &는 허용문자이지만 제목이 들어가있으면 entity로 치환환
               title = title.replace(/&/g, '&amps');

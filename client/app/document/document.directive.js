@@ -79,10 +79,10 @@ angular.module('rotowikiApp')
   })
   .directive('documentList', function(){
     return {
-      restrict: 'E',
       replace: true,
+      restrict: 'E',
       scope: {
-        documents: '&'
+        documents: '@'
       },
       templateUrl: 'document-list.html'
     }

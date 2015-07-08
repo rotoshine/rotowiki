@@ -260,6 +260,11 @@ angular.module('rotowikiApp')
           if($('#ace-editor').css('display') !== 'none'){
             $scope.initAceEditor();
           }
+          Document
+            .findFiles({documentId: document._id})
+            .$promise.then(function(files){
+              $scope.uploadedFiles = files;
+            });
         });
     };
 
@@ -478,7 +483,11 @@ angular.module('rotowikiApp')
       var editor = $scope.editor;
 
       if ($scope.currentCursor !== null) {
-        editor.selection.moveCursorBy($scope.currentCursor.row, $scope.currentCursor.column);
+        var adjustRow = 1;
+        if($scope.currentCursor.column > 0){
+          adjustRow = adjustRow + 1;
+        }
+        editor.gotoLine($scope.currentCursor.row + adjustRow, 0);
       } else {
         editor.selection.moveCursorLineEnd();
       }

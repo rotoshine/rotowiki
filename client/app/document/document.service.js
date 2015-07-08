@@ -42,6 +42,11 @@ angular.module('rotowikiApp')
         url: '/api/documents?hasNoParent=true&sort=title&hasSubDocumentCount=true',
         method: 'GET',
         isArray: true
+      },
+      findFiles: {
+        url: '/api/documents/by-id/:documentId/files',
+        method: 'GET',
+        isArray: true
       }
     });
   });

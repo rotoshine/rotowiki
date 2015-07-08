@@ -141,6 +141,17 @@
                 </tabset>
               </div>
             </div>
+            <div class="row">
+              <div class="col-xs-12 uploaded-file-list">
+                <ul class="list-inline">
+                  <li ng-repeat="uploadedFile in uploadedFiles">
+                    <div class="uploaded-file" ng-css="{'background-image':'url'( + uploadedFile.path + ')'}">
+                      
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </form>
         </div>
         <div class="panel-footer">
