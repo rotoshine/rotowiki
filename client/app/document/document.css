@@ -4,6 +4,17 @@
 .edit-manual{
   height:100%;
   overflow-y:auto;
+  transition: ease-in-out 1s all;
+}
+
+.edit-manual-switch-text{
+  display:inline-block;
+  position:absolute;
+  right:0;
+}
+
+.edit-manual-switch{
+  margin-right:60px;
 }
 
 #parent-document-search-result{
@@ -38,9 +49,23 @@
   max-width: 100%;
 }
 .uploaded-file{
+  border:1px solid #cccccc;
   position: relative;
-  width:100px;
-  height:100px;
+  width:70px;
+  height:70px;
   background-position: center;
   background-size: cover;
+  cursor: pointer;
+}
+
+.uploaded-file .remove{
+  position:absolute;
+  right:5px;
+  bottom:5px;
+  width:25px;
+  height:25px;
+  border-radius:20px;
+  border:none;
+  background-color:#d9534f;
+  color:#ffffff;
 }

@@ -188,8 +188,10 @@ exports.show = function(req, res) {
     };
   }
 
+  var fields = DEFAULT_GETTING_FIELD + ' likeUsers';
+  
   Document
-    .findOne(query, DEFAULT_GETTING_FIELD)
+    .findOne(query, fields)
     .populate({
       path: 'parents',
       select: DEFAULT_GETTING_FIELD,
@@ -211,7 +213,6 @@ exports.show = function(req, res) {
           if(err) { return handleError(res, err); }
 
           document.set('subDocuments', subDocuments);
-
           return res.json(document);
         });
       });
@@ -491,4 +492,32 @@ exports.uploadFile = function(req, res){
       res.json(500, {message: '업로드 에러 발생'});
     }
   });
+};
+
+exports.removeFile = function(req, res){
+  var documentId = req.params.documentId;
+  var fileId = req.params.fileId;
+  
+  return File.remove({_id: fileId}, function(err){
+    if (err) {
+      return handleError(res, err);
+    }else{
+      return Document
+        .findById(documentId, function(err, document){
+          for(var i = 0; i < document.files.length; i++){
+            if(document.files[i] === fileId){
+              document.files = document.files.splice(i, 1);
+              console.log(documentId + '의 ' + fileId + ' file이 삭제됨.');
+            }
+          }      
+          document.save(function(err){
+            if (err) {
+              return handleError(res, err);
+            }else{
+              return res.json(200, {result:'success'});
+            }
+          });
+        });
+    }
+  });  
 };

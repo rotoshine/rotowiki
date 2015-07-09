@@ -136,7 +136,47 @@ angular.module('rotowikiApp')
     };
   })
   .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $timeout, socket) {
-
+    var editDocumentBackup = {
+      // 10초 단위로 현재 편집 중인 문서를 localStorage에 백업한다.
+      // 저장하면서 날려버리자.
+      KEY_PREFIX: 'backup-',
+      getKey: function(documentId){
+        if(documentId === undefined || documentId === null){
+          throw new Error('documentId가 잘못 되었습니다.');
+        }
+        return this.KEY_PREFIX + documentId;
+      },
+      backupEditing: function(documentId){
+        window.localStorage[this.getKey(documentId)] = getEditingContentValue();
+      },
+      loadBackup: function(documentId){
+        return localStorage[this.getKey(documentId)];
+      },
+      remove: function(documentId){
+        window.localStorage.removeItem(this.getKey(documentId));
+      },
+      exists: function(documentId){
+        return window.localStorage.getItem(this.getKey(documentId)) !== null;
+      },
+      backupStart: function(documentId){
+        var that = this;
+        setInterval(function(){
+          that.backupEditing(documentId);
+        }, 1000 * 10);
+      }
+    };
+   
+    $scope.showDocumentHelper;
+    if(window.localStorage.getItem('showDocumentHelper') !== null){
+      $scope.showDocumentHelper = !!window.localStorage.showDocumentHelper;  
+    }else{
+      $scope.showDocumentHelper = false;
+    }
+ 
+    $scope.saveShowDocumentHelper = function(isShow){
+      window.localStorage.showDocumentHelper = $scope.showDocumentHelper;
+    };
+    
     function simpleTemplate(text, data){
       for(var key in data){
         var regExp = new RegExp('{' + key + '}', 'g');
@@ -187,12 +227,16 @@ angular.module('rotowikiApp')
           $upload.upload({
             file: $files[0],
             url: fileUrl
-          }).success(function (imageFile) {
+          }).success(function (uploadedFile) {
             var imgTag = simpleTemplate('![{title}의 이미지]({imageUrl})', {
                 title: $stateParams.title,
-                imageUrl: fileUrl + '/' + imageFile._id
+                imageUrl: fileUrl + '/' + uploadedFile._id
               }) + CARRIAGE_RETURN_CHAR;
             $scope.appendHTML(imgTag);
+            
+            if($scope.uploadedFiles !== null){
+              $scope.uploadedFiles.push(uploadedFile);
+            }
           }).error(function () {
             alertify.alert('파일 업로드 중 에러가 발생했습니다.');
           });
@@ -201,7 +245,37 @@ angular.module('rotowikiApp')
         alertify.alert('파일 업로드가 뭔가 이상합니다. 개발자를 갈요.');  
       }
     };
-
+    
+    $scope.removeUploadedFile = function(uploadedFile, $index){
+        Document.removeFile({
+          documentId: $scope.document._id,
+          fileId: uploadedFile._id
+        }, function(){
+          $scope.uploadedFiles.splice($index, 1);  
+          
+          // 본문에서 이미지 삭제
+          var fileRemoveRegex = new RegExp('!\\[.*' + uploadedFile._id + '\\)', 'gm');
+          var content = getEditingContentValue();
+          
+          console.log(fileRemoveRegex);
+          content = content.replace(fileRemoveRegex, '');
+          setEditingContentValue(content);
+        });
+    };
+    
+    $scope.appendUploadedFile = function(uploadedFile){
+      var imgTag = simpleTemplate('![{title}의 이미지]({imageUrl})', {
+        title: $stateParams.title,
+        imageUrl: fileUrl + '/' + uploadedFile._id
+      }) + CARRIAGE_RETURN_CHAR;
+      
+      if($scope.editor === null){
+        document.content = document.content + imgTag;
+      }else{
+        $scope.appendHTML(imgTag);
+      }
+    };
+    
     $scope.document = {
       title: $stateParams.title,
       content: ''
@@ -225,6 +299,15 @@ angular.module('rotowikiApp')
       return content;
     };
 
+    var setEditingContentValue = function(content){
+      if($scope.editor === null){
+        $scope.document.content = content;
+      }else{
+        $scope.editor.setValue(content);
+        $scope.editor.gotoLine($scope.currentCursor.row, 0);
+      }
+    }
+    
     $scope.markdownRender = function(){
       $scope.markdownToHTML = markdownService.toHTML(getEditingContentValue());
 
@@ -248,7 +331,8 @@ angular.module('rotowikiApp')
           
           // file url setting
           fileUrl = '/api/documents/by-id/' + document._id + '/files';
-
+          $scope.fileUrl = fileUrl;
+          
           $scope.changedDocumentTitle = document.title;
           if ($scope.document.content === undefined) {
             $scope.document.content = '';
@@ -260,11 +344,29 @@ angular.module('rotowikiApp')
           if($('#ace-editor').css('display') !== 'none'){
             $scope.initAceEditor();
           }
+          
+          
+          var documentId = document._id;
+          
           Document
-            .findFiles({documentId: document._id})
+            .findFiles({documentId: documentId})
             .$promise.then(function(files){
               $scope.uploadedFiles = files;
             });
+            
+          // 기존 편집본 있나 체크
+          if(editDocumentBackup.exists(documentId)){
+            alertify.confirm('기존에 편집 중인 문서가 있습니다. 불러오시겠습니까?', function(ok){
+              if(ok){
+                setEditingContentValue(editDocumentBackup.loadBackup(documentId));
+                editDocumentBackup.remove(documentId);
+              }
+              
+              editDocumentBackup.backupStart(documentId);
+            });
+          }else{
+            editDocumentBackup.backupStart(documentId);
+          }
         });
     };
 
@@ -321,6 +423,7 @@ angular.module('rotowikiApp')
         .update(saveDocument)
         .$promise
         .then(function (updatedDocument) {
+          editDocumentBackup.remove(updatedDocument._id);
           if(isFirstUpdate){
             socket.socket.emit('document:create', angular.toJson(updatedDocument));
           }else{

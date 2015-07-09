@@ -57,14 +57,24 @@
                     </button>
                   </div>
                 </div>
+                <div class="pull-right">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="showDocumentHelper" 
+                        ng-change="saveShowDocumentHelper(showDocumentHelper)"> 문서 문법 일람 보기
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="row">
               <div class="col-xs-12 document-edit-wrapper">
                 <tabset>
                   <tab heading="편집" id="document-edit-tab">
-                    <div id="ace-editor" class="ace-editor col-sm-8 col-md-9 hidden-xs">{{document.content}}</div>
-                    <div class="col-sm-4 col-md-3 edit-manual hidden-xs">
+                    <div id="ace-editor" 
+                      ng-class="{'col-sm-8':showDocumentHelper, 'col-md-9':showDocumentHelper, 'col-xs-12': !showDocumentHelper}" 
+                      class="ace-editor col-sm-8 col-md-9 hidden-xs">{{document.content}}</div>
+                    <div class="col-sm-4 col-md-3 edit-manual hidden-xs" ng-if="showDocumentHelper">
                       <h3>문서 문법 일람</h3>
                       <div>
                         <h5>강조</h5>
@@ -143,13 +153,21 @@
             </div>
             <div class="row">
               <div class="col-xs-12 uploaded-file-list">
-                <ul class="list-inline">
-                  <li ng-repeat="uploadedFile in uploadedFiles">
-                    <div class="uploaded-file" ng-css="{'background-image':'url'( + uploadedFile.path + ')'}">
-                      
-                    </div>
-                  </li>
-                </ul>
+                <div class="panel panel-default">
+                  <div class="panel-heading">uploaded images</div>
+                  <div class="panel-body">
+                    <ul class="list-inline">
+                      <li ng-repeat="uploadedFile in uploadedFiles">
+                        <div class="uploaded-file" 
+                          popover="클릭하여 이미지를 본문에 추가할 수 있습니다."
+                          ng-style="{'background-image':'url(' + fileUrl + '/' + uploadedFile._id + ')'}"
+                          ng-click="appendUploadedFile(uploadedFile)">
+                          <button class="remove" type="button" ng-click="removeUploadedFile(uploadedFile, $index)">x</button>
+                        </div>
+                      </li>
+                    </ul>    
+                  </div>
+                </div>
               </div>
             </div>
           </form>

@@ -10,6 +10,7 @@ var router = express.Router();
 router.get('/by-id/:documentId/files', controller.findDocumentFiles);
 router.get('/by-id/:documentId/files/:fileId', controller.findFileByDocumentId);
 router.post('/by-id/:documentId/files', auth.isAuthenticated(), controller.uploadFile);
+router.delete('/by-id/:documentId/files/:fileId', auth.isAuthenticated(), controller.removeFile);
 
 router.get('/random', controller.random);
 router.get('/by-id/:documentId', controller.show);

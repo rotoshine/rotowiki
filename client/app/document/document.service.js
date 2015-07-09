@@ -47,6 +47,10 @@ angular.module('rotowikiApp')
         url: '/api/documents/by-id/:documentId/files',
         method: 'GET',
         isArray: true
+      },
+      removeFile: {
+        url: '/api/documents/by-id/:documentId/files/:fileId',
+        method: 'DELETE'
       }
     });
   });

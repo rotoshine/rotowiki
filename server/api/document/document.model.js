@@ -96,5 +96,5 @@ DocumentSchema
   .set(function(subDocumentsCount){
     this._subDocumentsCount = subDocumentsCount;
   });
-
+  
 module.exports = mongoose.model('Document', DocumentSchema);
