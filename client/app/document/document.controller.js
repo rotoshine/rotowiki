@@ -355,13 +355,13 @@ angular.module('rotowikiApp')
             });
             
           // 기존 편집본 있나 체크
-          if(editDocumentBackup.exists(documentId)){
+          if(editDocumentBackup.exists(documentId) && 
+              editDocumentBackup.loadBackup(documentId) !== getEditingContentValue()){
             alertify.confirm('기존에 편집 중인 문서가 있습니다. 불러오시겠습니까?', function(ok){
               if(ok){
                 setEditingContentValue(editDocumentBackup.loadBackup(documentId));
-                editDocumentBackup.remove(documentId);
               }
-              
+              editDocumentBackup.remove(documentId);
               editDocumentBackup.backupStart(documentId);
             });
           }else{
