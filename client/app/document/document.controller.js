@@ -39,7 +39,7 @@ angular.module('rotowikiApp')
             // 이미지가 404일 때...
             // rm -rf를 조심하자 ㅜㅠ
             $('img').on('error', function(){
-              $(this).attr('src', '/images/cute_cat_404_error_im_sorry.jpg');  
+              $(this).attr('src', '/assets/images/cute_cat_404_error_im_sorry.jpg');  
             });
           });
           $scope.isNowLoading = false;

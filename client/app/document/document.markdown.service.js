@@ -19,11 +19,11 @@ angular.module('rotowikiApp')
         var regExps = [
           {
             regExp: '(&amp;|&)\\[(.*?)\\|(.*?)\\]', // ex) &[link title|document_title]
-            replace: '[$2](/document/$3)'
+            replace: '<a href="/document/$3">$2</a>'
           },
           {
-            regExp: '(&amp;|&)\\[(.*?)\\]', // ex) &[document_title]
-            replace: '[$2](/document/$2)'
+            regExp: '(&amp;|&)\\[(.*?)\\]', // ex) &[document_title]로
+            replace: '<a href="/document/$2">$2</a>' // 문서에 (나 )가 들어가면 markdown치환을 이상하게 해서 그냥 a
           },
           {
             regExp: '-\\[(.*?)\\]', // ex) -[text]
