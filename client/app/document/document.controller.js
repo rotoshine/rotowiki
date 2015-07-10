@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('rotowikiApp')
-  .controller('DocumentCtrl', function ($scope, $rootScope, Auth, Document, $state, $stateParams, WIKI_NAME) {
+  .controller('DocumentCtrl', function ($scope, $rootScope, $sce, Auth, Document, $state, $stateParams, WIKI_NAME, markdownService) {
     var _ = window._;
 
     $scope.title = $stateParams.title;
@@ -25,6 +25,11 @@ angular.module('rotowikiApp')
       Document
         .get({title: $scope.title})
         .$promise.then(function(document){
+          var markdownAndComment = markdownService.applyComment(document.content);
+          
+          document.content = markdownAndComment.markdownText;
+          $scope.commentText = $sce.trustAsHtml(markdownAndComment.commentText);
+          
           document.alreadyLike = _.contains(document.likeUsers, Auth.getCurrentUser()._id);
 
           $scope.document = document;
@@ -41,6 +46,14 @@ angular.module('rotowikiApp')
             $('img').on('error', function(){
               $(this).attr('src', '/assets/images/cute_cat_404_error_im_sorry.jpg');  
             });
+            
+            // 뒤에 해시 붙은 경우
+            var hash = location.hash;
+            if(hash !== ''){              
+              $(window).scrollTop(
+                $(hash).offset().top
+              );
+            }
           });
           $scope.isNowLoading = false;
         }, function(err){

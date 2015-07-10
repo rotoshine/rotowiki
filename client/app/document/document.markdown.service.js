@@ -12,8 +12,37 @@ angular.module('rotowikiApp')
         markdownText = this.scriptBurst(markdownText);
         markdownText = this.applyCustomHTMLSyntax(markdownText);
         markdownText = window.marked(markdownText);
-
+        
         return markdownText;
+      },
+      applyComment: function(markdownText){
+        var comments = [];
+        if(markdownText !== undefined && markdownText !== ''){
+          var commentIndex = 1;
+          var commentRegex = new RegExp('\\^\\[(.*?)\\|(.*?)\\]');
+          for(var commentIndex = 1; commentRegex.test(markdownText); commentIndex ++){
+            var result = commentRegex.exec(markdownText);
+            markdownText = markdownText
+              .replace(commentRegex, 
+              '<a class="comment-text" href="#comment-' + commentIndex + '" data-comment-index="' + commentIndex + 
+              '"><span id="comment-text-' + commentIndex + '">$1[' + commentIndex + ']</span></a>');
+            
+            if(result.length === 3){
+              comments.push('<a class="comment-content" href="#comment-text' + commentIndex + '" ' +
+                'data-comment-index="' + commentIndex + '">' + 
+                '<p id="comment-' + commentIndex + '">[' + commentIndex + '] ' + result[2] + '</p></a>');  
+            }
+          }
+          
+          return {
+            markdownText: markdownText,
+            commentText: comments.join('')
+          }
+        }
+        return {
+          markdownText: markdownText,
+          commentText: ''
+        }; 
       },
       applyCustomHTMLSyntax: function(markdownText){
         var regExps = [
