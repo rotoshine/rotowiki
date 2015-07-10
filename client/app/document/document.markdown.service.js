@@ -15,6 +15,9 @@ angular.module('rotowikiApp')
         
         return markdownText;
       },
+      createTableOfContents: function(markdownText){
+        
+      },
       applyComment: function(markdownText){
         var comments = [];
         if(markdownText !== undefined && markdownText !== ''){

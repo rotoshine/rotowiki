@@ -380,6 +380,20 @@ angular.module('rotowikiApp')
           }else{
             editDocumentBackup.backupStart(documentId);
           }
+          
+          $scope.$on('$locationChangeStart', function(event, newUrl){
+            // TODO 로그인 세션이 끊겨서 로그인 화면으로 보내는거면 그냥 보내게 처리하자.
+            var content = getEditingContentValue();
+            if(content !== $scope.editingBeforeContent){
+              event.preventDefault();
+              alertify.confirm('변경된 내용이 저장되지 않았습니다. 편집 모드를 종료하시겠습니까?', function(ok){
+                if(ok){
+                  // FIXME 이 방식으로 하면 화면전체를 새로고침한다. $location.path가 안 먹는데 대안을 찾아보자.
+                  location.href = newUrl;
+                }
+              });
+            }
+          });
         });
     };
 
@@ -637,20 +651,6 @@ angular.module('rotowikiApp')
         });
       }
     };
-
-    $scope.$on('$locationChangeStart', function(event, newUrl){
-      // TODO 로그인 세션이 끊겨서 로그인 화면으로 보내는거면 그냥 보내게 처리하자.
-      var content = getEditingContentValue();
-      if(content !== $scope.editingBeforeContent){
-        event.preventDefault();
-        alertify.confirm('변경된 내용이 저장되지 않았습니다. 편집 모드를 종료하시겠습니까?', function(ok){
-          if(ok){
-            // FIXME 이 방식으로 하면 화면전체를 새로고침한다. $location.path가 안 먹는데 대안을 찾아보자.
-            location.href = newUrl;
-          }
-        });
-      }
-    });
   })
   .controller('DocumentParentChangeCtrl', function($scope, $modalInstance, Document, currentDocument){
     setTimeout(function(){
