@@ -2,19 +2,30 @@
   height: 400px;
 }
 .edit-manual{
+  position: fixed;
+  right: -300px;
+  top: 0;
+  clear:both;
+  z-index:1100;
+  width:300px;
   height:100%;
   overflow-y:auto;
-  transition: ease-in-out 1s all;
+  transition: ease-in-out 0.3s all;
 }
 
-.edit-manual-switch-text{
-  display:inline-block;
-  position:absolute;
-  right:0;
-}
-
-.edit-manual-switch{
-  margin-right:60px;
+.edit-manual-button{
+  position:fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index:1200;
+  width:100px;
+  height:100px;
+  background-image: url('/assets/images/웨건.png');
+  background-color: none;
+  background-position:center;
+  background-size: cover;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 #parent-document-search-result{

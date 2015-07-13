@@ -179,6 +179,17 @@ angular.module('rotowikiApp')
       }
     };
    
+   
+    $scope.toggleEditManual = function(){
+      var $editManual = $('.edit-manual');
+      var editManualRight = $editManual;
+      if(editManualRight.css('right') === '-300px'){
+        $editManual.css('right', '0px');  
+      }else{
+        $editManual.css('right', '-300px');
+      }
+    };
+    
     $scope.showDocumentHelper;
     if(window.localStorage.getItem('showDocumentHelper') !== null){
       $scope.showDocumentHelper = !!window.localStorage.showDocumentHelper;  

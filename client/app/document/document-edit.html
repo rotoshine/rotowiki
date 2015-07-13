@@ -3,6 +3,100 @@
     <i class="fa fa-spin fa-spinner fa-4x"></i>
   </div>
 </div>
+<div>
+  <button type="button" class="edit-manual-button hidden-xs" 
+    ng-click="toggleEditManual()"></button>
+  <div class="edit-manual hidden-xs">
+    <div class="panel panel-info">
+      <div class="panel-heading">문서 문법 일람</div>
+      <div class="panel-body">
+        <div>
+          <h5>강조</h5>
+          <div class="well">
+            *문자*<br>
+            **문자**<br>
+            __문자__<br>
+          </div>
+          <div class="well">
+            <strong>문자</strong>
+          </div>
+        </div>
+        <div>
+          <h5>줄긋기</h5>
+          <div class="well">
+            -[문자]
+          </div>
+          <div class="well">
+            <strike>문자</strike>
+          </div>
+        </div>
+        <div>
+          <h5>주석</h5>
+          <div class="well">
+            ^[문자|주석내용]
+          </div>
+          <div class="well">
+            문자[1]
+          </div>
+        </div>
+        <div>
+          <h5>내부 문서 링크</h5>
+          <div class="well">
+            &amp;[문자]
+          </div>
+        </div>
+        <div>
+          <h5>외부 문서 링크</h5>
+          <div class="well">
+            *[문서명|https://twitter.com]
+          </div>
+        </div>
+        <div>
+          <h5>인용문</h5>
+          <div class="well">
+            > 문자
+          </div>
+          <div class="well">
+            <pre>문자</pre>
+          </div>
+        </div>
+        <div>
+          <h5>이미지 링크 삽입</h5>
+          <div class="well">
+            ![이미지 설명 텍스트](이미지_주소)
+          </div>
+        </div>
+        <div>
+          <h5>영역 강조 기능</h5>
+          <div class="well">
+            &lt;info type="영역타입"&gt;내용&lt;/info&gt;<br>
+            영역타입의 종류는 <code>info</code>, <code>success</code>,
+            <code>warning</code>, <code>danger</code>
+          </div>
+        </div>
+        <div>
+          <h5>아무도 모르지만 아주 예전에 구현해둔 단축키</h5>
+          <div class="well">
+            <ul class="list-unstyled">
+              <li>
+                <kbd>ctrl + s</kbd> 문서 저장
+              </li>
+              <li>
+                <kbd>ctrl + e</kbd> 문서 편집 탭 활성화
+              </li>
+              <li>
+                <kbd>ctrl + b</kbd> 문서 미리보기 탭 활성화
+              </li>
+              <li>
+                <kbd>esc</kbd> 문서 편집 취소
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="container" ng-init="init()">
   <div class="row">
     <div class="col-xs-12">
@@ -57,108 +151,14 @@
                     </button>
                   </div>
                 </div>
-                <div class="pull-right">
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" ng-model="showDocumentHelper" 
-                        ng-change="saveShowDocumentHelper(showDocumentHelper)"> 문서 문법 일람 보기
-                    </label>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="row">
               <div class="col-xs-12 document-edit-wrapper">
                 <tabset>
                   <tab heading="편집" id="document-edit-tab">
-                    <div id="ace-editor" 
-                      ng-class="{'col-sm-8':showDocumentHelper, 'col-md-9':showDocumentHelper, 'col-xs-12': !showDocumentHelper}" 
-                      class="ace-editor col-sm-8 col-md-9 hidden-xs">{{document.content}}</div>
-                    <div class="col-sm-4 col-md-3 edit-manual hidden-xs" ng-if="showDocumentHelper">
-                      <h3>문서 문법 일람</h3>
-                      <div>
-                        <h5>강조</h5>
-                        <div class="well">
-                          *문자*<br>
-                          **문자**<br>
-                          __문자__<br>
-                        </div>
-                        <div class="well">
-                          <strong>문자</strong>
-                        </div>
-                      </div>
-                      <div>
-                        <h5>줄긋기</h5>
-                          <div class="well">
-                            -[문자]
-                          </div>
-                          <div class="well">
-                            <strike>문자</strike>
-                          </div>
-                      </div>
-                      <div>
-                        <h5>주석</h5>
-                        <div class="well">
-                          ^[문자|주석내용]
-                        </div>
-                        <div class="well">
-                          문자[1]
-                        </div>
-                      </div>
-                      <div>
-                        <h5>내부 문서 링크</h5>
-                        <div class="well">
-                          &amp;[문자]
-                        </div>
-                      </div>
-                      <div>
-                        <h5>외부 문서 링크</h5>
-                        <div class="well">
-                          *[문서명|https://twitter.com]
-                        </div>
-                      </div>
-                      <div>
-                        <h5>인용문</h5>
-                        <div class="well">
-                          > 문자
-                        </div>
-                        <div class="well">
-                          <pre>문자</pre>
-                        </div>
-                      </div>
-                      <div>
-                        <h5>이미지 링크 삽입</h5>
-                        <div class="well">
-                          ![이미지 설명 텍스트](이미지_주소)
-                        </div>
-                      </div>
-                      <div>
-                        <h5>영역 강조 기능</h5>
-                        <div class="well">
-                          &lt;info type="영역타입"&gt;내용&lt;/info&gt;<br>
-                          영역타입의 종류는 <code>info</code>, <code>success</code>,
-                          <code>warning</code>, <code>danger</code>
-                        </div>
-                      </div>
-                      <div>
-                        <h5>아무도 모르지만 아주 예전에 구현해둔 단축키</h5>
-                        <div class="well">
-                          <ul class="list-unstyled">
-                            <li>
-                              <kbd>ctrl + s</kbd> 문서 저장
-                            </li>
-                            <li>
-                              <kbd>ctrl + e</kbd> 문서 편집 탭 활성화
-                            </li>
-                            <li>
-                              <kbd>ctrl + b</kbd> 문서 미리보기 탭 활성화
-                            </li>
-                            <li>
-                              <kbd>esc</kbd> 문서 편집 취소
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
+                    <div id="ace-editor"  
+                      class="ace-editor col-xs-12 hidden-xs">{{document.content}}
                     </div>
                     <textarea class="form-control visible-xs" name="content" id="content" cols="30" rows="15" ng-model="document.content"
                               placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."></textarea>
