@@ -26,10 +26,10 @@ angular.module('rotowikiApp')
         .get({title: $scope.title})
         .$promise.then(function(document){
           var markdownAndComment = markdownService.applyComment(document.content);
-          
+
           document.content = markdownAndComment.markdownText;
           $scope.commentText = $sce.trustAsHtml(markdownAndComment.commentText);
-          
+
           document.alreadyLike = _.contains(document.likeUsers, Auth.getCurrentUser()._id);
 
           $scope.document = document;
@@ -40,16 +40,16 @@ angular.module('rotowikiApp')
             /*new window.Masonry($('#markdown-view').get(0), {
               itemSelector: '.discography'
             });*/
-            
+
             // 이미지가 404일 때...
             // rm -rf를 조심하자 ㅜㅠ
             $('img').on('error', function(){
-              $(this).attr('src', '/assets/images/cute_cat_404_error_im_sorry.jpg');  
+              $(this).attr('src', '/assets/images/cute_cat_404_error_im_sorry.jpg');
             });
-            
+
             // 뒤에 해시 붙은 경우
             var hash = location.hash;
-            if(hash !== ''){              
+            if(hash !== ''){
               $(window).scrollTop(
                 $(hash).offset().top
               );
@@ -148,7 +148,8 @@ angular.module('rotowikiApp')
       });
     };
   })
-  .controller('DocumentEditCtrl', function($scope, Auth, Document, $state, $stateParams, $location, $modal, markdownService, $upload, $rootScope, WIKI_NAME, $timeout, socket) {
+  .controller('DocumentEditCtrl', function($scope, $sce, Auth, Document, $state, $stateParams, $location, $modal,
+                                           markdownService, $upload, $rootScope, WIKI_NAME, $timeout, socket) {
     var editDocumentBackup = {
       // 10초 단위로 현재 편집 중인 문서를 localStorage에 백업한다.
       // 저장하면서 날려버리자.
@@ -178,29 +179,18 @@ angular.module('rotowikiApp')
         }, 1000 * 10);
       }
     };
-   
-   
+
+
     $scope.toggleEditManual = function(){
       var $editManual = $('.edit-manual');
-      var editManualRight = $editManual;
-      if(editManualRight.css('right') === '-300px'){
-        $editManual.css('right', '0px');  
+      if($editManual.css('right') === '-300px'){
+        $editManual.css('right', '0px');
       }else{
         $editManual.css('right', '-300px');
       }
     };
-    
-    $scope.showDocumentHelper;
-    if(window.localStorage.getItem('showDocumentHelper') !== null){
-      $scope.showDocumentHelper = !!window.localStorage.showDocumentHelper;  
-    }else{
-      $scope.showDocumentHelper = false;
-    }
- 
-    $scope.saveShowDocumentHelper = function(isShow){
-      window.localStorage.showDocumentHelper = $scope.showDocumentHelper;
-    };
-    
+
+
     function simpleTemplate(text, data){
       for(var key in data){
         var regExp = new RegExp('{' + key + '}', 'g');
@@ -257,49 +247,49 @@ angular.module('rotowikiApp')
                 imageUrl: fileUrl + '/' + uploadedFile._id
               }) + CARRIAGE_RETURN_CHAR;
             $scope.appendHTML(imgTag);
-            
+
             if($scope.uploadedFiles !== null){
               $scope.uploadedFiles.push(uploadedFile);
             }
           }).error(function () {
             alertify.alert('파일 업로드 중 에러가 발생했습니다.');
           });
-        }  
+        }
       }else{
-        alertify.alert('파일 업로드가 뭔가 이상합니다. 개발자를 갈요.');  
+        alertify.alert('파일 업로드가 뭔가 이상합니다. 개발자를 갈요.');
       }
     };
-    
+
     $scope.removeUploadedFile = function(uploadedFile, $index){
         Document.removeFile({
           documentId: $scope.document._id,
           fileId: uploadedFile._id
         }, function(){
-          $scope.uploadedFiles.splice($index, 1);  
-          
+          $scope.uploadedFiles.splice($index, 1);
+
           // 본문에서 이미지 삭제
           var fileRemoveRegex = new RegExp('!\\[.*' + uploadedFile._id + '\\)', 'gm');
           var content = getEditingContentValue();
-          
+
           console.log(fileRemoveRegex);
           content = content.replace(fileRemoveRegex, '');
           setEditingContentValue(content);
         });
     };
-    
+
     $scope.appendUploadedFile = function(uploadedFile){
       var imgTag = simpleTemplate('![{title}의 이미지]({imageUrl})', {
         title: $stateParams.title,
         imageUrl: fileUrl + '/' + uploadedFile._id
       }) + CARRIAGE_RETURN_CHAR;
-      
+
       if($scope.editor === null){
         document.content = document.content + imgTag;
       }else{
         $scope.appendHTML(imgTag);
       }
     };
-    
+
     $scope.document = {
       title: $stateParams.title,
       content: ''
@@ -330,10 +320,14 @@ angular.module('rotowikiApp')
         $scope.editor.setValue(content);
         $scope.editor.gotoLine($scope.currentCursor.row, 0);
       }
-    }
-    
+    };
+
     $scope.markdownRender = function(){
-      $scope.markdownToHTML = markdownService.toHTML(getEditingContentValue());
+      var markdownAndComment = markdownService.applyComment(getEditingContentValue());
+
+      $scope.previewCommentText = $sce.trustAsHtml(markdownAndComment.commentText);
+
+      $scope.previewHTML = markdownService.toHTML(markdownAndComment.markdownText);
 
       // prism.js apply
       setTimeout(function(){
@@ -352,11 +346,11 @@ angular.module('rotowikiApp')
         .get({title: $scope.document.title})
         .$promise.then(function (document) {
           $scope.document = document;
-          
+
           // file url setting
           fileUrl = '/api/documents/by-id/' + document._id + '/files';
           $scope.fileUrl = fileUrl;
-          
+
           $scope.changedDocumentTitle = document.title;
           if ($scope.document.content === undefined) {
             $scope.document.content = '';
@@ -368,18 +362,18 @@ angular.module('rotowikiApp')
           if($('#ace-editor').css('display') !== 'none'){
             $scope.initAceEditor();
           }
-          
-          
+
+
           var documentId = document._id;
-          
+
           Document
             .findFiles({documentId: documentId})
             .$promise.then(function(files){
               $scope.uploadedFiles = files;
             });
-            
+
           // 기존 편집본 있나 체크
-          if(editDocumentBackup.exists(documentId) && 
+          if(editDocumentBackup.exists(documentId) &&
               editDocumentBackup.loadBackup(documentId) !== getEditingContentValue()){
             alertify.confirm('기존에 편집 중인 문서가 있습니다. 불러오시겠습니까?', function(ok){
               if(ok){
@@ -391,7 +385,7 @@ angular.module('rotowikiApp')
           }else{
             editDocumentBackup.backupStart(documentId);
           }
-          
+
           $scope.$on('$locationChangeStart', function(event, newUrl){
             // TODO 로그인 세션이 끊겨서 로그인 화면으로 보내는거면 그냥 보내게 처리하자.
             var content = getEditingContentValue();
@@ -399,6 +393,7 @@ angular.module('rotowikiApp')
               event.preventDefault();
               alertify.confirm('변경된 내용이 저장되지 않았습니다. 편집 모드를 종료하시겠습니까?', function(ok){
                 if(ok){
+                  editDocumentBackup.remove(documentId);
                   // FIXME 이 방식으로 하면 화면전체를 새로고침한다. $location.path가 안 먹는데 대안을 찾아보자.
                   location.href = newUrl;
                 }
@@ -422,11 +417,11 @@ angular.module('rotowikiApp')
         var MarkdownMode = ace.require('ace/mode/markdown').Mode;
 
         editor.getSession().setMode(new MarkdownMode());
+        editor.setTheme('ace/theme/chrome');
         editor.setOptions({
           minLines: 20,
           maxLines: Infinity,
           autoScrollEditorIntoView: true,
-          theme: "ace/theme/clouds",
           showPrintMargin: false
         });
         editor.resize();
@@ -451,9 +446,9 @@ angular.module('rotowikiApp')
       }
 
       if($scope.document.parents.length > 0){
-        saveDocument.parents = _.pluck($scope.document.parents, '_id');  
+        saveDocument.parents = _.pluck($scope.document.parents, '_id');
       }
-      
+
       var isFirstUpdate = $scope.document.__v === 0;
       var updateBeforeDate = $scope.document.updatedAt;
 
@@ -668,22 +663,22 @@ angular.module('rotowikiApp')
       $('#document-search-query').focus();
     }, 500);
     $scope.currentDocument = currentDocument;
-    
+
     $scope.hide = function(){
       $modalInstance.dismiss('cancel');
     };
 
     $scope.searchComplete = false;
-    
+
     $scope.searchHandler = function(query, $e){
       // 검색결과 순회를 위해 위, 아래 키를 눌렀을 때는 검색이 안 되도록.
       var keyCode = $e.keyCode;
-      
+
       if(keyCode !== KEY_CODE.UP && keyCode !== KEY_CODE.DOWN){
         $scope.search(query);
       }
     };
-    
+
     $scope.search = function(query){
       if(query !== undefined && query.length > 0){
         if(query === $scope.currentDocument.title){
@@ -697,20 +692,20 @@ angular.module('rotowikiApp')
             })
             .$promise.then(function (documents) {
               $scope.isNowSearching = false;
-              
+
               var parentsIds = _.pluck($scope.currentDocument.parents, '_id');
               for(var i = 0; i < documents.length; i++){
-                documents[i].selected = i === 0;        
-                
+                documents[i].selected = i === 0;
+
                 if(_.include(parentsIds, documents[i]._id)){
                   documents.splice(i, 1);
                   i--;
                 }
-                
+
               }
-              
+
               $scope.searchResults = documents;
-              $scope.searchComplete = true; 
+              $scope.searchComplete = true;
               adjustSearchResultPosition();
             }, function () {
               $scope.isNowSearching = false;
@@ -721,20 +716,20 @@ angular.module('rotowikiApp')
         }
       }
     };
-    
+
     $scope.selectParent = function(document){
       $scope.searchComplete = false;
-      $scope.searchResults = [];   
+      $scope.searchResults = [];
       $scope.currentDocument.parents.push(document);
     };
-    
+
     var KEY_CODE = {
       'UP': 38,
       'DOWN': 40,
       'ENTER': 13,
       'ESC': 27
     };
-    
+
     function isControlingKeyDown(keyCode){
       for(var key in KEY_CODE){
         if(KEY_CODE[key] === keyCode){
@@ -743,8 +738,8 @@ angular.module('rotowikiApp')
       }
       return false;
     }
-    
-    
+
+
     // TODO jquery로 직접 핸들링하는 부분들을 angular code base로 바꾸자.
     function adjustSearchResultPosition(){
       if($scope.searchResultShow){
@@ -758,17 +753,17 @@ angular.module('rotowikiApp')
         });
       }
     }
-    
+
     function resetSelected(){
       for(var i = 0; i < $scope.searchResults.length; i++){
         $scope.searchResults[i].selected = false;
       }
     }
-    
+
     function adjustSearchResultSelectedIndex(adjustValue){
       if($scope.searchResults.length > 1){
         var selectedIndex, i;
-        
+
         // 현재 검색결과의 선택위치를 구함.
         for(i = 0; i < $scope.searchResults.length; i++){
           console.log($scope.searchResults[i].selected);
@@ -777,7 +772,7 @@ angular.module('rotowikiApp')
             break;
           }
         }
-        
+
         var adjustIndex = selectedIndex + adjustValue;
         console.log('adjustIndex:' + adjustIndex);
         if(adjustIndex < 0){
@@ -786,25 +781,25 @@ angular.module('rotowikiApp')
           adjustIndex = $scope.searchResults.length - 1;
         }
         console.log('보정된 adjustIndex:' + adjustIndex);
-        
+
         // 보정된 값으로 선택위치를 설정.
         resetSelected();
         $scope.searchResults[adjustIndex].selected = true;
-        
+
         $scope.$apply();
-      }  
+      }
     }
-    
+
     $scope.mouseEnterEffect = function($index){
       resetSelected();
       $scope.searchResults[$index].selected = true;
     };
-    
+
     $scope.searchResultShow = false;
-    
+
     function keyControlHandle(e){
       var keyCode = e.keyCode;
-      
+
       if($scope.searchComplete && $scope.searchResults.length > 0){
         $scope.searchResultShow = true;
         if(isControlingKeyDown(keyCode)){
@@ -820,30 +815,30 @@ angular.module('rotowikiApp')
             }
           }
         }
-      } 
-      
+      }
+
       if(keyCode === KEY_CODE.ESC){
         e.preventDefault();
         if($scope.searchResultShow){
-          $scope.searchResultShow = false; 
-          $scope.documentSearchQuery = ''; 
+          $scope.searchResultShow = false;
+          $scope.documentSearchQuery = '';
         }else{
           $modalInstance.close(null);
         }
       }
     }
-    
+
     function keydownHandler(e){
       adjustSearchResultPosition();
       keyControlHandle(e);
     }
-    
+
     $(window).on('keydown', keydownHandler);
-    
+
     $scope.removeParentDocument = function($index){
       $scope.currentDocument.parents.splice($index, 1);
     };
-    
+
     $scope.applyChange = function(){
       $(window).off('keydown', keydownHandler);
       console.log($scope.currentDocument.parents.length);
@@ -1053,21 +1048,21 @@ angular.module('rotowikiApp')
       pageCount: 10,
       isArriveLast: false
     };
-    
+
     $scope.isNowLoading = false;
-    
+
     $scope.loadRootDocuments = function(callback){
       if($scope.page.isArriveLast || $scope.isNowLoading){
         if(callback){
-            return callback();  
+            return callback();
           }
       }else{
         $scope.isNowLoading = true;
-        
-        // subDocument 없는 문서들 로드  
+
+        // subDocument 없는 문서들 로드
         return Document
           .findByNoParents({
-            page: $scope.page.currentPage      
+            page: $scope.page.currentPage
           },function(rootDocuments){
             $scope.page.currentPage = $scope.page.currentPage + 1;
             if($scope.page.pageCount > rootDocuments.length){
@@ -1077,17 +1072,17 @@ angular.module('rotowikiApp')
               rootDocuments[i].hoverable = rootDocuments[i].subDocumentsCount > 0;
             }
             $scope.rootDocuments = $scope.rootDocuments.concat(rootDocuments);
-            
+
             $scope.isNowLoading = false;
             if(callback){
-              return callback(rootDocuments);  
+              return callback(rootDocuments);
             }
-            
-        });  
+
+        });
       }
     };
-    
+
     $scope.init = function(){
       $scope.loadRootDocuments();
     };
-  }); 
+  });

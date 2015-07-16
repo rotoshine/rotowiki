@@ -4,7 +4,7 @@
   </div>
 </div>
 <div>
-  <button type="button" class="edit-manual-button hidden-xs" 
+  <button type="button" class="edit-manual-button hidden-xs"
     ng-click="toggleEditManual()"></button>
   <div class="edit-manual hidden-xs">
     <div class="panel panel-info">
@@ -104,7 +104,7 @@
         <div class="panel-heading">문서 편집</div>
         <div class="panel-body">
           <div class="alert alert-info" role="alert" ng-show="hasChangeParentDocument">
-            <strong>알림</strong> 상위문서가 변경되었습니다. 
+            <strong>알림</strong> 상위문서가 변경되었습니다.
             <span ng-repeat="parentDocument in document.parents">
               {{parentDocument.title}} <span ng-if="!$last">, </span>
             </span>
@@ -157,14 +157,15 @@
               <div class="col-xs-12 document-edit-wrapper">
                 <tabset>
                   <tab heading="편집" id="document-edit-tab">
-                    <div id="ace-editor"  
-                      class="ace-editor col-xs-12 hidden-xs">{{document.content}}
-                    </div>
+                    <div id="ace-editor"
+                      class="ace-editor col-xs-12 hidden-xs">{{document.content}}</div>
                     <textarea class="form-control visible-xs" name="content" id="content" cols="30" rows="15" ng-model="document.content"
                               placeholder="문서 내용을 입력해주세요. markdown 포맷을 지원합니다."></textarea>
                   </tab>
                   <tab heading="미리보기" ng-click="markdownRender()" id="document-preview-tab">
-                    <document class="col-xs-12 markdown-view" id="markdown-view" content="markdownToHTML"></document>
+                    <document class="col-xs-12 markdown-view" id="markdown-view" content="previewHTML"></document>
+                    <hr ng-show="previewCommentText !== ''"/>
+                    <div ng-bind-html="previewCommentText"></div>
                   </tab>
                 </tabset>
               </div>
@@ -176,14 +177,14 @@
                   <div class="panel-body">
                     <ul class="list-inline">
                       <li ng-repeat="uploadedFile in uploadedFiles">
-                        <div class="uploaded-file" 
+                        <div class="uploaded-file"
                           popover="클릭하여 이미지를 본문에 추가할 수 있습니다."
                           ng-style="{'background-image':'url(' + fileUrl + '/' + uploadedFile._id + ')'}"
                           ng-click="appendUploadedFile(uploadedFile)">
                           <button class="remove" type="button" ng-click="removeUploadedFile(uploadedFile, $index)">x</button>
                         </div>
                       </li>
-                    </ul>    
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -213,11 +214,11 @@
         <div class="form-group">
           <label class="col-xs-4">상위문서</label>
           <div class="col-xs-8">
-            <div id="parent-document-search-result" 
+            <div id="parent-document-search-result"
                  ng-show="searchComplete && documentSearchQuery.length > 0 && searchResultShow">
               <div ng-show="searchResults.length === 0 && searchResultShow"><strong>{{documentSearchQuery}}</strong>의 검색결과가 없습니다.</div>
               <ul class="list-unstyled" ng-show="searchResults.length > 0">
-                <li class="selectable" ng-repeat="searchDocument in searchResults" 
+                <li class="selectable" ng-repeat="searchDocument in searchResults"
                     ng-mouseenter="mouseEnterEffect($index)"
                     ng-class="{ 'selected' : searchDocument.selected }"
                     ng-click="selectParent(searchDocument)">
@@ -228,10 +229,10 @@
               <div><kbd>esc</kbd>를 누르면 사라집니다.</div>
             </div>
             <div>
-              <input id="document-search-query" type="text" class="form-control" 
-                     ng-model="documentSearchQuery" placeholder="문서 제목을 입력하세요" 
+              <input id="document-search-query" type="text" class="form-control"
+                     ng-model="documentSearchQuery" placeholder="문서 제목을 입력하세요"
                      ng-click="search(documentSearchQuery)"
-                     ng-keydown="searchHandler(documentSearchQuery, $event)"> 
+                     ng-keydown="searchHandler(documentSearchQuery, $event)">
             </div>
             <div>
               <div ng-show="currentDocument.parents.length === 0" class="well">
@@ -239,7 +240,7 @@
               </div>
               <div ng-show="parentAndSubSameError" class="alert alert-danger">
                 <strong>알림</strong>현재 문서를 상위 문서로 지정할 수 없습니다 이자식아.
-              </div> 
+              </div>
               <ul class="list-unstyled">
                 <li ng-repeat="parentDocument in currentDocument.parents">
                   <div class="pull-left">{{parentDocument.title}}</div>

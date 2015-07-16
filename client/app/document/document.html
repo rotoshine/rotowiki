@@ -38,9 +38,10 @@
       <document class="col-xs-12 markdown-view" ng-show="document.content !== ''" id="markdown-view" content="document.content | markdownToHTML"></document>
       <div class="col-xs-12" ng-show="document.content === '' || document.content === undefined || document.content === null">
         <div class="alert alert-warning"><strong>알림</strong> 내용이 없는 문서입니다.</div>
-      </div>      
+      </div>
     </div>
     <div class="row">
+      <hr ng-show="commentText !== ''"/>
       <div class="col-xs-12">
         <div class="comment-text" ng-bind-html="commentText">
         </div>
