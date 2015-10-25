@@ -48,7 +48,7 @@
 }
 
 .document-list:hover{
-  background-color:#434ab6 ;  
+  background-color:#434ab6 ;
   cursor: pointer;
   color: #eeeeee;
 }
@@ -68,7 +68,10 @@
   background-size: cover;
   cursor: pointer;
 }
-
+.document-edit-utils{
+  margin-top:4px;
+  margin-bottom:4px;
+}
 .uploaded-file .remove{
   position:absolute;
   right:5px;

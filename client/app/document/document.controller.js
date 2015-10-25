@@ -579,6 +579,26 @@ angular.module('rotowikiApp')
           }
         }
       },
+      EMBED_TWIT: {
+        name: 'embedTwit',
+        text: '트윗',
+        iconClass: 'fa-twitter',
+        linkObject: null,
+        linkGenerator: function(){
+          // url 패턴 체크하자.
+          if(this.linkObject !== null){
+            var embedTwit = /https:\/\/twitter.com\/\w*\/status\/\w*/;
+            if(embedTwit.test(this.linkObject)){
+              return CARRIAGE_RETURN_CHAR +
+                '<embed-twit url="' + this.linkObject + '"></embed-twit>' +
+                CARRIAGE_RETURN_CHAR;
+            }else{
+              console.error('잘못된 twit url : ' + this.linkObject);
+              alertify.alert('잘못된 twit url입니다.');
+            }
+          }
+        }
+      },
       SOURCECODE: {
         name: 'sourcecode',
         text:'소스코드',

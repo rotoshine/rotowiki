@@ -122,17 +122,7 @@
                           type="button" ng-file-select
                           ng-file-change="imageUpload($files, $event)" ng-multiple="false"
                           accept="image/*"><i class="fa fa-image"></i></button>
-                  <div class="btn-group" role="group" dropdown is-open="status.linkButtonsOpen">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle">
-                      <i class="fa fa-anchor fa-fw"></i><span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                      <li ng-repeat="(key, linkType) in linkTypes">
-                        <a href="#" ng-click="linkInsertModal.show(linkType.name)"><i class="fa fa-fw {{linkType.iconClass}}"></i> {{linkType.text}}</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <!-- TODO 이 부분도 루프 시키자 -->
+
                   <div class="btn-group" role="group">
                     <button type="button"
                       class="btn btn-default btn-sm"
@@ -148,6 +138,13 @@
                       class="btn btn-default btn-sm"
                       ng-click="documentQuickEditHandler('strike')">
                       <strike>s</strike>
+                    </button>
+                  </div>
+                  <div class="btn-group" role="group">
+                    <button ng-repeat="(key, linkType) in linkTypes" type="button" class="btn btn-default btn-sm"
+                      ng-click="linkInsertModal.show(linkType.name)">
+                      <i class="fa fa-fw {{linkType.iconClass}}"></i>
+                      {{linkType.text}}
                     </button>
                   </div>
                 </div>
@@ -336,6 +333,32 @@
               <label class="col-xs-4">youtube url</label>
               <div class="col-xs-8">
                 <input type="text" class="form-control" placeholder="youtube url을 적어주세요." ng-model="linkTypes.YOUTUBE.linkObject"/>
+              </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.YOUTUBE.name)">
+            <tab-heading class="tab-{{linkTypes.YOUTUBE.name}}">
+              <i class="fa fa-fw fa-youtube"></i>
+            </tab-heading>
+            <div class="form-group">
+              <label class="col-xs-4">youtube url</label>
+              <div class="col-xs-8">
+                <input type="text" class="form-control" placeholder="youtube url을 적어주세요." ng-model="linkTypes.YOUTUBE.linkObject"/>
+              </div>
+            </div>
+          </tab>
+          <tab select="selectTab(linkTypes.EMBED_TWIT.name)">
+            <tab-heading class="tab-{{linkTypes.EMBED_TWIT.name}}">
+              <i class="fa fa-fw fa-twitter"></i>
+            </tab-heading>
+            <div class="form-group">
+              <div class="well">
+                트윗 링크를 붙여넣으세요. <br>
+                <code>https://twitter.com/TWITTER_ID/status/TWIT_ID</code> 형태입니다.
+              </div>
+              <label class="col-xs-2">Twit url</label>
+              <div class="col-xs-10">
+                <input type="text" class="form-control" placeholder="twit link url을 적어주세요." ng-model="linkTypes.EMBED_TWIT.linkObject"/>
               </div>
             </div>
           </tab>

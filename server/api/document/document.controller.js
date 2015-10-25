@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var request = require('request');
 var async = require('async');
 var mongoose = require('mongoose');
 var telegram = require('../../components/telegram/telegram');
@@ -34,7 +35,7 @@ exports.find = function(req, res) {
       '$gte': currentDate
     };
   }
-  
+
   if(req.query.hasOwnProperty('hasNoParent') && !!req.query.hasNoParent){
     query.$or = [
         {parents: { $size:0 } },
@@ -59,7 +60,7 @@ exports.find = function(req, res) {
     queryRunner
       .sort(sortQuery);
   }
-  
+
   if(req.query.hasOwnProperty('recent')) {
     queryRunner
       .sort({ createdAt: -1 })
@@ -80,10 +81,10 @@ exports.find = function(req, res) {
 
   queryRunner.exec(function (err, documents) {
     if(err) { return handleError(res, err); }
-    
+
     if(req.query.hasSubDocumentCount && documents.length > 0){
       // count를 loop를 통해서 하는 방법. 이게 최선일까?
-      var works = [];  
+      var works = [];
       _.each(documents, function(document){
         works.push(function(next){
           return Document
@@ -147,7 +148,7 @@ exports.migrate = function(callback){
           if(document.parents.length === 0 && document.parent !== undefined){
             works.push(function(next){
               document.parents = [document.parent];
-  
+
               result.push('migrate: ' + document.title);
               return document.save(next);
             });
@@ -189,7 +190,7 @@ exports.show = function(req, res) {
   }
 
   var fields = DEFAULT_GETTING_FIELD + ' likeUsers';
-  
+
   Document
     .findOne(query, fields)
     .populate({
@@ -281,14 +282,14 @@ exports.update = function(req, res) {
       autoLink.updateDocumentTitlesCache(updated.title, changedDocumentTitle);
       updated.title = changedDocumentTitle;
     }
-    
+
     var parents = [];
     if(req.body.parents !== undefined){
       for(var i = 0; i < req.body.parents.length; i++){
-        parents.push(new mongoose.Types.ObjectId(req.body.parents[i]));  
+        parents.push(new mongoose.Types.ObjectId(req.body.parents[i]));
       }
     }
-    
+
     var isFirstUpdate = updated.__v === 0;
 
     updated.__v = updated.__v + 1;
@@ -299,18 +300,18 @@ exports.update = function(req, res) {
         .update(
           {
             title: updated.title
-          }, 
+          },
           {
-            $set: { 
-              parents: parents 
+            $set: {
+              parents: parents
             }
-          }, 
+          },
           function(err){
             if (err) { return handleError(res, err); }
             // TODO 알람 옵션에 따라 텔레그램 알람을 보내든 트위터 알람을 보내든 하자.
             return historyLoggingAndHandleDocument(updated, req.user, 201, res);
           });
-    
+
     });
   });
 };
@@ -422,7 +423,7 @@ exports.unlike = function(req, res){
 
 exports.findDocumentFiles = function(req, res){
   var documentId = req.params.documentId;
-  
+
   return File.find({
     document: documentId
   }, function(err, files){
@@ -430,7 +431,7 @@ exports.findDocumentFiles = function(req, res){
       return handleError(res, err);
     }else{
       return res.json(200, files);
-    }   
+    }
   });
 };
 
@@ -440,16 +441,16 @@ exports.uploadFile = function(req, res){
 
   fs.exists(uploadedFile.path, function(exists){
     if(exists){
-      
+
       // 파일 리네임하기
       var PATH_SEPERATOR = '/'
       var renameFileName = new Date().getTime();
       var alreadyUploadedPaths = uploadedFile.path.split('/');
       alreadyUploadedPaths.splice(alreadyUploadedPaths.length - 1, 1);
       var renameFilePath = alreadyUploadedPaths.join('/') + '/' + renameFileName;
-      
+
       fs.renameSync(uploadedFile.path, renameFilePath);
-      
+
       var file = new File({
         name: renameFileName,
         originalName: uploadedFile.originalname,
@@ -497,7 +498,7 @@ exports.uploadFile = function(req, res){
 exports.removeFile = function(req, res){
   var documentId = req.params.documentId;
   var fileId = req.params.fileId;
-  
+
   return File.remove({_id: fileId}, function(err){
     if (err) {
       return handleError(res, err);
@@ -509,7 +510,7 @@ exports.removeFile = function(req, res){
               document.files = document.files.splice(i, 1);
               console.log(documentId + '의 ' + fileId + ' file이 삭제됨.');
             }
-          }      
+          }
           document.save(function(err){
             if (err) {
               return handleError(res, err);
@@ -519,5 +520,22 @@ exports.removeFile = function(req, res){
           });
         });
     }
-  });  
+  });
+};
+
+var embedTwitUrl = 'https://api.twitter.com/1/statuses/oembed.json?cards=hidden&url={url}'
+exports.embedTwit = function(req, res){
+  return request(embedTwitUrl.replace(/{url}/, req.query.url), function(err, response, body){
+    if(err !== null){
+      return res.json(500, { result: err.message });
+    }else{
+      try{
+        var embedTwitJSON = JSON.parse(body);
+        return res.json(200, embedTwitJSON);
+      }catch(exception){
+        return res.json(500, { result: exception.message });
+      }
+      return res.send(200);
+    }
+  });
 };

@@ -5,6 +5,9 @@ var controller = require('./document.controller');
 var auth = require('../../auth/auth.service');
 var router = express.Router();
 
+// 별도의 api로 분리할 것.
+router.get('/sns/twitter/embed-twit', controller.embedTwit);
+
 // TODO 별도의 컨트롤러로 분리하자.
 // files
 router.get('/by-id/:documentId/files', controller.findDocumentFiles);

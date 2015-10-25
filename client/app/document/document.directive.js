@@ -86,4 +86,23 @@ angular.module('rotowikiApp')
       },
       templateUrl: 'document-list.html'
     }
+  })
+  .directive('embedTwit', function(){
+    return {
+      replace: true,
+      restrict: 'E',
+      scope: {
+        url: '@'
+      },
+      controller: function($scope, $http, $sce){
+        $http
+          .get('/api/documents/sns/twitter/embed-twit?url='+$scope.url)
+          .then(function(embedTwitJSON){
+            if(embedTwitJSON && embedTwitJSON.data && embedTwitJSON.data.html){
+              $scope.embedTwit = $sce.trustAsHtml(embedTwitJSON.data.html);
+            }
+          });
+      },
+      template: '<div class="embed-twit" ng-bind-html=embedTwit></div>'
+    }
   });
