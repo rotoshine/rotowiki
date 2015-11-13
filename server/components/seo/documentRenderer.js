@@ -6,7 +6,6 @@ var querystring = require('querystring');
 var marked = require('marked');
 
 exports.render = function(url, res){
-  title = querystring.unescape(title);
 
   return findDocumentByUrl(url, function(err, document){
     if(err){
