@@ -256,7 +256,7 @@ angular.module('rotowikiApp')
           });
         }
       }else{
-        alertify.alert('파일 업로드가 뭔가 이상합니다. 개발자를 갈요.');
+        alertify.alert('파일 업로드가 뭔가 이상합니다. 개발자를 갈구세요.');
       }
     };
 

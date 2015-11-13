@@ -13,9 +13,9 @@ module.exports = function(app) {
   app.get('*', function(req, res, next){
     if(req.query.hasOwnProperty('_escaped_fragment_=') || req.query.hasOwnProperty('_escaped_fragment_')){
       // 임시처리
-      if(req.url.indexOf('/document/') > -1){
-        var title = req.url.split('?')[0].replace('/document/', '');
-        return seoRenderer.render(title, res);
+      var url = req.url;
+      if(url.indexOf('/document/') > -1){
+        return seoRenderer.render(url, res);
       }else{
         return next();
       }
@@ -52,9 +52,43 @@ module.exports = function(app) {
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
 
+  var fs = require('fs');
+  var indexFile = fs.readFileSync(app.get('appPath') + '/main.html').toString();
+
+  var ejs = require('ejs');
+  var documentMeta = fs.readFileSync(__dirname + '/views/documentMeta.ejs').toString();
+
+  var renderMainTemplate = function(json){
+    var renderDocumentMeta = ejs.render(documentMeta, json);
+    return indexFile.replace(/\{\{documentMeta}}/, renderDocumentMeta);
+  };
+
   // All other routes should redirect to the index.html
   app.route('/*')
     .get(function(req, res) {
-      res.sendfile(app.get('appPath') + '/index.html');
+      var url = req.url;
+      console.log(config);
+      if(url.indexOf('/document/') > -1 || url.indexOf('/document-by-id/') > -1){
+        return seoRenderer.findDocumentByUrl(url, function(err, document){
+          document.content = document.content.substring(0, 200);
+          return res.send(renderMainTemplate(
+            {
+              document:document,
+              documentUrl: config.domain + '/document-by-id/' + document._id,
+              // 문서에서 이미지 얻어오자
+              documentImageUrl: ''
+            }
+          ));
+        });
+      }else {
+        return res.send(renderMainTemplate({
+          document: {
+            title: config.wikiName,
+            content: 'SPA 방식으로 만들어진 위키 엔진'
+          },
+          documentUrl: config.domain,
+          documentImageUrl: ''
+        }));
+      }
     });
 };
