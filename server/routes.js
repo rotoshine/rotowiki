@@ -67,10 +67,11 @@ module.exports = function(app) {
   app.route('/*')
     .get(function(req, res) {
       var url = req.url;
-      console.log(config);
       if(url.indexOf('/document/') > -1 || url.indexOf('/document-by-id/') > -1){
         return seoRenderer.findDocumentByUrl(url, function(err, document){
-          document.content = document.content.substring(0, 200);
+          if(document && document.content){
+            document.content = document.content.substring(0, 200);
+          }
           return res.send(renderMainTemplate(
             {
               document:document,
