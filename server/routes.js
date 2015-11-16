@@ -7,6 +7,7 @@
 var errors = require('./components/errors');
 var config = require('./config/environment');
 var seoRenderer = require('./components/seo/documentRenderer');
+var _ = require('lodash');
 
 module.exports = function(app) {
   // seo 처리
@@ -63,33 +64,47 @@ module.exports = function(app) {
     return indexFile.replace(/\{\{documentMeta}}/, renderDocumentMeta);
   };
 
+  var defaultRenderingResult = renderMainTemplate({
+    document: {
+      title: config.wikiName,
+      content: 'SPA 방식으로 만들어진 위키 엔진'
+    },
+    documentUrl: config.domain,
+    documentImageUrl: ''
+  });
   // All other routes should redirect to the index.html
   app.route('/*')
     .get(function(req, res) {
       var url = req.url;
       if(url.indexOf('/document/') > -1 || url.indexOf('/document-by-id/') > -1){
         return seoRenderer.findDocumentByUrl(url, function(err, document){
-          if(document && document.content){
-            document.content = document.content.substring(0, 200);
-          }
-          return res.send(renderMainTemplate(
-            {
-              document:document,
-              documentUrl: config.domain + '/document-by-id/' + document._id,
-              // 문서에서 이미지 얻어오자
-              documentImageUrl: ''
+          if(err){
+            console.error(err);
+            return res.send(defaultRenderingResult);
+          }else if(!_.isEmpty(document)){
+            if(!_.isEmpty(document.content)){
+              document.content = document.content.substring(0, 200);
             }
-          ));
+
+            var documentImageUrl = '';
+            var documentUrl = config.domain + '/document-by-id/' + document.id;
+
+            if(_.isArray(document.files) && document.files.length > 0){
+              documentImageUrl = config.domain + '/api/documents/by-id/' + document.id + '/files/' + document.files[0];
+            }
+            var renderingResult = renderMainTemplate({
+                document:document,
+                documentUrl: documentUrl,
+                documentImageUrl: documentImageUrl
+              }
+            );
+            return res.send(renderingResult);
+          }else{
+            return res.send(defaultRenderingResult);
+          }
         });
       }else {
-        return res.send(renderMainTemplate({
-          document: {
-            title: config.wikiName,
-            content: 'SPA 방식으로 만들어진 위키 엔진'
-          },
-          documentUrl: config.domain,
-          documentImageUrl: ''
-        }));
+        return res.send(defaultRenderingResult);
       }
     });
 };

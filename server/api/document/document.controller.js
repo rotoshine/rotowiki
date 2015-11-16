@@ -343,7 +343,7 @@ function handleError(res, err) {
 exports.findFileByDocumentId = function(req ,res){
   var fileId = req.params.fileId;
 
-  File.findOne({_id: fileId}, function(err, file){
+  return File.findOne({_id: fileId}, function(err, file){
     if(err){ return handleError(res, err); }
     else{
       if(!file){
@@ -351,7 +351,8 @@ exports.findFileByDocumentId = function(req ,res){
       }else{
         fs.exists(file.path, function(exists){
           if(exists){
-            fs.createReadStream(file.path).pipe(res);
+            res.header('content-type', file.mimeType);
+            return fs.createReadStream(file.path).pipe(res);
           }else{
             return res.json(404, { message: '파일이 서버에 존재하지 않습니다.' });
           }

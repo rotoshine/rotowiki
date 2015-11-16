@@ -4,9 +4,9 @@ var Document = require('../../api/document/document.model');
 var config = require('../../config/environment');
 var querystring = require('querystring');
 var marked = require('marked');
+var striptags = require('striptags');
 
 exports.render = function(url, res){
-
   return findDocumentByUrl(url, function(err, document){
     if(err){
       return res.send('올바르지 않은 페이지 요청입니다.' + err.message);
@@ -17,8 +17,7 @@ exports.render = function(url, res){
       });
     }else{
       return res.render('documentNotFound.ejs', {
-        wikiName: config.wikiName,
-        title: title
+        wikiName: config.wikiName
       });
     }
   });
@@ -45,7 +44,11 @@ function findDocumentByUrl(url, callback){
           return callback(err, null);
         }else if(document){
           if(document.content !== undefined && document.content !== ''){
-            document.content = marked(document.content);
+            var content = marked(document.content);
+            content = striptags(content);
+            content = content.replace(/&amp;\[(\D.*)\]/mg, '$1');
+
+            document.content = content;
           }else{
             document.content = '문서 내용이 없습니다.';
           }
