@@ -46,7 +46,7 @@ function findDocumentByUrl(url, callback){
           if(document.content !== undefined && document.content !== ''){
             var content = marked(document.content);
             content = striptags(content);
-            content = content.replace(/&amp;\[(\D.*)\]/mg, '$1');
+            content = content.replace(/&amp;\[(\W.?)\]/mg, '$1');
 
             document.content = content;
           }else{
