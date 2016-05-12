@@ -69,6 +69,7 @@ module.exports = function(app) {
       title: config.wikiName,
       content: 'SPA 방식으로 만들어진 위키 엔진'
     },
+    documentDescription: 'SPA 방식으로 만들어진 위키 엔진',
     documentUrl: config.domain,
     documentImageUrl: ''
   });
@@ -81,23 +82,27 @@ module.exports = function(app) {
           if(err){
             console.error(err);
             return res.send(defaultRenderingResult);
-          }else if(!_.isEmpty(document)){
-            if(!_.isEmpty(document.content)){
-              document.content = document.content.substring(0, 200);
+          }else if(_.isObject(document)){
+            var documentDescription = 'SPA 방식으로 만들어진 위키 엔진';
+            if(_.isString(document.content)){
+              documentDescription = document.content.replace(/(?:\r\n|\r|\n)/g, '');
+              documentDescription = documentDescription.substring(0, 100);
             }
-
-            var documentImageUrl = '';
+            var documentImageUrl = 'https://pbs.twimg.com/profile_banners/379019765/1458584160/web';
             var documentUrl = config.domain + '/document-by-id/' + document.id;
 
             if(_.isArray(document.files) && document.files.length > 0){
               documentImageUrl = config.domain + '/api/documents/by-id/' + document.id + '/files/' + document.files[0];
             }
+
             var renderingResult = renderMainTemplate({
                 document:document,
+                documentDescription: documentDescription,
                 documentUrl: documentUrl,
                 documentImageUrl: documentImageUrl
               }
             );
+
             return res.send(renderingResult);
           }else{
             return res.send(defaultRenderingResult);

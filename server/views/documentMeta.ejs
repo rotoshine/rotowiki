@@ -1,13 +1,13 @@
 <!-- seo 대응용 -->
 <!-- Place this data between the <head> tags of your website -->
 <title>로토위키 - <%= document.title %></title>
-<meta name="description" content="<%= document.content %>" />
+<meta name="description" content="<%= documentDescription %>" />
 
 <!-- Twitter Card data -->
-<meta name="twitter:card" value="<%= document.content %>">
-<meta name="twitter:site" content="<%= documentUrl %>">
+<meta name="twitter:card" value="summary_large_image">
+<meta name="twitter:site" content="@winterwolf0412">
 <meta name="twitter:title" content="<%= document.title %>">
-<meta name="twitter:description" content="<%= document.content %>">
+<meta name="twitter:description" content="<%= documentDescription %>">
 <!-- Twitter Summary card images must be at least 120x120px -->
 <meta name="twitter:image" content="<%= documentImageUrl %>">
 
@@ -16,4 +16,4 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="<%= documentUrl %>" />
 <meta property="og:image" content="<%= documentImageUrl %>" />
-<meta property="og:description" content="<%= document.content %>" />
+<meta property="og:description" content="<%= documentDescription %>" />
