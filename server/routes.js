@@ -92,7 +92,7 @@ module.exports = function(app) {
             var documentUrl = config.domain + '/document-by-id/' + document.id;
 
             if(_.isArray(document.files) && document.files.length > 0){
-              documentImageUrl = config.domain + '/api/documents/by-id/' + document.id + '/files/' + document.files[0];
+              documentImageUrl = config.domain + '/api/documents/by-id/' + document.id + '/files/' + document.files[0]._id;
             }
 
             var renderingResult = renderMainTemplate({

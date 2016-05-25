@@ -39,7 +39,9 @@ function findDocumentByUrl(url, callback){
     return callback(null, new Error('url형식이 올바르지 않습니다 : ' + url));
   }else{
     return Document
-      .findOne(query, function(err, document){
+      .findOne(query)
+      .populate('files')
+      .exec(function(err, document){
         if(err){
           return callback(err, null);
         }else if(document){
