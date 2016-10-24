@@ -1,7 +1,0 @@
-# robotstxt.org
-
-User-agent: *
-
-Allow: /
-Allow: /document/*
-Disallow: /document-edit/*

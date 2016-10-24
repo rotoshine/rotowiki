@@ -1,17 +1,17 @@
 'use strict';
 
-var _ = require('lodash');
-var request = require('request');
-var async = require('async');
-var mongoose = require('mongoose');
-var telegram = require('../../components/telegram/telegram');
-var Document = require('./document.model');
-var DocumentHistory = require('../documentHistory/documentHistory.model');
-var autoLink = require('../..//components/autoLink');
-var File = require('../file/file.model');
-var fs = require('fs');
-var express = require('express');
-var DEFAULT_GETTING_FIELD = '__v _id title content files likeCount parents readCount updatedAt';
+const _ = require('lodash');
+const request = require('request');
+const async = require('async');
+const mongoose = require('mongoose');
+const telegram = require('../../components/telegram/telegram');
+const Document = require('./document.model');
+const DocumentHistory = require('../documentHistory/documentHistory.model');
+const autoLink = require('../..//components/autoLink');
+const File = require('../file/file.model');
+const fs = require('fs');
+const express = require('express');
+const DEFAULT_GETTING_FIELD = '__v _id title content files likeCount parents readCount updatedAt';
 
 autoLink.loadDocumentTitlesCache();
 exports.find = function(req, res) {
@@ -85,14 +85,14 @@ exports.find = function(req, res) {
     if(req.query.hasSubDocumentCount && documents.length > 0){
       // count를 loop를 통해서 하는 방법. 이게 최선일까?
       var works = [];
-      _.each(documents, function(document){
-        works.push(function(next){
+      _.each(documents, (document) => {
+        works.push((next) => {
           return Document
             .count({
               parents: {
                 $in:[mongoose.Types.ObjectId(document._id)]
               }
-            }, function(err, count){
+            }, (err, count) => {
               if(err){
                 return next(err);
               }else{
@@ -102,14 +102,14 @@ exports.find = function(req, res) {
             });
         });
       });
-      return async.parallel(works, function(err){
+      return async.parallel(works, (err) => {
         if(err){ console.log(err); return handleError(res, err); }
         else{
           return res.json(200, documents);
         }
       });
     }else{
-      return res.json(200, documents);
+      return res.json(documents);
     }
   });
 
