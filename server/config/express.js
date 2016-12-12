@@ -64,13 +64,13 @@ module.exports = function(app) {
     secret: config.secrets.session,
     resave: true,
     saveUninitialized: true,
-    store: new mongoStore({ mongoose_connection: mongoose.connection })
+    store: new mongoStore({ mongooseConnection: mongoose.connection })
   }));
 
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
-    app.use(express.static(path.join(config.root, 'public')));
-    app.set('appPath', config.root + '/public');
+    app.use(favicon(path.join(config.root, 'client', 'public', 'favicon.ico')));
+    app.use(express.static(path.join(config.root, 'client', 'dist')));
+    app.set('appPath', `${config.root}/client/dist`);
     app.use(morgan('dev'));
   }
 

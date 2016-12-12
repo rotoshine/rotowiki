@@ -18,8 +18,6 @@ module.exports = function(app) {
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
 
-  app.route('/*')
-    .get(function(req, res) {
-      return res.sendFile('../client/index.html');
-  });
+
+  console.log(process.env.NODE_ENV);
 };
