@@ -1,15 +1,22 @@
-import { NgModule} from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {AppComponent} from './app.component';
+import {AppRoutingModule} from './app-routing.module';
+import {HomeComponent} from './home.component';
+import {DocumentComponent} from "./document/document.component";
 
-import { AppComponent } from './app.component';
+import 'bootstrap/dist/css/bootstrap.css';
 
 @NgModule({
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule
   ],
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    DocumentComponent
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule{ }
+export class AppModule {}

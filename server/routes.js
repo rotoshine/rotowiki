@@ -20,6 +20,6 @@ module.exports = function(app) {
 
   app.route('/*')
     .get(function(req, res) {
-      return res.sendFile('../client/index.html');
+      return res.sendFile('../dist/index.html');
   });
 };

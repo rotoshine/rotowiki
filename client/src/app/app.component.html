@@ -1,3 +1,30 @@
-<main>
-  <h1>Hello from Angular App with webpack</h1>
-</main>
+<div class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed"><span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span> <span class="icon-bar"></span>
+      </button>
+      <a routerLink="/" class="navbar-brand">로토위키</a>
+    </div>
+    <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main" style="height: 0px;">
+      <ul class="nav navbar-nav">
+        <li ng-class="{active: isActive('/admin')}" class="ng-hide"><a routerLink="/">Home</a></li>
+        <li ng-show="isAdmin()" ng-class="{active: isActive('/admin')}" class="ng-hide"><a routerLink="/admin">Admin</a></li>
+      </ul>
+      <form class="navbar-form navbar-left ng-pristine ng-valid" role="search" ng-submit="searchService.search($event)">
+        <div class="form-group"><input class="form-control ng-pristine ng-untouched ng-valid" placeholder="Search"
+                                       id="search-text" ng-model="searchService.searchKeyword"
+                                       ng-focus="keydownListeners.stopAll()"
+                                       ng-blur="keydownListeners.listen('navbar')"></div>
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+
+      </ul>
+    </div>
+  </div>
+</div>
+<section class="container">
+  <router-outlet></router-outlet>
+</section>
