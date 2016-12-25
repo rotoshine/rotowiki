@@ -149,7 +149,7 @@ angular.module('rotowikiApp')
     };
   })
   .controller('DocumentEditCtrl', function($scope, $sce, Auth, Document, $state, $stateParams, $location, $modal,
-                                           markdownService, $upload, $rootScope, WIKI_NAME, $timeout, socket) {
+                                           markdownService, $upload, $rootScope, WIKI_NAME, $timeout) {
     var editDocumentBackup = {
       // 10초 단위로 현재 편집 중인 문서를 localStorage에 백업한다.
       // 저장하면서 날려버리자.
@@ -458,11 +458,11 @@ angular.module('rotowikiApp')
         .then(function (updatedDocument) {
           editDocumentBackup.remove(updatedDocument._id);
           if(isFirstUpdate){
-            socket.socket.emit('document:create', angular.toJson(updatedDocument));
+            //socket.socket.emit('document:create', angular.toJson(updatedDocument));
           }else{
             var beforeUpdatedSeconds = (new Date() - new Date(updateBeforeDate) ) / 1000;
             if(beforeUpdatedSeconds > 30){
-              socket.socket.emit('document:update', angular.toJson(updatedDocument));
+              //socket.socket.emit('document:update', angular.toJson(updatedDocument));
             }
           }
           $scope.isNowSaving = false;

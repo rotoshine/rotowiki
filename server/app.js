@@ -18,7 +18,7 @@ mongoose.connect(config.mongo.uri, config.mongo.options);
 var app = express();
 var server = require('http').createServer(app);
 var socketio = require('socket.io')(server, {
-  serveClient: (config.env === 'production') ? false : true,
+  serveClient: true,
   path: '/socket.io-client'
 });
 require('./config/socketio')(socketio);
@@ -28,7 +28,7 @@ require('./routes')(app);
 // Start server
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
-});  
+});
 
 
 // Expose app

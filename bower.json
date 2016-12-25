@@ -13,7 +13,6 @@
     "angular-bootstrap": "~0.11.0",
     "font-awesome": ">=4.3.0",
     "lodash": "~2.4.1",
-    "angular-socket-io": "~0.6.0",
     "angular-ui-router": "~0.2.10",
     "moment": "~2.9.0",
     "ng-file-upload": "~2.2.2",

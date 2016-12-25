@@ -4,7 +4,6 @@ angular.module('rotowikiApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
   'angularFileUpload'
@@ -109,6 +108,7 @@ angular.module('rotowikiApp', [
       }
     });
   })
+/*
   .run(function(socket){
     function documentChangeAlert(text){
       alertify.log(text, 'success', 5000);
@@ -134,6 +134,7 @@ angular.module('rotowikiApp', [
       documentChangeAlert(jsonStringHandle(document).title + ' 문서가 수정되었습니다.');
     });
   })
+ */
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
     return {
       // Add authorization token to headers
