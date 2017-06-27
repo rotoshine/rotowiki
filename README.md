@@ -61,7 +61,7 @@ pm2 restart rotowiki
 pm2 stop rotowiki
 ```
 # DEMO
-[http://wiki.winterwolf.me/](http://wiki.winterwolf.me/)
+[http://wiki.winterwolf.xyz/](http://wiki.winterwolf.xyz/)
 
 # TODO
 * e2e 테스트 코드 작성
