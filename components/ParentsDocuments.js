@@ -7,12 +7,12 @@ const ParentsDocuments = ({ parents }) => {
 
   const parentLinks = parents.map((parent, i) => {
     return (
-      <Link key={i}>
-        <a className="parent-link" href={`/documents/${parent.title}`}>
+      <Link key={i} href={`/document/${parent.title}`}>
+        <a className="parent-link">
           {parent.title}
         </a>
       </Link>
-    )
+    );
   });
 
   return (

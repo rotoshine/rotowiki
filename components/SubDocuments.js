@@ -14,7 +14,7 @@ const SubDocuments = ({ subDocuments }) => {
             return (
               <li key={i}>
                 <Link>
-                  <a href={`/documents/${subDocument.title}`}>{subDocument.title}</a>
+                  <a href={`/document/${subDocument.title}`}>{subDocument.title}</a>
                 </Link>
               </li>
             )

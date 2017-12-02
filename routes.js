@@ -1,4 +1,5 @@
 const routes = module.exports = require('next-routes')();
 
 routes
-  .add('documents', '/documents/:title');
+  .add('index', '')
+  .add('document', '/document/:title');

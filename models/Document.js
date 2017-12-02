@@ -67,16 +67,15 @@ module.exports = function (db) {
     return this.findOne({ title })
   };
 
-  DocumentSchema.statics.random = function (callback) {
-    var that = this;
-    this.count(function (err, count) {
-      if (err) {
-        return callback(err);
-      } else {
-        var rand = Math.floor(Math.random() * count);
-        that.findOne().skip(rand).exec(callback);
-      }
-    });
+  DocumentSchema.statics.random = async function () {
+    try {
+      const count = await this.count();
+      const rand = Math.floor(Math.random() * count);     
+      return await this.findOne().skip(rand).exec();
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   };
 
   DocumentSchema

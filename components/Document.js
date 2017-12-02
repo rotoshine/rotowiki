@@ -1,11 +1,12 @@
 import moment from 'moment';
-moment.lang('ko');
+moment.locale('ko');
 
-import marked from 'marked';
 import { Row, Col } from 'react-bootstrap';
 
 import ParentsDocuments from './ParentsDocuments';
 import SubDocuments from './SubDocuments';
+
+import { toHTML } from '../helpers/markdownHelpers';
 
 const Document = ({ document }) => {
   if (!document) {
@@ -13,10 +14,10 @@ const Document = ({ document }) => {
       <div className="well">존재하지 않는 문서입니다.</div>
     );
   }
-  
-  const markedResult = marked(document.content);
 
-  const { title, parents, subDocuments, updatedAt } = document;
+  const { title, content, parents, subDocuments, updatedAt } = document;
+ 
+  const html = toHTML(content);
 
   return (
     <div className="container">
@@ -33,7 +34,7 @@ const Document = ({ document }) => {
       </Row>
       <Row>
         <Col xs={12}>
-          <div dangerouslySetInnerHTML={{ __html: markedResult }} />
+          <div dangerouslySetInnerHTML={{ __html: html}} />
         </Col>
       </Row>
       <Row>

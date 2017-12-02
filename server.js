@@ -1,15 +1,17 @@
 require('dotenv').config();
 const next = require('next');
 const routes = require('./routes');
-const nextApp = next({ dev: process.env.NODE_ENV !== 'production ' });
-const handler = routes.getRequestHandler(nextApp);
+const app = next({ dev: process.env.NODE_ENV !== 'production ' });
+const handle = routes.getRequestHandler();
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
+const server = express();
 const mongoose = require('mongoose');
 
 async function start() {
   try {
+    await app.prepare();
+    
     mongoose.Promise = global.Promise;
     const db = await mongoose.connect(process.env.MONGODB_HOST, {
       useMongoClient: true
@@ -19,17 +21,18 @@ async function start() {
     require('./models/Document')(db);
     require('./models/DocumentHistory')(db);
     require('./models/File')(db);
-    require('./models/User')(db);
+    require('./models/User')(db);           
+    
+    server.use(bodyParser.json());
 
-    await nextApp.prepare();
-    app.use((req, res, next) => {
-      req.db = db;
-      next();
-    });
-    app.use(handler);
-    app.use(bodyParser.json());
+    // api loading    
+    server.use('/api/documents', require('./api/document/routes'));
 
-    app.listen(process.env.PORT || 3000);
+    
+
+    server.use(handler);
+
+    server.listen(process.env.PORT || 3000);
   } catch (e) {
     console.error(e);
   }
