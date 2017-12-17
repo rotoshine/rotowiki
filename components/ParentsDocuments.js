@@ -7,7 +7,7 @@ const ParentsDocuments = ({ parents }) => {
 
   const parentLinks = parents.map((parent, i) => {
     return (
-      <Link key={i} href={`/document/${parent.title}`}>
+      <Link key={i} href={{ pathname: '/document', asPath: `/document/${parent.title}`}}>
         <a className="parent-link">
           {parent.title}
         </a>
@@ -19,8 +19,9 @@ const ParentsDocuments = ({ parents }) => {
     <div className="alert alert-info" role="alert">
       이 문서는 {parentLinks} 의 하위문서 입니다.
       <style jsx>{`
-        a {
+        .parent-link {
           display: inline-block;
+          padding: 5px;
           margin-left: 3px;
           margin-right: 3px;          
         }

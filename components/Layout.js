@@ -5,18 +5,19 @@ function createOGTags(meta) {
   const { url, title, image, description } = meta;
 
   return [
-    <link rel="canonical" href={url} />,
-    <meta name="description" content={description} />,
-    <meta property="og:title" content={title} />,
-    <meta property="og:type" content="article" />,
-    <meta property="og:url" content={url} />,
-    <meta property="og:description" content={description.slice(0, 30)} />,
-    <meta property="og:image" content={image} />,
-    <meta name="twitter:card" value="summary_large_image" />,
-    <meta name="twitter:site" content="@winterwolf0412" />,
-    <meta name="twitter:title" content={title} />,
-    <meta name="twitter:description" content={description} />,    
-    <meta name="twitter:image" content={image} />
+    <link key={1} rel="canonical" href={url} />,
+    <meta key={2} name="description" content={description} />,
+    <meta key={3} property="og:title" content={title} />,
+    <meta key={4} property="og:type" content="article" />,
+    <meta key={5} property="og:url" content={url} />,
+    <meta key={6} property="og:description" content={description.slice(0, 30)} />,
+    <meta key={7} property="og:image" content={image} />,
+    <meta key={8} name="twitter:card" value="summary_large_image" />,
+    <meta key={9} name="twitter:site" content="@winterwolf0412" />,
+    <meta key={10} name="twitter:title" content={title} />,
+    <meta key={11} name="twitter:description" content={description} />,    
+    <meta key={12} name="twitter:image" content={image} />,
+    <meta key={13} name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
   ];
 }
 
@@ -24,6 +25,7 @@ export default ({ title = "로토위키", meta = null, children }) => (
   <div className="App">
     <Head>
       <title>{title}</title>
+      <meta charSet="UTF-8" />
       {meta && createOGTags(meta)}
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" />
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossOrigin="anonymous" />

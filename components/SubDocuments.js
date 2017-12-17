@@ -13,8 +13,8 @@ const SubDocuments = ({ subDocuments }) => {
           {subDocuments.map((subDocument, i) => {
             return (
               <li key={i}>
-                <Link>
-                  <a href={`/document/${subDocument.title}`}>{subDocument.title}</a>
+                <Link prefetch href={`/document/${subDocument.title}`}>
+                  <a>{subDocument.title}</a>
                 </Link>
               </li>
             )

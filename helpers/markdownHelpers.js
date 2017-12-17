@@ -42,6 +42,9 @@ function applyCustomSyntax(markdown) {
   }
 }
 export function toHTML(markdown) {
+  if (!markdown || markdown === '') {
+    return '';
+  }
   const scriptRemoved = scriptBurst(markdown);
   const applyResult = applyCustomSyntax(scriptRemoved);
 

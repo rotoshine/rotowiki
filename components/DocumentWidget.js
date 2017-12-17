@@ -23,8 +23,12 @@ const DocumentWidget = ({ document }) => {
       <hr />
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <div className="text-right">
-        <Link>
-          <a className="btn btn-default" href={`/document/${document.title}`}>
+      <Link prefetch href={{ 
+        asPath: `/document/${document.title}`, 
+        pathname: `/document`,
+        query: { title: document.title }
+      }}>
+          <a className="btn btn-default">
             <i className="fa fa-book" /> <span>자세히 읽기</span>
           </a>
         </Link>

@@ -13,7 +13,7 @@ function handleError(res, err) {
 
 exports.findByTitle = async function (req, res) {
   try {
-    console.log(req.originalUrl);
+    console.log('request!!');
     const { title } = req.params;
 
     console.log('title parameter', decodeURI(title));

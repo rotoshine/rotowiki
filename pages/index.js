@@ -1,24 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
-import { Row, Col, Jumbotron } from 'react-bootstrap';
+import { Col, Jumbotron, Row } from 'react-bootstrap';
 import 'isomorphic-fetch';
 
 import DocumentWidget from '../components/DocumentWidget';
 
-export default class IndexPage extends Component {
-  static async getInitialProps({ req }) {
-    console.log(req);
-    try {
-      const url = `${req.protocol}://${req.get('Host')}`;
-      const res = await fetch(`${url}/api/documents/random`);
-      const data = await res.json();
 
-      return {
-        randomDocument: data.document
-      };
-    } catch (e) {
-      console.error(e);
-    }
+export default class IndexPage extends React.Component {
+  static async getInitialProps({ req }) {
+    const isClient = (typeof window === 'object')
+    const host = isClient ? '' : `${req.protocol}://${req.get('Host')}`;
+
+    const res = await fetch(`${host}/api/documents/random`);
+    const data = await res.json();
+
+    return {
+      randomDocument: data.document
+    };
   }
 
   render() {

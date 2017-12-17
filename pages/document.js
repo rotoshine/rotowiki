@@ -1,29 +1,36 @@
 import React, { Component } from 'react';
 import Layout from '../components/Layout';
 import Document from '../components/Document';
+import 'isomorphic-fetch';
 
 export default class DocumentPage extends Component {
-  static async getInitialProps({ req, query }) {    
-    const encodedTitle = query.title;
-    
+  static async getInitialProps({ req, query }) {        
+    const { title } = query;
+
     try {
       const url = `${req.protocol}://${req.get('Host')}`;
-      const res = await fetch(`${url}/api/documents/${encodedTitle}`);
+      const res = await fetch(`${url}/api/documents/${encodeURI(title)}`);            
       const data = await res.json();    
       const { document } = data;
 
       return {
-        title: decodeURI(encodedTitle),
+        title,
         document
       };
     } catch (e) {
-      console.error(e);
+      console.error(e.message);
       return {};
     }
   }
 
   render() {
     const { title, document } = this.props;
+
+    if (!document) {
+      return (
+        <div>로딩 중입니다..</div>
+      );
+    }
     const { content } = document;
     const meta = {
       title,

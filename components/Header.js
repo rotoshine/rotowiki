@@ -10,11 +10,11 @@ const Header = () => (
           <span className="icon-bar" />
           <span className="icon-bar" />
         </button>
-        <Link>
-          <a className="navbar-brand" href="/">로토위키</a>
+        <Link href="/">
+          <a className="navbar-brand">로토위키</a>
         </Link>        
-        <Link>
-          <a className="btn btn-success random-document-button-xs pull-right visible-xs" href="/document-random">
+        <Link href="/document/random">
+          <a className="btn btn-success random-document-button-xs pull-right visible-xs">
             <i className="fa fa-random"/>
           </a>
         </Link>

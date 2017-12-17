@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "jsx": "react-native",
+    "module": "commonjs",
+    "strict": true,
+    "target": "es2017"
+  },
+  "include": [
+    "api/**/*",
+    "pages/**/*",
+    "models/**/*",
+    "helpers/**/*"
+  ]
+}
