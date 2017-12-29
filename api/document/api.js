@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 const Document = mongoose.model('Document');
-const File = require('../../models/File');
+const File = mongoose.model('File');
 const fs = require('fs');
 const { promisify } = require('util');
 
@@ -9,7 +11,7 @@ const exists = promisify(fs.exists);
 
 function handleError(res, err) {
   console.error(err.message);
-  return res.status(500).send(err);
+  return res.status(500).json({ message: err.message });
 }
 
 exports.findByTitle = async function (req, res) {
@@ -64,14 +66,16 @@ exports.findFileByDocumentId = async function (req, res) {
     const file = await File.findOne({ _id: fileId });
 
     if (!file) {
-      return res.json(404, { message: '올바르지 않은 파일입니다.' });
+      return res.status(404, { message: '파일 정보가 데이터베이스에 존재하지 않습니다.' });
     }
 
-    if (await exists(file.path)) {
+    console.log(`file path: ${UPLOAD_FILE_PATH}/${file.name}`);
+
+    if (await exists()) {
       res.header('content-type', file.mimeType);
       return fs.createReadStream(file.path).pipe(res);
     } else {
-      return res.json(404, { message: '파일이 서버에 존재하지 않습니다.' });
+      return res.status(404).json({ message: '파일이 서버에 존재하지 않습니다.' });
     }
   } catch (e) {
     return handleError(res, e);
