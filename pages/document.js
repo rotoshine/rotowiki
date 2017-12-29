@@ -16,9 +16,16 @@ export default class DocumentPage extends Component {
       const data = await res.json();
       const { document } = data;
 
+      // 대표 이미지 불러오기
+      const imageRes = await fetch(`${host}/api/documents/by-id/${document._id}/files/represent`);
+      const file = await imageRes.json();
+
+      const metaImage = file.isValid ? `${host}/api/documents/by-id/${document._id}/files/${file._id}` : `${host}/static/image/profile.jpg`;
+
       return {
         title,
         document,
+        metaImage,
         isFetchComplete: true
       };
     } catch (e) {
@@ -30,7 +37,7 @@ export default class DocumentPage extends Component {
   }
 
   render() {
-    const { document, isFetchComplete, hasError } = this.props;
+    const { document, metaImage, isFetchComplete, hasError } = this.props;
     const title = decodeURIComponent(this.props.title);
 
     if (!document && isFetchComplete) {
@@ -62,7 +69,7 @@ export default class DocumentPage extends Component {
       title,
       description,
       url: `http://wiki.roto.codes/document/${title}`,
-      image: ''
+      image: metaImage
     };
 
     return (

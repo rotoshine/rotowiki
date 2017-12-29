@@ -59,6 +59,29 @@ exports.findRandom = async function ( req, res) {
   }
 };
 
+exports.findRepresentImage = async function (req, res) {
+  const { documentId } = req.params;
+
+  try {
+    const file = await File.findOne({ document: documentId });
+
+    if (!file) {
+      return res.json({
+        isValid: false
+      });
+    } else {
+      return res.json({
+        isValid: true,
+        _id: file._id,
+        mimeType: file.mimeType
+      });
+    }
+  } catch (e) {
+    return handleError(res, e);
+  }
+
+};
+
 exports.findFileByDocumentId = async function (req, res) {
   const { UPLOAD_FILE_PATH } = process.env;
 
@@ -72,7 +95,6 @@ exports.findFileByDocumentId = async function (req, res) {
     }
 
     const filePath = `${UPLOAD_FILE_PATH}/${file.name}`;
-    console.log(`file path: ${filePath}`);
 
     if (await exists(filePath)) {
       res.header('content-type', file.mimeType);
