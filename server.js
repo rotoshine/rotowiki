@@ -36,6 +36,13 @@ async function start() {
     // app initilize
     await app.prepare();
 
+
+    server.get('*', (req, res, next) => {
+      // 기본값 넣어주기
+      req.wikiUrl = process.env.WIKI_URL;
+      next();
+    });
+
     server.use(handler);
 
     const port = process.env.PORT || 3000;

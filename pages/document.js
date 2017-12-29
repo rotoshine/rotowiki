@@ -10,7 +10,7 @@ export default class DocumentPage extends Component {
     const { title } = query;
     try {
       const isClient = (typeof window === 'object')
-      const host = isClient ? window.location.href : `${req.protocol}://${req.get('Host')}`;
+      const host = isClient ? window.location.origin : req.wikiUrl;
 
       const res = await fetch(`${host}/api/documents/${title}`);
       const data = await res.json();

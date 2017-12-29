@@ -9,7 +9,7 @@ const User = mongoose.model('User');
 require('./twitter').setup(User, {
   clientID: process.env.TWITTER_ID,
   clientSecret: process.env.TWITTER_SECRET,
-  callbackURL: `${process.env.DOMAIN}/auth/twitter/callback`
+  callbackURL: `${process.env.WIKI_URL}/auth/twitter/callback`
 });
 
 var router = express.Router();

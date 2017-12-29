@@ -1,4 +1,4 @@
-consst passport = require('passport');
+const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 exports.setup = function (User, config) {

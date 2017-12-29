@@ -9,7 +9,7 @@ import DocumentWidget from '../components/DocumentWidget';
 export default class IndexPage extends React.Component {
   static async getInitialProps({ req }) {
     const isClient = (typeof window === 'object')
-    const host = isClient ? '' : `${req.protocol}://${req.get('Host')}`;
+    const host = isClient ? window.location.origin : req.wikiUrl;
 
     const res = await fetch(`${host}/api/documents/random`);
     const data = await res.json();
