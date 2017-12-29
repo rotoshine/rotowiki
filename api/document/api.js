@@ -60,6 +60,8 @@ exports.findRandom = async function ( req, res) {
 };
 
 exports.findFileByDocumentId = async function (req, res) {
+  const { UPLOAD_FILE_PATH } = process.env;
+
   const { fileId } = req.params;
 
   try {
@@ -69,9 +71,10 @@ exports.findFileByDocumentId = async function (req, res) {
       return res.status(404, { message: '파일 정보가 데이터베이스에 존재하지 않습니다.' });
     }
 
-    console.log(`file path: ${UPLOAD_FILE_PATH}/${file.name}`);
+    const filePath = `${UPLOAD_FILE_PATH}/${file.name}`;
+    console.log(`file path: ${filePath}`);
 
-    if (await exists()) {
+    if (await exists(filePath)) {
       res.header('content-type', file.mimeType);
       return fs.createReadStream(file.path).pipe(res);
     } else {
