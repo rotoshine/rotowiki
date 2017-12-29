@@ -8,6 +8,7 @@ const DEFAULT_DOCUMENT_FIELD = '__v _id title content files likeCount parents re
 const exists = promisify(fs.exists);
 
 function handleError(res, err) {
+  console.error(err.message);
   return res.status(500).send(err);
 }
 
