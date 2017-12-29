@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import DocumentLink from './DocumentLink';
 
 const ParentsDocuments = ({ parents }) => {
   if (!parents || parents.length === 0) {
@@ -7,25 +7,29 @@ const ParentsDocuments = ({ parents }) => {
 
   const parentLinks = parents.map((parent, i) => {
     return (
-      <Link key={i} href={{ pathname: '/document', asPath: `/document/${parent.title}`}}>
-        <a className="parent-link">
-          {parent.title}
-        </a>
-      </Link>
+      <span key={i} className="parent-link">
+        <DocumentLink title={parent.title}>
+          <a>
+            {parent.title}
+          </a>
+        </DocumentLink>
+        {i < parents.length - 1 && ','}
+        <style jsx>{`
+          .parent-link {
+            font-weight: 900;
+            display: inline-block;
+            margin-left: 3px;
+            margin-right: 3px;
+          }
+        `}</style>
+      </span>
     );
   });
 
   return (
     <div className="alert alert-info" role="alert">
       이 문서는 {parentLinks} 의 하위문서 입니다.
-      <style jsx>{`
-        .parent-link {
-          display: inline-block;
-          padding: 5px;
-          margin-left: 3px;
-          margin-right: 3px;          
-        }
-      `}</style>
+
     </div>
   );
 }

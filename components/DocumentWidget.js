@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderToString } from 'react-dom';
-import Link from 'next/link';
 import { Well } from 'react-bootstrap';
+import { Link } from '../routes';
 
 import { toHTML } from '../helpers/markdownHelpers';
 
@@ -13,7 +13,7 @@ const DocumentWidget = ({ document }) => {
       </Well>
     );
   }
-  
+
   const { content } = document;
   const html = content.length > 30 ? toHTML(content.slice(0, 30) + '..') : toHTML(content);
 
@@ -23,11 +23,7 @@ const DocumentWidget = ({ document }) => {
       <hr />
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <div className="text-right">
-      <Link prefetch href={{ 
-        asPath: `/document/${document.title}`, 
-        pathname: `/document`,
-        query: { title: document.title }
-      }}>
+        <Link route="document" params={{ title: document.title }}>
           <a className="btn btn-default">
             <i className="fa fa-book" /> <span>자세히 읽기</span>
           </a>

@@ -15,7 +15,7 @@ function createOGTags(meta) {
     <meta key={8} name="twitter:card" value="summary_large_image" />,
     <meta key={9} name="twitter:site" content="@winterwolf0412" />,
     <meta key={10} name="twitter:title" content={title} />,
-    <meta key={11} name="twitter:description" content={description} />,    
+    <meta key={11} name="twitter:description" content={description} />,
     <meta key={12} name="twitter:image" content={image} />,
     <meta key={13} name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
   ];
@@ -79,33 +79,6 @@ export default ({ title = "로토위키", meta = null, children }) => (
         padding: 10px;
       }
       
-      @media screen and (max-width: 768px){
-        .search-result-wrapper{
-          width:100%;
-          height:100%;
-          margin: 0 auto;
-          position:absolute;
-          border:1px solid #cccccc;
-          background-color:#ffffff;
-          left:0;
-          top:0;
-          z-index: 30;
-          padding-top:50px;
-        }
-      }
-      
-      @media screen and (min-width: 992px){
-        .search-result-wrapper{
-          width:300px;
-          height:500px;
-          border:1px solid #cccccc;
-          background-color:#ffffff;
-          position:absolute;
-          top: 50px;
-          margin-left:91px;
-          z-index:20;
-        }
-      }
       
       
       .no-right-padding{

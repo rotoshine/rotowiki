@@ -13,7 +13,6 @@ function handleError(res, err) {
 
 exports.findByTitle = async function (req, res) {
   try {
-    console.log('request!!');
     const { title } = req.params;
 
     console.log('title parameter', decodeURI(title));
@@ -30,22 +29,25 @@ exports.findByTitle = async function (req, res) {
         }
       });
 
-    const subDocuments = await Document
-      .find({ parents: { $in: [document._id] } })
-      .sort('title');
+    if (document) {
+      const subDocuments = await Document
+        .find({ parents: { $in: [document._id] } })
+        .sort('title');
 
-    document.set('subDocuments', subDocuments);
+      document.set('subDocuments', subDocuments);
+    }
 
     return res.json({
       document
     });
   } catch (e) {
+    console.error(e);
     return res.json({ status: e.status, reason: e.mesasge });
   }
 };
 
 exports.findRandom = async function ( req, res) {
-  try {    
+  try {
     return res.json({
       document: await Document.random()
     });

@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import DocumentLink from './DocumentLink';
 
 const SubDocuments = ({ subDocuments }) => {
   if (!subDocuments || subDocuments.length === 0) {
     return null;
   }
 
-  return ( 
+  return (
     <section className="panel panel-info">
       <div className="panel-heading">하위문서</div>
       <section className="panel-body">
@@ -13,9 +13,9 @@ const SubDocuments = ({ subDocuments }) => {
           {subDocuments.map((subDocument, i) => {
             return (
               <li key={i}>
-                <Link prefetch href={`/document/${subDocument.title}`}>
+                <DocumentLink title={subDocument.title}>
                   <a>{subDocument.title}</a>
-                </Link>
+                </DocumentLink>
               </li>
             )
           })}

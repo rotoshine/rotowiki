@@ -16,8 +16,10 @@ const Document = ({ document }) => {
   }
 
   const { title, content, parents, subDocuments, updatedAt } = document;
- 
+
   const html = toHTML(content);
+
+  console.log(html);
 
   return (
     <div className="container">
@@ -57,7 +59,7 @@ const Document = ({ document }) => {
           overflow-y:auto;
           transition: ease-in-out 0.3s all;
         }
-        
+
         .edit-manual-button{
           position:fixed;
           right: 10px;
@@ -72,7 +74,7 @@ const Document = ({ document }) => {
           border: 1px solid black;
           border-radius: 5px;
         }
-        
+
         #parent-document-search-result{
           position:absolute;
           z-index:10;
@@ -84,14 +86,14 @@ const Document = ({ document }) => {
         .selectable{
           cursor: pointer;
         }
-        
+
         .document-list{
           border:1px solid #434ab6 ;
           margin-bottom:4px;
           border-radius:5px;
           padding:5px;
         }
-        
+
         .document-list:hover{
           background-color:#434ab6 ;
           cursor: pointer;
@@ -128,10 +130,10 @@ const Document = ({ document }) => {
           background-color:#d9534f;
           color:#ffffff;
         }
-        
+
         .comment-text{
           margin-top: 100px;
-        }        
+        }
       `}</style>
     </div >
   );

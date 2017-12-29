@@ -13,3 +13,4 @@ nohup.out
 /uploads/*
 config.js
 .next
+.vscode
