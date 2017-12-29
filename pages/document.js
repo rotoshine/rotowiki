@@ -9,8 +9,10 @@ export default class DocumentPage extends Component {
   static async getInitialProps({ req = {}, query }) {
     const { title } = query;
     try {
-      // TODO domain 부분 동적으로 넣게 처리할 것.
-      const res = await fetch(`http://localhost:3000/api/documents/${title}`);
+      const isClient = (typeof window === 'object')
+      const host = isClient ? '' : `${req.protocol}://${req.get('Host')}`;
+
+      const res = await fetch(`${host}/api/documents/${title}`);
       const data = await res.json();
       const { document } = data;
 
