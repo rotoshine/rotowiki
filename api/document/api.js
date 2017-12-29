@@ -18,7 +18,6 @@ exports.findByTitle = async function (req, res) {
   try {
     const { title } = req.params;
 
-    console.log('title parameter', decodeURI(title));
     const fields = `${DEFAULT_DOCUMENT_FIELD} likeUsers`;
     const document = await Document
       .findOne({ title }, fields)

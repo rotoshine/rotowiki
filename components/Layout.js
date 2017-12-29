@@ -2,14 +2,14 @@ import Head from 'next/head';
 import Header from '../components/Header';
 
 function createOGTags(meta) {
-  const { url, title, image, description } = meta;
+  const { documentUrl, title, image, description } = meta;
 
   return [
-    <link key={1} rel="canonical" href={url} />,
+    <link key={1} rel="canonical" href={documentUrl} />,
     <meta key={2} name="description" content={description} />,
     <meta key={3} property="og:title" content={title} />,
     <meta key={4} property="og:type" content="article" />,
-    <meta key={5} property="og:url" content={url} />,
+    <meta key={5} property="og:url" content={documentUrl} />,
     <meta key={6} property="og:description" content={description.slice(0, 30)} />,
     <meta key={7} property="og:image" content={image} />,
     <meta key={8} name="twitter:card" value="summary_large_image" />,
@@ -36,28 +36,28 @@ export default ({ title = "로토위키", meta = null, children }) => (
     </div>
     <style jsx global>{`
       @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
-      
+
       body{
         font-family: 'Nanum Gothic', sans-serif;
       }
-      
+
       /**
        * App-wide Styles
        */
-      
+
       .browsehappy {
           margin: 0.2em 0;
           background: #ccc;
           color: #000;
           padding: 0.2em 0;
       }
-      
+
       .footer{
         height:10px;
         width:100%;
         text-align: center;
       }
-      
+
       /* navbar */
       .random-document-button-xs{
         margin-top:8px;
@@ -70,7 +70,7 @@ export default ({ title = "로토위키", meta = null, children }) => (
         padding-top:10px;
         padding-left:5px;
       }
-      
+
       .search-result-footer{
         position:absolute;
         bottom:0;
@@ -78,9 +78,9 @@ export default ({ title = "로토위키", meta = null, children }) => (
         width:100%;
         padding: 10px;
       }
-      
-      
-      
+
+
+
       .no-right-padding{
         padding-right:0;
       }
@@ -96,15 +96,15 @@ export default ({ title = "로토위키", meta = null, children }) => (
         padding:6px 12px;
         border:1px solid #cccccc;
       }
-      
+
       .selectable{
         cursor: pointer;
       }
-      
+
       .selectable:hover{
         background-color:#eeeeee;
       }
-      
+
       .selected{
         background-color: #0091ea;
         color:white;
@@ -114,7 +114,7 @@ export default ({ title = "로토위키", meta = null, children }) => (
         max-width:100%;
         height:auto;
       }
-      
+
       /* document all */
       .item{
         width: 100%;
@@ -134,11 +134,11 @@ export default ({ title = "로토위키", meta = null, children }) => (
           width:25%;
         }
       }
-      
+
       .item .panel-body{
         overflow-x: auto;
       }
-      
+
       .document-all-load-button{
         width: 100%;
       }
@@ -157,8 +157,8 @@ export default ({ title = "로토위키", meta = null, children }) => (
           width: 30%;
         }
       }
-      
-      
+
+
       .backdrop{
         position: fixed;
         top: 0;
@@ -176,31 +176,31 @@ export default ({ title = "로토위키", meta = null, children }) => (
         margin-left:-24.5px;
         margin-top:-23px;
       }
-      
+
       .nav-tabs li{
         cursor: pointer;
       }
-      
+
       .share-twitter-button{
         margin-right:20px;
       }
-      
+
       .default-bottom-half-margin{
         margin-bttom:5px;
       }
-      
+
       .default-bottom-margin{
         margin-bottom:10px;
       }
-      
+
       .default-right-margin{
         margin-right:10px;
       }
-      
+
       .inline-block{
         display:inline-block;
       }
-      
+
       .nav-profile-image{
         margin-top:-5px;
         width:30px;

@@ -19,8 +19,6 @@ const Document = ({ document }) => {
 
   const html = toHTML(content);
 
-  console.log(html);
-
   return (
     <div className="container">
       <Row>
