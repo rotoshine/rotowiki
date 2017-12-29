@@ -76,7 +76,7 @@ exports.findFileByDocumentId = async function (req, res) {
 
     if (await exists(filePath)) {
       res.header('content-type', file.mimeType);
-      return fs.createReadStream(file.path).pipe(res);
+      return fs.createReadStream(filePath).pipe(res);
     } else {
       return res.status(404).json({ message: '파일이 서버에 존재하지 않습니다.' });
     }
