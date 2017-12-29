@@ -15,6 +15,7 @@ const { MONGODB_HOST_DEV, MONGODB_HOST_PRODUCTION } = process.env;
 const mongodbHost = isDev ? MONGODB_HOST_DEV : MONGODB_HOST_PRODUCTION;
 
 async function start() {
+  console.log(`server starting... ${isDev ? 'development' : 'production'} mode.`)
   try {
     // database initialize
     mongoose.Promise = global.Promise;
@@ -37,7 +38,8 @@ async function start() {
 
     server.use(handler);
 
-    server.listen(process.env.PORT || 3000);
+    const port = process.env.PORT || 3000;
+    server.listen(`server start. port : ${port}`);
   } catch (e) {
     console.error(e);
   }
