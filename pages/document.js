@@ -41,6 +41,7 @@ export default class DocumentPage extends Component {
   render() {
     const { document, metaImage, documentUrl, isFetchComplete, hasError } = this.props;
     const title = decodeURIComponent(this.props.title);
+    const documentTitle = `로토위키-${title}`;
 
     if (!document && isFetchComplete) {
       return (
@@ -52,7 +53,9 @@ export default class DocumentPage extends Component {
 
     if (!document) {
       return (
-        <div>로딩 중입니다..</div>
+        <Layout title={documentTitle}>
+          <Well>로딩 중입니다..</Well>
+        </Layout>
       );
     }
 
@@ -74,7 +77,7 @@ export default class DocumentPage extends Component {
     };
 
     return (
-      <Layout title={`로토위키-${title}`} meta={meta}>
+      <Layout title={documentTitle} meta={meta}>
         <Document document={document} />
       </Layout>
     );
