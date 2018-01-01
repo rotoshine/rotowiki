@@ -4,10 +4,8 @@ const secret = process.env.JWT_SECRET || 'rotowiki';
 const mongoose = require('mongoose');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
 const compose = require('composable-middleware');
 const User = mongoose.model('User');
-const validateJwt = expressJwt({ secret });
 
 function getToken(req) {
   const { headers } = req;
