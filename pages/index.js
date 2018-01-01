@@ -8,6 +8,7 @@ import DocumentWidget from '../components/DocumentWidget';
 
 export default class IndexPage extends React.Component {
   static async getInitialProps({ req }) {
+    console.log(req.user);
     const isClient = (typeof window === 'object')
     const host = isClient ? window.location.origin : req.wikiUrl;
 
