@@ -9,25 +9,33 @@ const compose = require('composable-middleware');
 const User = mongoose.model('User');
 const validateJwt = expressJwt({ secret });
 
+function getToken(req) {
+  const { headers } = req;
+  if (headers.authorization && headers.authorization.startsWith('Bearer')) {
+    return headers.authorization.split(' ')[1];
+  }
+  return token;
+}
+
 /**
  * Attaches the user object to the request if authenticated
  * Otherwise returns 403
  */
 function isAuthenticated() {
   return compose()
-    // Validate jwt
-    .use((req, res, next) => {
-      // allow access_token to be passed through query parameter as well
-      if (req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
-      }
-      validateJwt(req, res, next);
-    })
     // Attach user to request
     .use(async (req, res, next) => {
       try {
-        const user = await User.findById(req.user._id);
-        if (!user) return res.send(401);
+        const token = getToken(req);
+
+        if (!token) {
+          return next(new Error('token not found.'));
+        }
+
+        const user = await User.findById(tokenToUser(token)._id);
+        if (!user) {
+          return res.send(401);
+        }
 
         req.user = user;
         next();
@@ -99,6 +107,7 @@ function setTokenCookie(req, res) {
   res.redirect('/');
 }
 
+exports.getToken = getToken;
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.signToken = signToken;

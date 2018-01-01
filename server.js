@@ -75,10 +75,6 @@ async function start() {
       // 기본값 넣어주기
       req.wikiUrl = WIKI_URL;
 
-      // cookie에 있는 token을 header에 넣어주기
-      if (req.cookies && req.cookies.token) {
-        req.headers['x-access-token'] = req.cookies.token;
-      }
       next();
     });
 

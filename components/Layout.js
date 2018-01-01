@@ -1,5 +1,9 @@
+import 'isomorphic-fetch';
+import React from 'react';
 import Head from 'next/head';
 import Header from '../components/Header';
+
+import Cookies from 'js-cookie';
 
 function createOGTags(meta) {
   const { documentUrl, title, image, description } = meta;
@@ -21,194 +25,230 @@ function createOGTags(meta) {
   ];
 }
 
-export default ({ title = "로토위키", meta = null, children }) => (
-  <div className="App">
-    <Head>
-      <title>{title}</title>
-      <meta charSet="UTF-8" />
-      {meta && createOGTags(meta)}
-      <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico" />
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" />
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossOrigin="anonymous" />
-    </Head>
-    <Header />
-    <div className="container">
-      {children}
-    </div>
-    <style jsx global>{`
-      @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+export default class Layout extends React.Component {
+  constructor (props) {
+    super(props);
 
-      body{
-        font-family: 'Nanum Gothic', sans-serif;
-      }
+    this.state = {
+      user: null
+    };
+  }
+  async componentDidMount () {
+    const isClient = (typeof window === 'object')
+    const host = isClient ? window.location.origin : req.wikiUrl;
 
-      /**
-       * App-wide Styles
-       */
+    const headers = {};
 
-      .browsehappy {
-          margin: 0.2em 0;
-          background: #ccc;
-          color: #000;
-          padding: 0.2em 0;
-      }
+    if (Cookies.get('token')) {
+      headers.Authorization = `Bearer ${Cookies.get('token').replace(/['"]+/g, '')}`;
+    }
+    const res = await fetch(`${host}/users/me`, {
+      method: 'GET',
+      headers
+    });
 
-      .footer{
-        height:10px;
-        width:100%;
-        text-align: center;
-      }
+    console.log(headers);
+    const data = await res.json();
 
-      /* navbar */
-      .random-document-button-xs{
-        margin-top:8px;
-        margin-right:5px;
-      }
-      .logout-button{
-        margin-left:15px;
-      }
-      .nav-right-button-wrapper{
-        padding-top:10px;
-        padding-left:5px;
-      }
+    if (data && data.user) {
+      this.setState({
+        user: data.user
+      });
+    }
+  }
+  render() {
+    const { user } = this.state;
+    const { title = "로토위키", meta = null, children } = this.props;
+    return (
+      <div className="App">
+        <Head>
+          <title>{title}</title>
+          <meta charSet="UTF-8" />
+          {meta && createOGTags(meta)}
+          <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico" />
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css" />
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossOrigin="anonymous" />
+        </Head>
+        <Header user={user}/>
+        <div className="container">
+          {children}
+        </div>
+        <style jsx global>{`
+        @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 
-      .search-result-footer{
-        position:absolute;
-        bottom:0;
-        left:0;
-        width:100%;
-        padding: 10px;
-      }
-
-
-
-      .no-right-padding{
-        padding-right:0;
-      }
-      /* document */
-      .document-top-buttons{
-        padding-top:50px;
-      }
-      .document-bottom-buttons{
-        margin-bottom:15px;
-      }
-      .parent-search-result{
-        height: 200px;
-        padding:6px 12px;
-        border:1px solid #cccccc;
-      }
-
-      .selectable{
-        cursor: pointer;
-      }
-
-      .selectable:hover{
-        background-color:#eeeeee;
-      }
-
-      .selected{
-        background-color: #0091ea;
-        color:white;
-      }
-      /* document edit */
-      .markdown-view img {
-        max-width:100%;
-        height:auto;
-      }
-
-      /* document all */
-      .item{
-        width: 100%;
-      }
-      @media screen and (min-width: 768px){
-        .item{
-          width: 50%;
+        body{
+          font-family: 'Nanum Gothic', sans-serif;
         }
-      }
-      @media screen and (min-width: 992px){
-        .item{
-          width: 33%;
-        }
-      }
-      @media screen and (min-width:993px){
-        .item{
-          width:25%;
-        }
-      }
 
-      .item .panel-body{
-        overflow-x: auto;
-      }
+        /**
+         * App-wide Styles
+         */
 
-      .document-all-load-button{
-        width: 100%;
-      }
-      @media screen and (min-width: 768px){
+        .browsehappy {
+            margin: 0.2em 0;
+            background: #ccc;
+            color: #000;
+            padding: 0.2em 0;
+        }
+
+        .footer{
+          height:10px;
+          width:100%;
+          text-align: center;
+        }
+
+        /* navbar */
+        .random-document-button-xs{
+          margin-top:8px;
+          margin-right:5px;
+        }
+        .logout-button{
+          margin-left:15px;
+        }
+        .nav-right-button-wrapper{
+          padding-top:10px;
+          padding-left:5px;
+        }
+
+        .search-result-footer{
+          position:absolute;
+          bottom:0;
+          left:0;
+          width:100%;
+          padding: 10px;
+        }
+
+
+
+        .no-right-padding{
+          padding-right:0;
+        }
+        /* document */
+        .document-top-buttons{
+          padding-top:50px;
+        }
+        .document-bottom-buttons{
+          margin-bottom:15px;
+        }
+        .parent-search-result{
+          height: 200px;
+          padding:6px 12px;
+          border:1px solid #cccccc;
+        }
+
+        .selectable{
+          cursor: pointer;
+        }
+
+        .selectable:hover{
+          background-color:#eeeeee;
+        }
+
+        .selected{
+          background-color: #0091ea;
+          color:white;
+        }
+        /* document edit */
+        .markdown-view img {
+          max-width:100%;
+          height:auto;
+        }
+
+        /* document all */
+        .item{
+          width: 100%;
+        }
+        @media screen and (min-width: 768px){
+          .item{
+            width: 50%;
+          }
+        }
+        @media screen and (min-width: 992px){
+          .item{
+            width: 33%;
+          }
+        }
+        @media screen and (min-width:993px){
+          .item{
+            width:25%;
+          }
+        }
+
+        .item .panel-body{
+          overflow-x: auto;
+        }
+
         .document-all-load-button{
           width: 100%;
         }
-      }
-      @media screen and (min-width: 992px){
-        .document-all-load-button{
-          width: 50%;
+        @media screen and (min-width: 768px){
+          .document-all-load-button{
+            width: 100%;
+          }
         }
-      }
-      @media screen and (min-width:993px){
-        .document-all-load-button{
-          width: 30%;
+        @media screen and (min-width: 992px){
+          .document-all-load-button{
+            width: 50%;
+          }
         }
-      }
+        @media screen and (min-width:993px){
+          .document-all-load-button{
+            width: 30%;
+          }
+        }
 
 
-      .backdrop{
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1040;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.3);
-      }
-      .backdrop .backdrop-message{
-        position:fixed;
-        left:50%;
-        top:50%;
-        margin-left:-24.5px;
-        margin-top:-23px;
-      }
+        .backdrop{
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          z-index: 1040;
+          background-color: rgb(0, 0, 0);
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+        .backdrop .backdrop-message{
+          position:fixed;
+          left:50%;
+          top:50%;
+          margin-left:-24.5px;
+          margin-top:-23px;
+        }
 
-      .nav-tabs li{
-        cursor: pointer;
-      }
+        .nav-tabs li{
+          cursor: pointer;
+        }
 
-      .share-twitter-button{
-        margin-right:20px;
-      }
+        .share-twitter-button{
+          margin-right:20px;
+        }
 
-      .default-bottom-half-margin{
-        margin-bttom:5px;
-      }
+        .default-bottom-half-margin{
+          margin-bttom:5px;
+        }
 
-      .default-bottom-margin{
-        margin-bottom:10px;
-      }
+        .default-bottom-margin{
+          margin-bottom:10px;
+        }
 
-      .default-right-margin{
-        margin-right:10px;
-      }
+        .default-right-margin{
+          margin-right:10px;
+        }
 
-      .inline-block{
-        display:inline-block;
-      }
+        .inline-block{
+          display:inline-block;
+        }
 
-      .nav-profile-image{
-        margin-top:-5px;
-        width:30px;
-        height:30px;
-        border:1px solid #eeeeee;
-        border-radius: 15px;
-      }
-    `}</style>
-  </div>
-);
+        .nav-profile-image{
+          margin-top:-5px;
+          width:30px;
+          height:30px;
+          border:1px solid #eeeeee;
+          border-radius: 15px;
+        }
+      `}</style>
+      </div>
+    );
+  }
+}

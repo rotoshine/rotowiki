@@ -35,15 +35,17 @@ router.get('/auth/twitter/callback', passport.authenticate('twitter', {
 // get이 맞으려나?
 router.get('/users/me', async (req, res) => {
   try {
-    const token = req.headers['x-access-token'] || req.query.token || (req.cookies.token && req.cookies.token.replace(/['"]+/g, ''));
+    const token = auth.getToken(req);
 
     if (token) {
       const user = await auth.tokenToUser(token);
       return res.json({
+        success: true,
         user
       });
     } else {
       return res.json({
+        succes: false,
         message: 'invalid token.'
       });
     }
@@ -52,5 +54,11 @@ router.get('/users/me', async (req, res) => {
     console.error(e);
     return res.status(403).json({ message: e.message });
   }
+});
+
+router.get('/logout', (req, res) => {
+  res.clearCookie('token');
+
+  res.redirect('/');
 });
 module.exports = router;
